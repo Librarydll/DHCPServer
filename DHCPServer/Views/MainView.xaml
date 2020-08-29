@@ -7,6 +7,7 @@
         xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
         prism:ViewModelLocator.AutoWireViewModel="True"      
         xmlns:local="clr-namespace:DHCPServer.Views"
+        xmlns:lh="clr-namespace:DHCPServer.UICore"
         mc:Ignorable="d"
         Title="MainView" Height="450" Width="800">
     <Grid>
@@ -62,11 +63,11 @@
                                             </Button>
                                             <StackPanel Margin="5" Background="Red" Grid.ColumnSpan="2" Grid.Row="3" Orientation="Horizontal">
                                                 <d3:ChartPlotter Width="250" x:Name="plotter">
-                                                    <d3:LineGraph DataSource="{Binding Path=TemperaturePointDataSource}" Stroke="Red" />
+                                                    <lh:CustomLineGraph LineGraphBrush="Red" LineHeader="Температура"  DataSource="{Binding Path=TemperaturePointDataSource}"/>
                                                 </d3:ChartPlotter>
 
-                                                <d3:ChartPlotter >
-                                                    <d3:LineGraph  Width="250" Stroke="Blue" DataSource="{Binding Path=HumidityPointDataSource}" />
+                                                <d3:ChartPlotter>
+                                                    <lh:CustomLineGraph LineGraphBrush="Blue" LineHeader="Влажность" Width="250"  DataSource="{Binding Path=HumidityPointDataSource}" />
                                                 </d3:ChartPlotter>
                                             </StackPanel>
                                             

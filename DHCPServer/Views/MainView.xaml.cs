@@ -38,6 +38,8 @@ namespace DHCPServer.Views
             source1.AppendAsync(Dispatcher, p3);
             source1.AppendAsync(Dispatcher, p4);
             source1.AppendAsync(Dispatcher, p5);
+            ChartPlotter s = new ChartPlotter();
+           // s.AddLineGraph()
         }
        
     }

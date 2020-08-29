@@ -158,6 +158,7 @@
     <Compile Include="Services\HtmlHelper.cs" />
     <Compile Include="Services\IClientService.cs" />
     <Compile Include="Services\XmlDeviceProvider.cs" />
+    <Compile Include="UICore\CustomLineGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
