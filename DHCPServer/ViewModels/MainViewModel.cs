@@ -5,6 +5,7 @@ using DHCPServer.Dialogs.Extenstions;
 using DHCPServer.Models;
 using DHCPServer.Models.Context;
 using DHCPServer.Models.Infrastructure;
+using DHCPServer.Models.Repositories;
 using DHCPServer.Services;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -25,8 +26,10 @@ namespace DHCPServer.ViewModels
 	public class MainViewModel : BindableBase
 	{
 		#region Fields
+		private bool _isTimerRunning = false;
 		private readonly IDialogService _dialogService;
 		private readonly IClientService _clientService;
+		private readonly IRoomRepository _roomRepository;
 		private readonly XmlDeviceProvider _xmlDeviceProvider;
 		private readonly DispatcherTimer _timer;
 		private CancellationTokenSource tokenSource = null;
@@ -52,21 +55,22 @@ namespace DHCPServer.ViewModels
 			set { SetProperty(ref _lineGraph, value); }
 		}
 		#endregion
-		public MainViewModel(IDialogService dialogService, IClientService clientService, XmlDeviceProvider xmlDeviceProvider, LineGraphProvider lineGraph)
+		public MainViewModel(IDialogService dialogService, IClientService clientService,IRoomRepository roomRepository ,XmlDeviceProvider xmlDeviceProvider, LineGraphProvider lineGraph)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
 			_dialogService = dialogService;
 			_clientService = clientService;
+			_roomRepository = roomRepository;
 			_xmlDeviceProvider = xmlDeviceProvider;
 			_lineGraph = lineGraph;
 			var devices = _xmlDeviceProvider.GetDevices();
 			tokenSource = new CancellationTokenSource();
 			RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(_xmlDeviceProvider.CastDevices(devices).ToRoomLineGraphInfo());
-			//	_timer = new DispatcherTimer();
-			//_timer.Interval = new TimeSpan(0, 0, 7);
-			//_timer.Tick += _timer_Tick;
-			//	_timer.Start();
+			_timer = new DispatcherTimer();
+			_timer.Interval = new TimeSpan(1, 0, 0);
+			_timer.Tick += _timer_Tick;
+			_timer.Start();
 			_clientService.ReciveMessageEvent += _clientService_ReciveMessageEvent;
 			_clientService.ReciveMessageErrorEvent += _clientService_ReciveMessageErrorEvent;
 			_deviceClients = new List<DeviceClient>(RoomsCollection
@@ -112,7 +116,19 @@ namespace DHCPServer.ViewModels
 
 		private void _timer_Tick(object sender, EventArgs e)
 		{
-			tokenSource = new CancellationTokenSource();
+			_isTimerRunning = true;
+			foreach (var room in RoomsCollection)
+			{
+				room.AddToCollections();
+			}
+
+			Task.Run(async () =>
+			{
+				await _roomRepository.SaveAsync(RoomsCollection);
+			});
+
+
+			_isTimerRunning = false;
 		}
 
 

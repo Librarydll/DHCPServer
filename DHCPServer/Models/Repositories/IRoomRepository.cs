@@ -8,5 +8,7 @@ namespace DHCPServer.Models.Repositories
 {
 	public interface IRoomRepository
 	{
+		Task<RoomInfo> SaveAsync(RoomInfo roomInfo);
+		Task SaveAsync(IEnumerable<RoomInfo> roomInfos);
 	}
 }

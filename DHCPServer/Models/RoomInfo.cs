@@ -36,7 +36,7 @@ namespace DHCPServer.Models
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void RaisePropertyChangedEvent([CallerMemberName]string prop = "")
+		public virtual void RaisePropertyChangedEvent([CallerMemberName]string prop = "")
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 		}
