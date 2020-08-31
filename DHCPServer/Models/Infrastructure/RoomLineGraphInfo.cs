@@ -1,5 +1,6 @@
 ﻿using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,8 +45,7 @@ namespace DHCPServer.Models.Infrastructure
 		private void AddToTemperatureDataSource()
 		{
 			var x = CreatePointX();
-			Console.WriteLine($"TEMPERATURE {x}");
-
+			Log.Logger.Information("DEVICE : {0} TEMPERATURE {1}, Time {2}", IPAddress, Temperature,x);
 			Point point = new Point(x, Temperature);
 			TemperaturePointDataSource.Collection.Add(point);
 			_count++;
@@ -53,7 +53,7 @@ namespace DHCPServer.Models.Infrastructure
 		private void AddToHumidityDataSource()
 		{
 			var x = CreatePointX();
-			Console.WriteLine($"HUMIDITY {x}");
+			Log.Logger.Information("DEVICE : {0} HUMIDITY {1}, Time {2}", IPAddress, Humidity,x);
 			Point point = new Point(x, Humidity);
 			HumidityPointDataSource.Collection.Add(point);
 			_count++;

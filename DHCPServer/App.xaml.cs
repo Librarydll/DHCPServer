@@ -4,6 +4,7 @@ using DHCPServer.Services;
 using DHCPServer.Views;
 using Prism.Ioc;
 using Prism.Unity;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -25,6 +26,10 @@ namespace DHCPServer
 		}
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
 		{
+			Log.Logger = new LoggerConfiguration()
+				.WriteTo.File("logs\\log.log")
+				.CreateLogger();
+			containerRegistry.RegisterInstance(Log.Logger);
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
 			containerRegistry.RegisterSingleton<XmlDeviceProvider>();
 
