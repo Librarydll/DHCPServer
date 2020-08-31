@@ -17,10 +17,11 @@ namespace DHCPServer.Models.Infrastructure
 		//Колличество обращений 
 		//сколько раз пытались записать данные
 		//обращение происходят каждые 5 секунд так как изменяются два свойства проверка будет до 24
-		private int _countRequest = -1;//значение -1 так как при сохдании оно обращается 1 раз
+		private int _countRequest = -1;//значение -1 так как при создании объекиа оно обращается 1 раз
 		private int _count = 0;
 		public bool CanAdd => _countRequest >= 24;
-		public bool IsInvalid { get => isInvalid; set { isInvalid = value; } }
+		private bool isInvalid;
+		public bool IsInvalid { get => isInvalid; private set { isInvalid = value; } }
 		private ObservableDataSource<Point> _temperaturePointDataSource = new ObservableDataSource<Point>();
 		public ObservableDataSource<Point> TemperaturePointDataSource
 		{
@@ -28,7 +29,6 @@ namespace DHCPServer.Models.Infrastructure
 			set { _temperaturePointDataSource = value; RaisePropertyChangedEvent(); }
 		}
 		private ObservableDataSource<Point> _humidityPointDataSource = new ObservableDataSource<Point>();
-		private bool isInvalid;
 
 		public ObservableDataSource<Point> HumidityPointDataSource
 		{

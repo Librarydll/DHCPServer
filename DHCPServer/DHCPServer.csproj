@@ -149,6 +149,7 @@
     <Compile Include="Models\DeviceClient.cs" />
     <Compile Include="Models\DeviceXml.cs" />
     <Compile Include="Models\Enums\DeviceResponseStatus.cs" />
+    <Compile Include="Models\Infrastructure\DateTimeSpanFilter.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfo.cs" />
     <Compile Include="Models\Repositories\IRoomRepository.cs" />
     <Compile Include="Models\Repositories\RoomRepository.cs" />
@@ -158,7 +159,18 @@
     <Compile Include="Services\XmlDeviceProvider.cs" />
     <Compile Include="UICore\Converters\BorderColorConverter.cs" />
     <Compile Include="UICore\CustomLineGraph.cs" />
+    <Compile Include="UICore\Controls\TimeControl.xaml.cs">
+      <DependentUpon>TimeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\GraphDataViewModel.cs" />
+    <Compile Include="ViewModels\GraphViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\GraphDataView.xaml.cs">
+      <DependentUpon>GraphDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GraphView.xaml.cs">
+      <DependentUpon>GraphView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -169,6 +181,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UICore\Controls\TimeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GraphDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

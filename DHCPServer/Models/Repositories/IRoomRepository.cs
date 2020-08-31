@@ -10,5 +10,8 @@ namespace DHCPServer.Models.Repositories
 	{
 		Task<RoomInfo> SaveAsync(RoomInfo roomInfo);
 		Task SaveAsync(IEnumerable<RoomInfo> roomInfos);
+
+		Task<IEnumerable<RoomInfo>> FilterRooms(DateTime from, DateTime to);
+		Task<IEnumerable<RoomInfo>> FilterRooms(DateTime fromDate, DateTime toDate,TimeSpan fromTime,TimeSpan toTime);
 	}
 }

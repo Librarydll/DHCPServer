@@ -38,17 +38,30 @@ namespace DHCPServer.Models.Repositories
 			}
 		}
 
-		public async Task<IEnumerable<RoomInfo>> GetGroupedRooms()
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(DateTime from, DateTime to)
 		{
-			//string query = @"SELECT *FROM RoomInfos";
+			string query = "SELECT *FROM RoomInfos where date>=@from and date<=@to";
 			using (var connection = _factory.CreateConnection())
 			{
-				var entites = await connection.GetAllAsync<RoomInfo>();
-
-
-				return entites;
+				var result = await connection.QueryAsync<RoomInfo>(query, new 
+				{ from = from.Date.ToString("yyyy-MM-dd"), to = to.Date.ToString("yyyy-MM-dd") });
+				return result;
 			}
 		}
 
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(DateTime fromDate, DateTime toDate, TimeSpan fromTime, TimeSpan toTime)
+		{
+			string query = "SELECT *FROM RoomInfos where date>=@from and date<=@to";
+
+			using (var connection = _factory.CreateConnection())
+			{
+				var fd = new DateTime(fromDate.Year,fromDate.Month,fromDate.Day,fromTime.Hours,fromTime.Minutes,0);
+				var ft = new DateTime(toDate.Year, toDate.Month, toDate.Day, toTime.Hours, toTime.Minutes,0);
+
+				var result = await connection.QueryAsync<RoomInfo>(query, new
+				{ from = fd, to = ft });
+				return result;
+			}
+		}
 	}
 }
