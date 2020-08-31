@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DHCPServer.Dictionaries">
+
+    <!--DataGrid Date-->
+    <DataTemplate x:Key="DataGridTemplate">
+        <StackPanel Margin="1" Orientation="Vertical" Width="100" Height="40">
+            <Border BorderThickness="1" BorderBrush="Black" Background="#FFE2B476">
+                <TextBlock Text="{Binding Path=Date, StringFormat={}{0:HH:mm:ss}}" FontSize="15" HorizontalAlignment="Center"/>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black" Background="AntiqueWhite">
+                <TextBlock Text="{Binding Path=Date, StringFormat={}{0:dd/MM/yyyy}}" FontSize="15" HorizontalAlignment="Center"/>
+            </Border>
+        </StackPanel>
+    </DataTemplate>
+    <!--DataGrid Time-->
+    <DataTemplate x:Key="DataGridTimeTemplate">
+        <StackPanel Orientation="Vertical" Width="100" Height="40" HorizontalAlignment="Center">
+            <Border BorderThickness="1" BorderBrush="Black" Background="LawnGreen">
+                <TextBlock Text="{Binding Path=Time, StringFormat={}{0:HH:mm:ss}}" FontSize="15" HorizontalAlignment="Center"/>
+            </Border>
+        </StackPanel>
+    </DataTemplate>
+    <!--DataGrid NET&GROSS-->
+    <DataTemplate x:Key="DataGridTemperature">
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Width="100" Height="40" HorizontalAlignment="Center">
+            <TextBlock Padding="8 8 0 0" Text="{Binding Path=Temperature}" FontSize="15" HorizontalAlignment="Center"/>
+            <TextBlock Padding="0 8 0 0" Text=" C" FontSize="15" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="DataGridHumidity">
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Width="100" Height="40" HorizontalAlignment="Center">
+            <TextBlock Padding="8 8 0 0" Text="{Binding Path=Humidity}" FontSize="15" HorizontalAlignment="Center"/>
+            <!--<TextBlock Padding="0 8 0 0" Text=" C" FontSize="15" HorizontalAlignment="Center"/>-->
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="DataGridIp">
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Width="100" Height="40" HorizontalAlignment="Center">
+            <TextBlock Padding="8 8 0 0" Text="{Binding Path=IPAddress}" FontSize="15" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

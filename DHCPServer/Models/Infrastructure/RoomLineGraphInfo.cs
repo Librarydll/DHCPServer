@@ -44,6 +44,8 @@ namespace DHCPServer.Models.Infrastructure
 		private void AddToTemperatureDataSource()
 		{
 			var x = CreatePointX();
+			Console.WriteLine($"TEMPERATURE {x}");
+
 			Point point = new Point(x, Temperature);
 			TemperaturePointDataSource.Collection.Add(point);
 			_count++;
@@ -51,6 +53,7 @@ namespace DHCPServer.Models.Infrastructure
 		private void AddToHumidityDataSource()
 		{
 			var x = CreatePointX();
+			Console.WriteLine($"HUMIDITY {x}");
 			Point point = new Point(x, Humidity);
 			HumidityPointDataSource.Collection.Add(point);
 			_count++;

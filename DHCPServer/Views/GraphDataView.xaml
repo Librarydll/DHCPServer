@@ -32,10 +32,10 @@
         </StackPanel>
         <DataGrid IsReadOnly="True" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=RoomInfoColleciton}" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="IPAddress" Binding="{Binding IPAddress}"/>
-                <DataGridTextColumn Header="Температура" Binding="{Binding Temperature}"/>
-                <DataGridTextColumn Header="Влажность" Binding="{Binding Humidity}"/>
-                <DataGridTextColumn Header="Время" Binding="{Binding Date}"/>
+                <DataGridTemplateColumn Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
+                <DataGridTemplateColumn Header="Температура" CellTemplate="{StaticResource  DataGridTemperature}"/>
+                <DataGridTemplateColumn Header="Влажность" CellTemplate="{StaticResource  DataGridHumidity}"/>
+                <DataGridTemplateColumn Header="Время" CellTemplate="{StaticResource  DataGridTemplate}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
