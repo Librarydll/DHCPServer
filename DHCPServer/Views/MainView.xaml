@@ -40,6 +40,7 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding IPAddress}" Margin="5" Width="150" HorizontalAlignment="Center" VerticalAlignment="Center">
 
@@ -58,16 +59,20 @@
                                             </TextBlock>
                                             <Button CommandParameter="{Binding}" 
                                                 Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.DeleteRoomCommand}"
-                                                Margin="5" Padding="3" Background="{x:Null}" Grid.Column="1" Grid.Row="0">
+                                                Margin="5" Padding="3" Background="{x:Null}" Grid.Column="2" Grid.Row="0">
                                                 X
                                             </Button>
-                                            <StackPanel Margin="5" Background="Red" Grid.ColumnSpan="2" Grid.Row="3" Orientation="Horizontal">
-                                                <d3:ChartPlotter Width="250" x:Name="plotter">
-                                                    <lh:CustomLineGraph LineGraphBrush="Red" LineHeader="Температура"  DataSource="{Binding Path=TemperaturePointDataSource}"/>
-                                                </d3:ChartPlotter>
-
-                                                <d3:ChartPlotter>
-                                                    <lh:CustomLineGraph LineGraphBrush="Blue" LineHeader="Влажность" Width="250"  DataSource="{Binding Path=HumidityPointDataSource}" />
+                                            <StackPanel Grid.RowSpan="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <CheckBox x:Name="tempGraph" IsChecked="True">Температура</CheckBox>
+                                                <CheckBox x:Name="humidityGraph" IsChecked="True">Влажность</CheckBox>
+                                            </StackPanel>
+                                            <StackPanel Margin="5" Background="Red" Grid.ColumnSpan="3" Grid.Row="3" Orientation="Horizontal">
+                                                <StackPanel.Resources>
+                                                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                                                </StackPanel.Resources>
+                                                <d3:ChartPlotter Width="500" x:Name="plotter">
+                                                    <lh:CustomLineGraph Visibility="{Binding ElementName=tempGraph, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" LineGraphBrush="Red" LineHeader="Температура"  DataSource="{Binding Path=TemperaturePointDataSource}"/>
+                                                    <lh:CustomLineGraph Visibility="{Binding ElementName=humidityGraph, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" LineGraphBrush="Blue" LineHeader="Влажность"  DataSource="{Binding Path=HumidityPointDataSource}" />
                                                 </d3:ChartPlotter>
                                             </StackPanel>
                                             

@@ -12,16 +12,24 @@ using System.Windows.Threading;
 
 namespace DHCPServer.Models.Infrastructure
 {
-	public class RoomLineGraphInfo:RoomInfo
+	public class RoomLineGraphInfo : RoomInfo
 	{
-
-		private ObservableDataSource<Point> _temperaturePointDataSource =new ObservableDataSource<Point>();
+		//Колличество обращений 
+		//сколько раз пытались записать данные
+		//обращение происходят каждые 5 секунд так как изменяются два свойства проверка будет до 24
+		private int _countRequest = -1;//значение -1 так как при сохдании оно обращается 1 раз
+		private int _count = 0;
+		public bool CanAdd => _countRequest >= 24;
+		public bool IsInvalid { get => isInvalid; set { isInvalid = value; } }
+		private ObservableDataSource<Point> _temperaturePointDataSource = new ObservableDataSource<Point>();
 		public ObservableDataSource<Point> TemperaturePointDataSource
 		{
 			get { return _temperaturePointDataSource; }
 			set { _temperaturePointDataSource = value; RaisePropertyChangedEvent(); }
 		}
 		private ObservableDataSource<Point> _humidityPointDataSource = new ObservableDataSource<Point>();
+		private bool isInvalid;
+
 		public ObservableDataSource<Point> HumidityPointDataSource
 		{
 			get { return _humidityPointDataSource; }
@@ -30,36 +38,48 @@ namespace DHCPServer.Models.Infrastructure
 		public RoomLineGraphInfo()
 		{
 		}
-		public RoomLineGraphInfo(RoomData roomData,string IpAddress):base(roomData, IpAddress)
+		public RoomLineGraphInfo(RoomData roomData, string IpAddress) : base(roomData, IpAddress)
 		{
 		}
 		private void AddToTemperatureDataSource()
 		{
-			if (Temperature < 0) return;
-			Date = new DateTime();
-			var hour = Date.Hour;
-			Point point = new Point(hour, Temperature);
+			var x = CreatePointX();
+			Point point = new Point(x, Temperature);
 			TemperaturePointDataSource.Collection.Add(point);
+			_count++;
 		}
 		private void AddToHumidityDataSource()
 		{
-			if (Humidity < 0 ) return;
-			Date = new DateTime();
-			var hour = Date.Hour;
-			Point point = new Point(hour, Humidity);
+			var x = CreatePointX();
+			Point point = new Point(x, Humidity);
 			HumidityPointDataSource.Collection.Add(point);
+			_count++;
 		}
 
 		public override void RaisePropertyChangedEvent([CallerMemberName] string prop = "")
 		{
-			if (prop == nameof(Temperature))
+			_countRequest += 1;
+
+			if (CanAdd)
 			{
-				AddToTemperatureDataSource();
+				if (Temperature>0&&Humidity>0)
+				{
+					if (prop == nameof(Temperature))
+					{
+						AddToTemperatureDataSource();
+					}
+					if (prop == nameof(Humidity))
+					{
+						AddToHumidityDataSource();
+					}
+					if (_count == 2)
+					{
+						_count = 0;
+						_countRequest = 0;
+					} 
+				}
 			}
-			if (prop == nameof(Humidity))
-			{
-				AddToHumidityDataSource();
-			}
+
 			base.RaisePropertyChangedEvent(prop);
 		}
 
@@ -67,6 +87,24 @@ namespace DHCPServer.Models.Infrastructure
 		{
 			AddToTemperatureDataSource();
 			AddToHumidityDataSource();
+		}
+
+		public double CreatePointX()
+		{
+			Date = DateTime.Now;
+			var hours = Date.Hour;
+			var minutes = Date.Minute;
+			string s = hours.ToString() + "," + minutes.ToString();
+			return double.Parse(s);
+		}
+
+		public void SetInvalid(bool value)
+		{
+			if (value != IsInvalid)
+			{
+				IsInvalid = value;
+				RaisePropertyChangedEvent("IsInvalid");
+			}
 		}
 
 		//public void Initialize()

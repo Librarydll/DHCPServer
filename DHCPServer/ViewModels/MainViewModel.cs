@@ -1,9 +1,9 @@
 ﻿using DHCPServer.Core;
 using DHCPServer.Core.Extensions;
-using DHCPServer.Core.Graph;
 using DHCPServer.Dialogs.Extenstions;
 using DHCPServer.Models;
 using DHCPServer.Models.Context;
+using DHCPServer.Models.Enums;
 using DHCPServer.Models.Infrastructure;
 using DHCPServer.Models.Repositories;
 using DHCPServer.Services;
@@ -28,7 +28,6 @@ namespace DHCPServer.ViewModels
 		#region Fields
 		private bool _isTimerRunning = false;
 		private readonly IDialogService _dialogService;
-		private readonly IClientService _clientService;
 		private readonly IRoomRepository _roomRepository;
 		private readonly XmlDeviceProvider _xmlDeviceProvider;
 		private readonly DispatcherTimer _timer;
@@ -48,22 +47,14 @@ namespace DHCPServer.ViewModels
 			set { SetProperty(ref _roomsCollection, value); }
 		}
 
-		private LineGraphProvider _lineGraph;
-		public LineGraphProvider LineGraph
-		{
-			get { return _lineGraph; }
-			set { SetProperty(ref _lineGraph, value); }
-		}
 		#endregion
-		public MainViewModel(IDialogService dialogService, IClientService clientService,IRoomRepository roomRepository ,XmlDeviceProvider xmlDeviceProvider, LineGraphProvider lineGraph)
+		public MainViewModel(IDialogService dialogService,IRoomRepository roomRepository ,XmlDeviceProvider xmlDeviceProvider)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
 			_dialogService = dialogService;
-			_clientService = clientService;
 			_roomRepository = roomRepository;
 			_xmlDeviceProvider = xmlDeviceProvider;
-			_lineGraph = lineGraph;
 			var devices = _xmlDeviceProvider.GetDevices();
 			tokenSource = new CancellationTokenSource();
 			RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(_xmlDeviceProvider.CastDevices(devices).ToRoomLineGraphInfo());
@@ -71,12 +62,10 @@ namespace DHCPServer.ViewModels
 			_timer.Interval = new TimeSpan(1, 0, 0);
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
-			_clientService.ReciveMessageEvent += _clientService_ReciveMessageEvent;
-			_clientService.ReciveMessageErrorEvent += _clientService_ReciveMessageErrorEvent;
 			_deviceClients = new List<DeviceClient>(RoomsCollection
 				.Select(x => new Device { IPAddress = x.IPAddress })
 				.ToDeviceClient());
-			Task.Run( async() =>await StartListenAsync());
+			Task.Run( async() =>await StartListenAsync()).Wait();
 			
 			//	Task.Run(async () => { await _clientService.TryRecieve(tokenSource.Token, RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress })); });
 		}
@@ -98,7 +87,7 @@ namespace DHCPServer.ViewModels
 		private void _clientService_ReciveMessageErrorEvent(Device device)
 		{
 			var invalidDevide = RoomsCollection.FirstOrDefault(x => x.IPAddress == device.IPAddress);
-			Application.Current.Dispatcher.Invoke(new Action(() => { RoomsCollection.Remove(invalidDevide); }));
+			Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(true); }));
 
 		}
 		private void _clientService_ReciveMessageEvent(RoomInfo roomInfo, DeviceResponseStatus status)
@@ -106,11 +95,16 @@ namespace DHCPServer.ViewModels
 			if (status == DeviceResponseStatus.Success)
 			{
 				var old = RoomsCollection.FirstOrDefault(x => x.IPAddress == roomInfo.IPAddress);
-				if (old != null)
+				Application.Current.Dispatcher.Invoke(() =>
 				{
-					old.Humidity = roomInfo.Humidity;
-					old.Temperature = roomInfo.Temperature;
-				}
+					if (old != null)
+					{
+						old.Humidity = roomInfo.Humidity;
+						old.Temperature = roomInfo.Temperature;
+						
+					}
+				});
+				
 			}
 		}
 
@@ -136,6 +130,11 @@ namespace DHCPServer.ViewModels
 		{
 			device.ReciveMessageEvent += _clientService_ReciveMessageEvent;
 			device.ReciveMessageErrorEvent += _clientService_ReciveMessageErrorEvent;
+			device.EnableDeviceEvent += d =>
+			{
+				var invalidDevide = RoomsCollection.FirstOrDefault(x => x.IPAddress == d.IPAddress);
+				Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(false); }));
+			};
 			await device.ListenAsync(tokenSource.Token);
 		}
 

@@ -1,5 +1,4 @@
-﻿using DHCPServer.Core.Graph;
-using DHCPServer.Dialogs;
+﻿using DHCPServer.Dialogs;
 using DHCPServer.Models.Repositories;
 using DHCPServer.Services;
 using DHCPServer.Views;
@@ -26,10 +25,8 @@ namespace DHCPServer
 		}
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
 		{
-			containerRegistry.RegisterSingleton<IClientService, ClientService>();
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
 			containerRegistry.RegisterSingleton<XmlDeviceProvider>();
-			containerRegistry.RegisterSingleton<LineGraphProvider>();
 
 			containerRegistry.RegisterDialog<NewDevcieView, NewDeviceViewModelDialog>();
 		}

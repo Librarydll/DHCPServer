@@ -1,4 +1,5 @@
-﻿using DHCPServer.Services;
+﻿using DHCPServer.Models.Enums;
+using DHCPServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace DHCPServer.Models
 	{
 		public event Action<RoomInfo, DeviceResponseStatus> ReciveMessageEvent;
 		public event Action<Device> ReciveMessageErrorEvent;
+		public event Action<Device> EnableDeviceEvent;
 		private readonly Device _device = null;
 		private readonly HttpClient client = null;
 		private readonly string _url = null;
+		public bool IsInvalid => _countRequestForDisableInvaid!=0;
+		private int _countRequestForDisableInvaid = 0;
 		public DeviceClient(Device device)
 		{
 			if (device == null) throw new ArgumentNullException("device should not be null");
@@ -24,7 +28,7 @@ namespace DHCPServer.Models
 			_device = device;
 			client = new HttpClient
 			{
-				Timeout = new TimeSpan(0, 0, 10)
+				Timeout = new TimeSpan(0, 0, 5)
 			};
 			_url = "http://" + _device.IPAddress;
 		}
@@ -37,24 +41,32 @@ namespace DHCPServer.Models
 			{
 				try
 				{
-					await Task.Delay(2000);
+					await Task.Delay(6000);
 
-					response = await client.GetAsync(_url, token);
-					//response.EnsureSuccessStatusCode();
-					if (response.IsSuccessStatusCode)
+					if (!IsInvalid)
 					{
-						string responseBody = await response.Content.ReadAsStringAsync();
-						ReciveMessageRaise(responseBody, _device);
+						response = await client.GetAsync(_url, token);
+						if (response.IsSuccessStatusCode)
+						{
+							string responseBody = await response.Content.ReadAsStringAsync();
+							ReciveMessageRaise(responseBody, _device);
+						}
+						if (token.IsCancellationRequested)
+						{
+							token.ThrowIfCancellationRequested();
+						}
 					}
-					if (token.IsCancellationRequested)
+					else
 					{
-						token.ThrowIfCancellationRequested();
+						_countRequestForDisableInvaid--;
+						if (!IsInvalid)
+							EnableDeviceEvent?.Invoke(_device);
+
 					}
 
 				}
 				catch (InvalidOperationException e)
 				{
-
 				}
 				catch (ArgumentException e)
 				{
@@ -62,10 +74,12 @@ namespace DHCPServer.Models
 				}
 				catch (HttpRequestException e)
 				{
+					_countRequestForDisableInvaid = 5;
 					ReciveMessageErroRaise(_device);
 				}
 				catch (Exception ex)
 				{
+					_countRequestForDisableInvaid = 5;
 					ReciveMessageErroRaise(_device);
 				}
 				finally

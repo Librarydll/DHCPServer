@@ -140,7 +140,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\Extensions\CollectionExtensions.cs" />
-    <Compile Include="Core\Graph\LineGraphProvider.cs" />
     <Compile Include="Dialogs\DialogViewModelBase.cs" />
     <Compile Include="Dialogs\Extenstions\DialogExtension.cs" />
     <Compile Include="Dialogs\NewDeviceViewModelDialog.cs" />
@@ -149,14 +148,13 @@
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DeviceClient.cs" />
     <Compile Include="Models\DeviceXml.cs" />
+    <Compile Include="Models\Enums\DeviceResponseStatus.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfo.cs" />
     <Compile Include="Models\Repositories\IRoomRepository.cs" />
     <Compile Include="Models\Repositories\RoomRepository.cs" />
     <Compile Include="Models\RoomData.cs" />
     <Compile Include="Models\RoomInfo.cs" />
-    <Compile Include="Services\ClientService.cs" />
     <Compile Include="Services\HtmlHelper.cs" />
-    <Compile Include="Services\IClientService.cs" />
     <Compile Include="Services\XmlDeviceProvider.cs" />
     <Compile Include="UICore\CustomLineGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -206,7 +204,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Services\" />
+    <Folder Include="UICore\NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
