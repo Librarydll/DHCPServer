@@ -156,6 +156,7 @@
     <Compile Include="Models\RoomInfo.cs" />
     <Compile Include="Services\HtmlHelper.cs" />
     <Compile Include="Services\XmlDeviceProvider.cs" />
+    <Compile Include="UICore\Converters\BorderColorConverter.cs" />
     <Compile Include="UICore\CustomLineGraph.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
@@ -203,9 +204,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UICore\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

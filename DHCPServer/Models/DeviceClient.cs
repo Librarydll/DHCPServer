@@ -74,12 +74,12 @@ namespace DHCPServer.Models
 				}
 				catch (HttpRequestException e)
 				{
-					_countRequestForDisableInvaid = 5;
+					_countRequestForDisableInvaid = 2;
 					ReciveMessageErroRaise(_device);
 				}
 				catch (Exception ex)
 				{
-					_countRequestForDisableInvaid = 5;
+					_countRequestForDisableInvaid = 2;
 					ReciveMessageErroRaise(_device);
 				}
 				finally
