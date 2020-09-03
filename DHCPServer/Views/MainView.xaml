@@ -20,6 +20,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">График</Button>
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица</Button>
+                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceViewCommand}">Устройства</Button>
                 </StackPanel>
             </ToolBar>
         </Grid>

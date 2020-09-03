@@ -20,7 +20,11 @@ namespace DHCPServer.Core.Extensions
 		{
 			foreach (var room in collection)
 			{
-				yield return new RoomLineGraphInfo(new RoomData { Temperature = room.Temperature, Humidity = room.Humidity}, room.IPAddress);
+				yield return new RoomLineGraphInfo(new RoomData {
+					Temperature = room.Temperature,
+					Humidity = room.Humidity
+				},
+					room.Device);
 			}
 		}
 

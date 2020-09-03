@@ -10,12 +10,15 @@ namespace DHCPServer.Models
 {	
 	[Serializable]
 	public class Device
-	{
-		
+	{	
+		[XmlIgnore]
+		public int Id { get; set; }
+
 		[XmlElement("IPAddress")]
 		public string IPAddress { get; set; }
 
-
+		[XmlElement("Nick")]
+		public string Nick { get; set; }
 
 	}
 }

@@ -31,10 +31,12 @@ namespace DHCPServer
 				.CreateLogger();
 			containerRegistry.RegisterInstance(Log.Logger);
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
+			containerRegistry.RegisterSingleton<IDeviceRepository, DeviceRepository>();
 			containerRegistry.RegisterSingleton<XmlDeviceProvider>();
 
-			containerRegistry.RegisterDialog<NewDevcieView, NewDeviceViewModelDialog>();
+			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();
 			containerRegistry.RegisterDialog<GraphView, GraphViewModelDialog>();
+			containerRegistry.RegisterDialog<SelectionDeviceView, SelectionDeviceViewModelDialog>();
 		}
 	}
 }

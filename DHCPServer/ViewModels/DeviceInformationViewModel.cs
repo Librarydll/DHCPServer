@@ -136,7 +136,7 @@ namespace DHCPServer.ViewModels
 			Device newDevice = null;
 			var dialogParametr = new DialogParameters();
 
-			_dialogService.ShowModal("NewDevcieView", dialogParametr, x =>
+			_dialogService.ShowModal("SelectionDeviceView", dialogParametr, x =>
 			{
 				if (x.Result == ButtonResult.OK)
 				{
@@ -149,7 +149,7 @@ namespace DHCPServer.ViewModels
 				var room = RoomsCollection.FirstOrDefault(x => x.IPAddress == newDevice.IPAddress);
 				if (room == null)
 				{
-					var newRomm = new RoomLineGraphInfo(new RoomData(), newDevice.IPAddress);
+					var newRomm = new RoomLineGraphInfo(new RoomData(), newDevice);
 					RoomsCollection.Add(newRomm);
 					var deviceClient = new DeviceClient(newDevice);
 					_deviceClients.Add(deviceClient);

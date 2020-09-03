@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace DHCPServer.Views
 {
 	/// <summary>
-	/// Interaction logic for NewRouterView.xaml
+	/// Interaction logic for SelectionDeviceView.xaml
 	/// </summary>
-	public partial class NewDevcieView : UserControl
+	public partial class SelectionDeviceView : UserControl
 	{
-		public NewDevcieView()
+		public SelectionDeviceView()
 		{
 			InitializeComponent();
 		}

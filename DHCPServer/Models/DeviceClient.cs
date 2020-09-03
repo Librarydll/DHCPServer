@@ -94,7 +94,7 @@ namespace DHCPServer.Models
 			if (status == DeviceResponseStatus.Success)
 			{
 				var room = HtmlHelper.Parse(responseBody);
-				var result = new RoomInfo(room, device.IPAddress);
+				var result = new RoomInfo(room, device);
 				ReciveMessageEvent?.Invoke(result, status);
 			}
 			else

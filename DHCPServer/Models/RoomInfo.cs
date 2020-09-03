@@ -15,6 +15,7 @@ namespace DHCPServer.Models
 		private string iPAddress;
 		private double temperature;
 		private double humidity;
+		private Device device;
 
 		public string IPAddress { get => iPAddress; set { iPAddress = value; RaisePropertyChangedEvent(); } }
 		public double Temperature { get => temperature; set { temperature = value; RaisePropertyChangedEvent(); } }
@@ -22,11 +23,14 @@ namespace DHCPServer.Models
 
 		public DateTime Date { get; set; }
 
-		public RoomInfo(RoomData roomData, string address)
+		public Device Device { get => device; set { device = value; RaisePropertyChangedEvent(); } }
+
+		public RoomInfo(RoomData roomData, Device device)
 		{
 			Temperature = roomData.Temperature;
 			Humidity = roomData.Humidity;
-			IPAddress = address;
+			Device = device;
+			IPAddress = Device?.IPAddress;
 			Date = DateTime.Now;
 		}
 		public RoomInfo()

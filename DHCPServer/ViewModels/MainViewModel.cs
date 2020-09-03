@@ -31,11 +31,13 @@ namespace DHCPServer.ViewModels
 		private readonly IRegionManager _regionManager;
 		private readonly  GraphDataView _graphDataView = new GraphDataView();
 		private readonly  DeviceInformationView _deviceInformationView = new DeviceInformationView();
+		private readonly ListDevicesView _listDevicesView = new ListDevicesView();
 		#endregion
 
 		#region Commands
 		public DelegateCommand OpenGraphDataViewCommand { get; set; }
 		public DelegateCommand OpenDeviceInformationViewCommand { get; set; }
+		public DelegateCommand OpenDeviceViewCommand { get; set; }
 		#endregion
 		#region BindingProperties
 
@@ -44,8 +46,14 @@ namespace DHCPServer.ViewModels
 		{
 			OpenGraphDataViewCommand = new DelegateCommand(OpenGraphDataView);
 			OpenDeviceInformationViewCommand = new DelegateCommand(OpenDeviceInformationView);
+			OpenDeviceViewCommand = new DelegateCommand(OpenDeviceView);
 			_regionManager = regionManager;
 
+		}
+
+		private void OpenDeviceView()
+		{
+			OpenViewBase(_listDevicesView, nameof(ListDevicesView));
 		}
 
 		private void OpenDeviceInformationView()

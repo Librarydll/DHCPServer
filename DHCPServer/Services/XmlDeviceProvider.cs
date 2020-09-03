@@ -31,7 +31,7 @@ namespace DHCPServer.Services
 
 			foreach (var device in devices)
 			{
-				roomInfos.Add(new RoomInfo(new RoomData(), device.IPAddress));
+				roomInfos.Add(new RoomInfo(new RoomData(), device));
 			}
 			return roomInfos;
 		}

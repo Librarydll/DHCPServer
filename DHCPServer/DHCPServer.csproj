@@ -143,6 +143,7 @@
     <Compile Include="Dialogs\Extenstions\DialogExtension.cs" />
     <Compile Include="Dialogs\GraphViewModelDialog.cs" />
     <Compile Include="Dialogs\NewDeviceViewModelDialog.cs" />
+    <Compile Include="Dialogs\SelectionDeviceViewModelDialog.cs" />
     <Compile Include="Models\Common\BaseEntity.cs" />
     <Compile Include="Models\Context\ApplicationContextFactory.cs" />
     <Compile Include="Models\Device.cs" />
@@ -152,6 +153,8 @@
     <Compile Include="Models\Infrastructure\DateTimeSpanFilter.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfo.cs" />
     <Compile Include="Models\Infrastructure\ViewResolvingPlotModel.cs" />
+    <Compile Include="Models\Repositories\DeviceRepository.cs" />
+    <Compile Include="Models\Repositories\IDeviceRepository.cs" />
     <Compile Include="Models\Repositories\IRoomRepository.cs" />
     <Compile Include="Models\Repositories\RoomRepository.cs" />
     <Compile Include="Models\RoomData.cs" />
@@ -163,10 +166,14 @@
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
+    <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\DeviceInformationView.xaml.cs">
       <DependentUpon>DeviceInformationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ListDevicesView.xaml.cs">
+      <DependentUpon>ListDevicesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GraphDataView.xaml.cs">
       <DependentUpon>GraphDataView.xaml</DependentUpon>
@@ -177,13 +184,20 @@
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NewDevcieView.xaml.cs">
-      <DependentUpon>NewDevcieView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\NewDeviceView.xaml.cs">
+      <DependentUpon>NewDeviceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectionDeviceView.xaml.cs">
+      <DependentUpon>SelectionDeviceView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Dictionaries\ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dictionaries\DataGridColumStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -193,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DeviceInformationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ListDevicesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -207,7 +225,11 @@
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\NewDevcieView.xaml">
+    <Page Include="Views\NewDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelectionDeviceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

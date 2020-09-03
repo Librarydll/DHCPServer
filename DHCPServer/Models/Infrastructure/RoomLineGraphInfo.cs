@@ -40,7 +40,7 @@ namespace DHCPServer.Models.Infrastructure
 		{
 
 		}
-		public RoomLineGraphInfo(RoomData roomData, string IpAddress) : base(roomData, IpAddress)
+		public RoomLineGraphInfo(RoomData roomData, Device device) : base(roomData, device)
 		{
 			GraphLineModel = new ViewResolvingPlotModel();
 			SetUpModel();
@@ -134,7 +134,7 @@ namespace DHCPServer.Models.Infrastructure
 				MarkerType = markerType,
 				CanTrackerInterpolatePoints = false,
 				Title = "Влажность",
-				Color = temperatureColor
+				Color = humidityColor
 			};
 
 			return new LineSeries[]

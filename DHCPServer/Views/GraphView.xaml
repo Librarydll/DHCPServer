@@ -13,6 +13,7 @@
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -23,7 +24,11 @@
             <Run>Устройство: </Run>
             <Run Text="{Binding GraphInfo.IPAddress}"></Run>
         </TextBlock>
-        <oxy:PlotView Width="500" Height="500" x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10" Grid.Row="1">
+        <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="16" Margin="0 5 0 0" FontWeight="DemiBold">
+            <Run>Псевдоним: </Run>
+            <Run Text="{Binding GraphInfo.Nick}"></Run>
+        </TextBlock>
+        <oxy:PlotView Grid.Row="2" Width="500" Height="500" x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10" >
         </oxy:PlotView>
     </Grid>
 </UserControl>

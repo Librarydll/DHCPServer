@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="DHCPServer.Views.ListDevicesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource DefaultButton}" Command="{Binding CreateNewDeviceCommand}" >Добавить</Button>
+            <Button Style="{StaticResource DefaultButton}" Command="{Binding EditDeviceCommand}" CommandParameter="{Binding ElementName=dg,Path=SelectedItem}">Изменить</Button>
+            <Button Style="{StaticResource DefaultButton}" Command="{Binding DeleteDeviceCommand}" CommandParameter="{Binding ElementName=dg,Path=SelectedItem}">Удалить</Button>
+        </StackPanel>
+        <DataGrid x:Name="dg" SelectionMode="Single" IsReadOnly="True" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=DevicesColleciton}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="100" Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
+                <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding Nick}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
