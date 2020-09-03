@@ -1,4 +1,6 @@
-﻿using DHCPServer.Core.Extensions;
+﻿using DHCPServer.Core.Events;
+using DHCPServer.Core.Events.Model;
+using DHCPServer.Core.Extensions;
 using DHCPServer.Dialogs.Extenstions;
 using DHCPServer.Models;
 using DHCPServer.Models.Enums;
@@ -7,6 +9,7 @@ using DHCPServer.Models.Repositories;
 using DHCPServer.Services;
 using DHCPServer.Views;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -28,6 +31,7 @@ namespace DHCPServer.ViewModels
 		private readonly IDialogService _dialogService;
 		private readonly IRoomRepository _roomRepository;
 		private readonly XmlDeviceProvider _xmlDeviceProvider;
+		private readonly IEventAggregator _eventAggregator;
 		private readonly DispatcherTimer _timer;
 		private CancellationTokenSource tokenSource = null;
 		private ICollection<DeviceClient> _deviceClients = new List<DeviceClient>();
@@ -49,7 +53,7 @@ namespace DHCPServer.ViewModels
 		#endregion
 
 
-		public DeviceInformationViewModel(IDialogService dialogService, IRoomRepository roomRepository, XmlDeviceProvider xmlDeviceProvider)
+		public DeviceInformationViewModel(IDialogService dialogService, IRoomRepository roomRepository, XmlDeviceProvider xmlDeviceProvider,IEventAggregator eventAggregator)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
@@ -57,6 +61,7 @@ namespace DHCPServer.ViewModels
 			_dialogService = dialogService;
 			_roomRepository = roomRepository;
 			_xmlDeviceProvider = xmlDeviceProvider;
+			_eventAggregator = eventAggregator;
 			var devices = _xmlDeviceProvider.GetDevices();
 			tokenSource = new CancellationTokenSource();
 			RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(_xmlDeviceProvider.CastDevices(devices).ToRoomLineGraphInfo());
@@ -68,9 +73,26 @@ namespace DHCPServer.ViewModels
 				.Select(x => new Device { IPAddress = x.IPAddress })
 				.ToDeviceClient());
 			Task.Run(async () => await StartListenAsync());
+			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
 		}
 
-	
+		private void DeviceUpdateEventHandler(DeviceEventModel device)
+		{
+			var dc = _deviceClients.FirstOrDefault(x => x.Device.IPAddress == device.OldValue.IPAddress);
+
+			if (dc != null)
+			{
+				dc.Device = device.NewValue;
+			}
+
+			var d = RoomsCollection.FirstOrDefault(x => x.Device.IPAddress == device.OldValue.IPAddress);
+			if (d != null)
+			{
+				d.Device = device.NewValue;
+			}
+			_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress, Nick = x.Device.Nick }));
+		}
+
 		private async Task StartListenAsync()
 		{
 			foreach (var device in _deviceClients)
@@ -134,9 +156,8 @@ namespace DHCPServer.ViewModels
 		private void OpenNewDevcieView()
 		{
 			Device newDevice = null;
-			var dialogParametr = new DialogParameters();
 
-			_dialogService.ShowModal("SelectionDeviceView", dialogParametr, x =>
+			_dialogService.ShowModal("SelectionDeviceView", x =>
 			{
 				if (x.Result == ButtonResult.OK)
 				{
@@ -154,7 +175,7 @@ namespace DHCPServer.ViewModels
 					var deviceClient = new DeviceClient(newDevice);
 					_deviceClients.Add(deviceClient);
 					Task.Run(async () => await SubscribeDeviceAsync(deviceClient));
-					_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress }));
+					_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress,Nick=x.Device.Nick }));
 
 				}
 

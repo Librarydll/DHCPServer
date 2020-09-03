@@ -1,7 +1,10 @@
-﻿using DHCPServer.Dialogs.Extenstions;
+﻿using DHCPServer.Core.Events;
+using DHCPServer.Core.Events.Model;
+using DHCPServer.Dialogs.Extenstions;
 using DHCPServer.Models;
 using DHCPServer.Models.Repositories;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Serilog;
@@ -19,6 +22,7 @@ namespace DHCPServer.ViewModels
 		private readonly IDialogService _dialogService;
 		private readonly IDeviceRepository _deviceRepository;
 		private readonly ILogger _logger;
+		private readonly IEventAggregator _eventAggregator;
 
 		public DelegateCommand CreateNewDeviceCommand { get; set; }
 		public DelegateCommand<Device> EditDeviceCommand { get; set; }
@@ -32,7 +36,7 @@ namespace DHCPServer.ViewModels
 			set { SetProperty(ref _devicesColleciton, value); }
 		}
 
-		public ListDevicesViewModel(IDialogService dialogService,IDeviceRepository deviceRepository,ILogger logger)
+		public ListDevicesViewModel(IDialogService dialogService,IDeviceRepository deviceRepository,ILogger logger,IEventAggregator eventAggregator)
 		{
 			CreateNewDeviceCommand = new DelegateCommand(CreateNewDevice);
 			EditDeviceCommand = new DelegateCommand<Device>(EditDevice);
@@ -40,18 +44,19 @@ namespace DHCPServer.ViewModels
 			_dialogService = dialogService;
 			_deviceRepository = deviceRepository;
 			_logger = logger;
+			_eventAggregator = eventAggregator;
 			Task.Run(async () =>
 			{
 				DevicesColleciton = new ObservableCollection<Device>(await deviceRepository.GetAllAsync());
 			});
+			
 		}
 
 		private void CreateNewDevice()
 		{
 			Device newDevice = null;
-			var dialogParametr = new DialogParameters();
 
-			_dialogService.ShowModal("NewDeviceView", dialogParametr, x =>
+			_dialogService.ShowModal("NewDeviceView", x =>
 			{
 				if (x.Result == ButtonResult.OK)
 				{
@@ -115,6 +120,12 @@ namespace DHCPServer.ViewModels
 
 					if (b)
 					{
+
+						_eventAggregator.GetEvent<DeviceUpdateEvent>().Publish(new DeviceEventModel
+						{
+							NewValue = updatedDevice,
+							OldValue = device
+						});
 						device = updatedDevice;
 					}
 				}).ContinueWith(t => {

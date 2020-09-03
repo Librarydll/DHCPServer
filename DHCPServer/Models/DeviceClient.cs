@@ -15,7 +15,7 @@ namespace DHCPServer.Models
 		public event Action<RoomInfo, DeviceResponseStatus> ReciveMessageEvent;
 		public event Action<Device> ReciveMessageErrorEvent;
 		public event Action<Device> EnableDeviceEvent;
-		private readonly Device _device = null;
+		public Device Device { get; set; }
 		private readonly HttpClient client = null;
 		private readonly string _url = null;
 		public bool IsInvalid => _countRequestForDisableInvaid!=0;
@@ -24,13 +24,13 @@ namespace DHCPServer.Models
 		{
 			if (device == null) throw new ArgumentNullException("device should not be null");
 			if (device.IPAddress == null) throw new ArgumentNullException("device IPAddress should not be null");
-			
-			_device = device;
+
+			Device = device;
 			client = new HttpClient
 			{
 				Timeout = new TimeSpan(0, 0, 5)
 			};
-			_url = "http://" + _device.IPAddress;
+			_url = "http://" + Device.IPAddress;
 		}
 
 		public async Task ListenAsync(CancellationToken token)
@@ -49,7 +49,7 @@ namespace DHCPServer.Models
 						if (response.IsSuccessStatusCode)
 						{
 							string responseBody = await response.Content.ReadAsStringAsync();
-							ReciveMessageRaise(responseBody, _device);
+							ReciveMessageRaise(responseBody, Device);
 						}
 						if (token.IsCancellationRequested)
 						{
@@ -60,7 +60,7 @@ namespace DHCPServer.Models
 					{
 						_countRequestForDisableInvaid--;
 						if (!IsInvalid)
-							EnableDeviceEvent?.Invoke(_device);
+							EnableDeviceEvent?.Invoke(Device);
 
 					}
 
@@ -75,12 +75,12 @@ namespace DHCPServer.Models
 				catch (HttpRequestException e)
 				{
 					_countRequestForDisableInvaid = 2;
-					ReciveMessageErroRaise(_device);
+					ReciveMessageErroRaise(Device);
 				}
 				catch (Exception ex)
 				{
 					_countRequestForDisableInvaid = 2;
-					ReciveMessageErroRaise(_device);
+					ReciveMessageErroRaise(Device);
 				}
 				finally
 				{

@@ -26,7 +26,7 @@
         </TextBlock>
         <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="16" Margin="0 5 0 0" FontWeight="DemiBold">
             <Run>Псевдоним: </Run>
-            <Run Text="{Binding GraphInfo.Nick}"></Run>
+            <Run Text="{Binding GraphInfo.Device.Nick}"></Run>
         </TextBlock>
         <oxy:PlotView Grid.Row="2" Width="500" Height="500" x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10" >
         </oxy:PlotView>

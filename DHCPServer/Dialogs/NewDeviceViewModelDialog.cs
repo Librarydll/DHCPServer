@@ -16,6 +16,13 @@ namespace DHCPServer.Dialogs
 			get { return _device; }
 			set { SetProperty(ref _device, value); }
 		}
+
+		private string _buttonContent;
+		public string ButtonContent
+		{
+			get { return _buttonContent; }
+			set { SetProperty(ref _buttonContent, value); }
+		}
 		public NewDeviceViewModelDialog()
 		{
 		}
@@ -35,10 +42,12 @@ namespace DHCPServer.Dialogs
 			if (parameters != null)
 			{
 				Device = parameters.GetValue<Device>("model");
+				ButtonContent = "Изменить";
 			}
 			else
 			{
 				Device = new Device() { IPAddress = "192.168.1.1" };
+				ButtonContent = "Добавить";
 			}
 		}
 	}

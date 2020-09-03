@@ -28,7 +28,7 @@
             <TextBox Text="{Binding Path=Device.Nick}" x:Name="NickTB" Margin="5" Grid.Row="1" Grid.Column="1" Width="150"/>
             <!--<TextBlock Margin="5" Grid.Row="1" Text="Port"/>
         <TextBox Text="80" x:Name="PortTB" Margin="5" Grid.Row="1" Grid.Column="1" Width="150"/>-->
-            <Button Command="{Binding CloseDialogOkCommand}" x:Name="connectBtn" Margin="5" Padding="5" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Добавить" />
+            <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" x:Name="connectBtn"  Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding ButtonContent}" />
         </Grid>
 
     </Grid>

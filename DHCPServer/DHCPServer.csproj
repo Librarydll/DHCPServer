@@ -138,6 +138,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\Events\ApplicationEvents.cs" />
+    <Compile Include="Core\Events\Model\DeviceEventModel.cs" />
     <Compile Include="Core\Extensions\CollectionExtensions.cs" />
     <Compile Include="Dialogs\DialogViewModelBase.cs" />
     <Compile Include="Dialogs\Extenstions\DialogExtension.cs" />
