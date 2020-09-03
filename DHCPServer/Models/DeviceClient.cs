@@ -41,7 +41,7 @@ namespace DHCPServer.Models
 			{
 				try
 				{
-					await Task.Delay(6000);
+					await Task.Delay(5000);
 
 					if (!IsInvalid)
 					{

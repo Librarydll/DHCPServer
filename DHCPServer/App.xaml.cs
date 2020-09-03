@@ -34,6 +34,7 @@ namespace DHCPServer
 			containerRegistry.RegisterSingleton<XmlDeviceProvider>();
 
 			containerRegistry.RegisterDialog<NewDevcieView, NewDeviceViewModelDialog>();
+			containerRegistry.RegisterDialog<GraphView, GraphViewModelDialog>();
 		}
 	}
 }

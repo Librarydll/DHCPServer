@@ -1,5 +1,6 @@
-﻿using Microsoft.Research.DynamicDataDisplay;
-using Microsoft.Research.DynamicDataDisplay.DataSources;
+﻿using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -23,39 +24,42 @@ namespace DHCPServer.Models.Infrastructure
 		public bool CanAdd => _countRequest >= 24;
 		private bool isInvalid;
 		public bool IsInvalid { get => isInvalid; private set { isInvalid = value; } }
-		private ObservableDataSource<Point> _temperaturePointDataSource = new ObservableDataSource<Point>();
-		public ObservableDataSource<Point> TemperaturePointDataSource
-		{
-			get { return _temperaturePointDataSource; }
-			set { _temperaturePointDataSource = value; RaisePropertyChangedEvent(); }
-		}
-		private ObservableDataSource<Point> _humidityPointDataSource = new ObservableDataSource<Point>();
 
-		public ObservableDataSource<Point> HumidityPointDataSource
+		private readonly OxyColor temperatureColor = OxyColors.Red;
+		private readonly OxyColor humidityColor = OxyColors.Blue;
+		private readonly MarkerType markerType = MarkerType.Circle;
+		private LineSeries[] _lineSeries = null;
+
+		private ViewResolvingPlotModel _graphLineModel;
+		public ViewResolvingPlotModel GraphLineModel
 		{
-			get { return _humidityPointDataSource; }
-			set { _humidityPointDataSource = value; RaisePropertyChangedEvent(); }
+			get { return _graphLineModel; }
+			set { _graphLineModel = value; RaisePropertyChangedEvent(); }
 		}
 		public RoomLineGraphInfo()
 		{
+
 		}
 		public RoomLineGraphInfo(RoomData roomData, string IpAddress) : base(roomData, IpAddress)
 		{
+			GraphLineModel = new ViewResolvingPlotModel();
+			SetUpModel();
+			_lineSeries = CreateLineSeries();
+			GraphLineModel.Series.Add(_lineSeries.First());
+			GraphLineModel.Series.Add(_lineSeries.Last());
 		}
 		private void AddToTemperatureDataSource()
 		{
 			var x = CreatePointX();
-			Log.Logger.Information("DEVICE : {0} TEMPERATURE {1}, Time {2}", IPAddress, Temperature,x);
-			Point point = new Point(x, Temperature);
-			TemperaturePointDataSource.Collection.Add(point);
+			Log.Logger.Information("DEVICE : {0} TEMPERATURE {1}, Time {2}", IPAddress, Temperature, x);
+			_lineSeries.First().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
 			_count++;
 		}
 		private void AddToHumidityDataSource()
 		{
 			var x = CreatePointX();
-			Log.Logger.Information("DEVICE : {0} HUMIDITY {1}, Time {2}", IPAddress, Humidity,x);
-			Point point = new Point(x, Humidity);
-			HumidityPointDataSource.Collection.Add(point);
+			Log.Logger.Information("DEVICE : {0} HUMIDITY {1}, Time {2}", IPAddress, Humidity, x);
+			_lineSeries.Last().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
 			_count++;
 		}
 
@@ -65,7 +69,7 @@ namespace DHCPServer.Models.Infrastructure
 
 			if (CanAdd)
 			{
-				if (Temperature>0&&Humidity>0)
+				if (Temperature > 0 && Humidity > 0)
 				{
 					if (prop == nameof(Temperature))
 					{
@@ -79,7 +83,7 @@ namespace DHCPServer.Models.Infrastructure
 					{
 						_count = 0;
 						_countRequest = 0;
-					} 
+					}
 				}
 			}
 
@@ -110,16 +114,47 @@ namespace DHCPServer.Models.Infrastructure
 			}
 		}
 
-		//public void Initialize()
-		//{
-		//	Point p1 = new Point(11, 20);
-		//	Point p3 = new Point(12, 25);
-		//	Point p4 = new Point(13, 23);
-		//	Point p5 = new Point(14, 22);
-		//	TemperaturePointDataSource.Collection.Add(p1);
-		//	TemperaturePointDataSource.Collection.Add(p3);
-		//	TemperaturePointDataSource.Collection.Add(p4);
-		//	TemperaturePointDataSource.Collection.Add(p5);
-		//}
+		private LineSeries[] CreateLineSeries()
+		{
+			var temperatureLineSeries = new LineSeries
+			{
+				StrokeThickness = 2,
+				MarkerSize = 3,
+				MarkerStroke = temperatureColor,
+				MarkerType = markerType,
+				CanTrackerInterpolatePoints = false,
+				Title = "Температура",
+				Color =temperatureColor
+			};
+			var humidityLineSeries = new LineSeries
+			{
+				StrokeThickness = 2,
+				MarkerSize = 3,
+				MarkerStroke = humidityColor,
+				MarkerType = markerType,
+				CanTrackerInterpolatePoints = false,
+				Title = "Влажность",
+				Color = temperatureColor
+			};
+
+			return new LineSeries[]
+			{
+				temperatureLineSeries,humidityLineSeries
+			};
+		}
+		private void SetUpModel()
+		{
+			GraphLineModel.LegendTitle = "Данные";
+			GraphLineModel.LegendOrientation = LegendOrientation.Horizontal;
+			GraphLineModel.LegendPlacement = LegendPlacement.Outside;
+			GraphLineModel.LegendPosition = LegendPosition.TopRight;
+			GraphLineModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
+			GraphLineModel.LegendBorder = OxyColors.Black;
+
+			var dateAxis = new DateTimeAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80, Position = AxisPosition.Bottom, Title = "Время"};
+			GraphLineModel.Axes.Add(dateAxis);
+			var valueAxis = new LinearAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Значение", Position = AxisPosition.Left, StartPosition = 0,Minimum=0};
+			GraphLineModel.Axes.Add(valueAxis);
+		}
 	}
 }

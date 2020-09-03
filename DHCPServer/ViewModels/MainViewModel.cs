@@ -29,34 +29,34 @@ namespace DHCPServer.ViewModels
 	{
 		#region Fields
 		private readonly IRegionManager _regionManager;
-		private readonly GraphView _graphView = new GraphView();
 		private readonly  GraphDataView _graphDataView = new GraphDataView();
+		private readonly  DeviceInformationView _deviceInformationView = new DeviceInformationView();
 		#endregion
 
 		#region Commands
-		public DelegateCommand OpenGraphViewCommand { get; set; }
 		public DelegateCommand OpenGraphDataViewCommand { get; set; }
+		public DelegateCommand OpenDeviceInformationViewCommand { get; set; }
 		#endregion
 		#region BindingProperties
 
 		#endregion
 		public MainViewModel(IRegionManager regionManager)
 		{
-			OpenGraphViewCommand = new DelegateCommand(OpenGraphView);
 			OpenGraphDataViewCommand = new DelegateCommand(OpenGraphDataView);
+			OpenDeviceInformationViewCommand = new DelegateCommand(OpenDeviceInformationView);
 			_regionManager = regionManager;
+
+		}
+
+		private void OpenDeviceInformationView()
+		{
+			OpenViewBase(_deviceInformationView, nameof(DeviceInformationView));
 
 		}
 
 		private void OpenGraphDataView()
 		{
 			OpenViewBase(_graphDataView, nameof(GraphDataView));
-
-		}
-
-		private void OpenGraphView()
-		{
-			OpenViewBase(_graphView, nameof(GraphView));
 		}
 
 		private void OpenViewBase(object view, string viewName, string regionName = "MainRegion")

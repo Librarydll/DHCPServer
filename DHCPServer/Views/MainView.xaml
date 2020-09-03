@@ -4,15 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:prism="http://prismlibrary.com/"
-        xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
         prism:ViewModelLocator.AutoWireViewModel="True"      
         xmlns:local="clr-namespace:DHCPServer.Views"
-        xmlns:lh="clr-namespace:DHCPServer.UICore"
-        xmlns:converter="clr-namespace:DHCPServer.UICore.Converters"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="MainView" Height="450" Width="800">
 
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -21,11 +18,14 @@
         <Grid>
             <ToolBar>
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphViewCommand}">График</Button>
+                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">График</Button>
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица</Button>
                 </StackPanel>
             </ToolBar>
         </Grid>
+        <oxy:PlotView  Grid.Row="1" x:Name="Plot1"  Margin="10">
+        </oxy:PlotView>
         <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
+        
     </Grid>
 </Window>

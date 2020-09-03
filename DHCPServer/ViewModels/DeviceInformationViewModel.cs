@@ -19,9 +19,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
+
 namespace DHCPServer.ViewModels
 {
-	public class GraphViewModel : BindableBase
+	public class DeviceInformationViewModel : BindableBase
 	{
 		#region Fields
 		private readonly IDialogService _dialogService;
@@ -35,6 +36,7 @@ namespace DHCPServer.ViewModels
 		#region Commands
 		public DelegateCommand OpenNewDevcieViewCommand { get; set; }
 		public DelegateCommand<RoomLineGraphInfo> DeleteRoomCommand { get; set; }
+		public DelegateCommand<RoomLineGraphInfo> OpenGraphCommand { get; set; }
 		#endregion
 		#region BindingProperties
 		private ObservableCollection<RoomLineGraphInfo> _roomsCollection;
@@ -47,10 +49,11 @@ namespace DHCPServer.ViewModels
 		#endregion
 
 
-		public GraphViewModel(IDialogService dialogService, IRoomRepository roomRepository, XmlDeviceProvider xmlDeviceProvider)
+		public DeviceInformationViewModel(IDialogService dialogService, IRoomRepository roomRepository, XmlDeviceProvider xmlDeviceProvider)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
+			OpenGraphCommand = new DelegateCommand<RoomLineGraphInfo>(OpenGraph);
 			_dialogService = dialogService;
 			_roomRepository = roomRepository;
 			_xmlDeviceProvider = xmlDeviceProvider;
@@ -64,9 +67,10 @@ namespace DHCPServer.ViewModels
 			_deviceClients = new List<DeviceClient>(RoomsCollection
 				.Select(x => new Device { IPAddress = x.IPAddress })
 				.ToDeviceClient());
-			Task.Run(async () => await StartListenAsync()).Wait();
+			Task.Run(async () => await StartListenAsync());
 		}
 
+	
 		private async Task StartListenAsync()
 		{
 			foreach (var device in _deviceClients)
@@ -107,11 +111,6 @@ namespace DHCPServer.ViewModels
 
 		private void _timer_Tick(object sender, EventArgs e)
 		{
-			//foreach (var room in RoomsCollection)
-			//{
-			//	room.AddToCollections();
-			//}
-
 			Task.Run(async () =>
 			{
 				await _roomRepository.SaveAsync(RoomsCollection);
@@ -161,5 +160,18 @@ namespace DHCPServer.ViewModels
 
 			}
 		}
+		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
+		{
+			var dialogParametr = new DialogParameters
+			{
+				{ "model", roomLineGraphInfo }
+			};
+
+			_dialogService.ShowModal("GraphView", dialogParametr, x =>
+			{
+				
+			});		
+		}
+
 	}
 }

@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using OxyPlot;
+using Serilog;
+using System.Windows.Controls;
 
 namespace DHCPServer.Views
 {

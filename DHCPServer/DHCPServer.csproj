@@ -47,18 +47,6 @@
     <Reference Include="Dapper.Contrib, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.Contrib.2.0.35\lib\net461\Dapper.Contrib.dll</HintPath>
     </Reference>
-    <Reference Include="DynamicDataDisplay, Version=0.3.0.1, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicDataDisplay.0.3.0.1\lib\net45\DynamicDataDisplay.dll</HintPath>
-    </Reference>
-    <Reference Include="DynamicDataDisplay.Maps, Version=0.1.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.Maps.dll</HintPath>
-    </Reference>
-    <Reference Include="DynamicDataDisplay.Markers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.Markers.dll</HintPath>
-    </Reference>
-    <Reference Include="DynamicDataDisplay.Markers2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.Markers2.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -68,8 +56,11 @@
     <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\Parser.dll</HintPath>
+    <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=2.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.2.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Prism, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.2.0.1422\lib\net45\Prism.dll</HintPath>
@@ -80,6 +71,7 @@
     <Reference Include="Prism.Wpf, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.7.2.0.1422\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="ReachFramework" />
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -109,6 +101,7 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -148,6 +141,7 @@
     <Compile Include="Core\Extensions\CollectionExtensions.cs" />
     <Compile Include="Dialogs\DialogViewModelBase.cs" />
     <Compile Include="Dialogs\Extenstions\DialogExtension.cs" />
+    <Compile Include="Dialogs\GraphViewModelDialog.cs" />
     <Compile Include="Dialogs\NewDeviceViewModelDialog.cs" />
     <Compile Include="Models\Common\BaseEntity.cs" />
     <Compile Include="Models\Context\ApplicationContextFactory.cs" />
@@ -157,6 +151,7 @@
     <Compile Include="Models\Enums\DeviceResponseStatus.cs" />
     <Compile Include="Models\Infrastructure\DateTimeSpanFilter.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfo.cs" />
+    <Compile Include="Models\Infrastructure\ViewResolvingPlotModel.cs" />
     <Compile Include="Models\Repositories\IRoomRepository.cs" />
     <Compile Include="Models\Repositories\RoomRepository.cs" />
     <Compile Include="Models\RoomData.cs" />
@@ -164,13 +159,15 @@
     <Compile Include="Services\HtmlHelper.cs" />
     <Compile Include="Services\XmlDeviceProvider.cs" />
     <Compile Include="UICore\Converters\BorderColorConverter.cs" />
-    <Compile Include="UICore\CustomLineGraph.cs" />
     <Compile Include="UICore\Controls\TimeControl.xaml.cs">
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
-    <Compile Include="ViewModels\GraphViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\DeviceInformationView.xaml.cs">
+      <DependentUpon>DeviceInformationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GraphDataView.xaml.cs">
       <DependentUpon>GraphDataView.xaml</DependentUpon>
     </Compile>
@@ -192,6 +189,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UICore\Controls\TimeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeviceInformationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

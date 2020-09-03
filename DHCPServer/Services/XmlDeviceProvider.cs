@@ -65,7 +65,7 @@ namespace DHCPServer.Services
 			{
 				var deviceXml = new DeviceXml();
 				deviceXml.Devices = devices.ToArray();
-				using (Stream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
+				using (Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
 				{
 					serializer.Serialize(stream, deviceXml);
 				}
