@@ -90,7 +90,7 @@ namespace DHCPServer.ViewModels
 					_logger.Error("Не удлаось создать новый девайс ip {0}", newDevice?.IPAddress);
 					_logger.Error("Ошибка {0}", t.Exception?.Message);
 					_logger.Error("Ошибка {0}", t.Exception?.InnerException);
-				});
+				},TaskContinuationOptions.OnlyOnFaulted);
 			}
 		}
 		private void EditDevice(Device device)

@@ -17,9 +17,12 @@ namespace DHCPServer.Models
 		private double humidity;
 		private Device device;
 
+		public event Action<double> TemperatureChangeEvent;
+		public event Action<double> HumidityChangeEvent;
+
 		public string IPAddress { get => iPAddress; set { iPAddress = value; RaisePropertyChangedEvent(); } }
-		public double Temperature { get => temperature; set { temperature = value; RaisePropertyChangedEvent(); } }
-		public double Humidity { get => humidity; set { humidity = value; RaisePropertyChangedEvent(); } }
+		public double Temperature { get => temperature; set { temperature = value; RaisePropertyChangedEvent(); TemperatureChangeEvent?.Invoke(value); } }
+		public double Humidity { get => humidity; set { humidity = value; RaisePropertyChangedEvent(); HumidityChangeEvent?.Invoke(value); } }
 
 		public DateTime Date { get; set; }
 

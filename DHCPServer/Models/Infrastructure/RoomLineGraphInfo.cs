@@ -36,10 +36,23 @@ namespace DHCPServer.Models.Infrastructure
 			get { return _graphLineModel; }
 			set { _graphLineModel = value; RaisePropertyChangedEvent(); }
 		}
-		public RoomLineGraphInfo()
-		{
 
+		private bool _temperatureLineVisibility = true;
+		public bool TemperatureLineVisibility
+		{
+			get { return _temperatureLineVisibility; }
+			set { _temperatureLineVisibility = value; RaisePropertyChangedEvent(); LineSeriesVisibilityChange(nameof(TemperatureLineVisibility), value); }
 		}
+
+
+
+		private bool _humidityLineVisibility = true;
+		public bool HumidityLineVisibility
+		{
+			get { return _humidityLineVisibility; }
+			set { _humidityLineVisibility = value; RaisePropertyChangedEvent(); LineSeriesVisibilityChange(nameof(TemperatureLineVisibility), value); }
+		}
+
 		public RoomLineGraphInfo(RoomData roomData, Device device) : base(roomData, device)
 		{
 			GraphLineModel = new ViewResolvingPlotModel();
@@ -47,64 +60,12 @@ namespace DHCPServer.Models.Infrastructure
 			_lineSeries = CreateLineSeries();
 			GraphLineModel.Series.Add(_lineSeries.First());
 			GraphLineModel.Series.Add(_lineSeries.Last());
-		}
-		private void AddToTemperatureDataSource()
-		{
-			var x = CreatePointX();
-			Log.Logger.Information("DEVICE : {0} TEMPERATURE {1}, Time {2}", IPAddress, Temperature, x);
-			_lineSeries.First().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
-			_count++;
-		}
-		private void AddToHumidityDataSource()
-		{
-			var x = CreatePointX();
-			Log.Logger.Information("DEVICE : {0} HUMIDITY {1}, Time {2}", IPAddress, Humidity, x);
-			_lineSeries.Last().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
-			_count++;
-		}
 
-		public override void RaisePropertyChangedEvent([CallerMemberName] string prop = "")
-		{
-			_countRequest += 1;
+			TemperatureChangeEvent += TemperateChangedEventHandler;
+			HumidityChangeEvent += HumidityChangedEventHandler;
 
-			if (CanAdd)
-			{
-				if (Temperature > 0 && Humidity > 0)
-				{
-					if (prop == nameof(Temperature))
-					{
-						AddToTemperatureDataSource();
-					}
-					if (prop == nameof(Humidity))
-					{
-						AddToHumidityDataSource();
-					}
-					if (_count == 2)
-					{
-						_count = 0;
-						_countRequest = 0;
-					}
-				}
-			}
 
-			base.RaisePropertyChangedEvent(prop);
 		}
-
-		public void AddToCollections()
-		{
-			AddToTemperatureDataSource();
-			AddToHumidityDataSource();
-		}
-
-		public double CreatePointX()
-		{
-			Date = DateTime.Now;
-			var hours = Date.Hour;
-			var minutes = Date.Minute;
-			string s = hours.ToString() + "," + minutes.ToString();
-			return double.Parse(s);
-		}
-
 		public void SetInvalid(bool value)
 		{
 			if (value != IsInvalid)
@@ -124,7 +85,7 @@ namespace DHCPServer.Models.Infrastructure
 				MarkerType = markerType,
 				CanTrackerInterpolatePoints = false,
 				Title = "Температура",
-				Color =temperatureColor
+				Color = temperatureColor
 			};
 			var humidityLineSeries = new LineSeries
 			{
@@ -151,10 +112,74 @@ namespace DHCPServer.Models.Infrastructure
 			GraphLineModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
 			GraphLineModel.LegendBorder = OxyColors.Black;
 
-			var dateAxis = new DateTimeAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80, Position = AxisPosition.Bottom, Title = "Время"};
+			var dateAxis = new DateTimeAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80, Position = AxisPosition.Bottom, Title = "Время" };
 			GraphLineModel.Axes.Add(dateAxis);
-			var valueAxis = new LinearAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Значение", Position = AxisPosition.Left, StartPosition = 0,Minimum=0};
+			var valueAxis = new LinearAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Значение", Position = AxisPosition.Left, StartPosition = 0, Minimum = 0 };
 			GraphLineModel.Axes.Add(valueAxis);
 		}
+
+		private void TemperateChangedEventHandler(double value)
+		{
+			if (CanPropertyChange())
+			{
+				Date = DateTime.Now;
+				Log.Logger.Information("DEVICE : {0} TEMPERATURE {1}, Time {2}", IPAddress, Temperature, Date.TimeOfDay.ToString("hh:mm::ss"));
+				_lineSeries.First().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
+				_count++;
+			}
+
+		}
+		private void HumidityChangedEventHandler(double value)
+		{
+			if (CanPropertyChange())
+			{
+				Date = DateTime.Now;
+				Log.Logger.Information("DEVICE : {0} HUMIDITY {1}, Time {2}", IPAddress, Humidity, Date.TimeOfDay.ToString("hh:mm::ss"));
+				_lineSeries.Last().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
+				_count++;
+			}
+		}
+
+		private void LineSeriesVisibilityChange(string property, bool value)
+		{
+			if (_lineSeries != null)
+			{
+				if (property == nameof(TemperatureLineVisibility))
+				{
+					var t = _lineSeries.First();
+					if (value != t.IsVisible)
+					{
+						t.IsVisible = value;
+					}
+				}
+				if (property == nameof(HumidityLineVisibility))
+				{
+					var h = _lineSeries.Last();
+					if (value != h.IsVisible)
+					{
+						h.IsVisible = value;
+					}
+				}
+			}
+		}
+
+
+		private bool CanPropertyChange()
+		{
+			_countRequest += 1;
+
+			if (CanAdd)
+			{
+				if (_count == 2)
+				{
+					_count = 0;
+					_countRequest = 0;
+				}
+				return true;
+			}
+
+			return false;
+		}
 	}
+
 }

@@ -2,7 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"        
-            xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:oxyw="clr-namespace:OxyPlot.Axes;assembly=OxyPlot"
+             xmlns:oxyline="clr-namespace:OxyPlot.Series;assembly=OxyPlot"
              xmlns:converter="clr-namespace:DHCPServer.UICore.Converters"
              Width="600" Height="600"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -20,15 +22,21 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock HorizontalAlignment="Center" FontSize="16" FontWeight="DemiBold">
+        <TextBlock Margin="20 0 0 0" HorizontalAlignment="Left" FontSize="16" FontWeight="DemiBold">
             <Run>Устройство: </Run>
             <Run Text="{Binding GraphInfo.IPAddress}"></Run>
         </TextBlock>
-        <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="16" Margin="0 5 0 0" FontWeight="DemiBold">
+        <TextBlock  Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20 0 0 0" FontWeight="DemiBold">
             <Run>Псевдоним: </Run>
             <Run Text="{Binding GraphInfo.Device.Nick}"></Run>
         </TextBlock>
-        <oxy:PlotView Grid.Row="2" Width="500" Height="500" x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10" >
+        <CheckBox Margin="0 0 50 0" IsChecked="{Binding GraphInfo.TemperatureLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Left" Content="Температура">
+            
+        </CheckBox>
+        <CheckBox IsChecked="{Binding GraphInfo.HumidityLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Content="Влажность">
+
+        </CheckBox>
+        <oxy:PlotView Grid.ColumnSpan="2" Grid.Row="2" Width="500" Height="500" x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10">
         </oxy:PlotView>
     </Grid>
 </UserControl>

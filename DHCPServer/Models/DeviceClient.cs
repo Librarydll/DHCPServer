@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Models
 {
-	public class DeviceClient
+	public class DeviceClient:IDisposable
 	{
 		public event Action<RoomInfo, DeviceResponseStatus> ReciveMessageEvent;
 		public event Action<Device> ReciveMessageErrorEvent;
@@ -20,6 +20,8 @@ namespace DHCPServer.Models
 		private readonly string _url = null;
 		public bool IsInvalid => _countRequestForDisableInvaid!=0;
 		private int _countRequestForDisableInvaid = 0;
+		private bool loop = true;
+		private bool disposed = false;
 		public DeviceClient(Device device)
 		{
 			if (device == null) throw new ArgumentNullException("device should not be null");
@@ -37,7 +39,7 @@ namespace DHCPServer.Models
 		{
 			HttpResponseMessage response = null;
 
-			while (true)
+			while (loop)
 			{
 				try
 				{
@@ -108,5 +110,20 @@ namespace DHCPServer.Models
 			ReciveMessageErrorEvent?.Invoke(invalidDevice);
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposed&& disposing)
+			{
+				client?.Dispose();
+				loop = false;
+			}
+		}
 	}
 }

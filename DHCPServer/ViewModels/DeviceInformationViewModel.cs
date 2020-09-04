@@ -103,6 +103,8 @@ namespace DHCPServer.ViewModels
 
 		private void DeleteRoom(RoomLineGraphInfo roomInfo)
 		{
+			var d = _deviceClients.FirstOrDefault(x => x.Device == roomInfo.Device);
+			d?.Dispose();
 			RoomsCollection.Remove(roomInfo);
 			_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress }));
 		}
