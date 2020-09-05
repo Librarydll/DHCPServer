@@ -13,6 +13,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,8 +29,10 @@ namespace DHCPServer.ViewModels
 	public class DeviceInformationViewModel : BindableBase
 	{
 		#region Fields
+		private int timerTick = 0;
 		private readonly IDialogService _dialogService;
 		private readonly IRoomRepository _roomRepository;
+		private readonly ILogger _logger;
 		private readonly XmlDeviceProvider _xmlDeviceProvider;
 		private readonly IEventAggregator _eventAggregator;
 		private readonly DispatcherTimer _timer;
@@ -53,20 +56,27 @@ namespace DHCPServer.ViewModels
 		#endregion
 
 
-		public DeviceInformationViewModel(IDialogService dialogService, IRoomRepository roomRepository, XmlDeviceProvider xmlDeviceProvider,IEventAggregator eventAggregator)
+		public DeviceInformationViewModel(IDialogService dialogService, 
+			IRoomRepository roomRepository, 
+			ILogger logger,
+			XmlDeviceProvider xmlDeviceProvider,
+			IEventAggregator eventAggregator)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
 			OpenGraphCommand = new DelegateCommand<RoomLineGraphInfo>(OpenGraph);
 			_dialogService = dialogService;
 			_roomRepository = roomRepository;
+			_logger = logger;
 			_xmlDeviceProvider = xmlDeviceProvider;
 			_eventAggregator = eventAggregator;
 			var devices = _xmlDeviceProvider.GetDevices();
 			tokenSource = new CancellationTokenSource();
 			RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(_xmlDeviceProvider.CastDevices(devices).ToRoomLineGraphInfo());
-			_timer = new DispatcherTimer();
-			_timer.Interval = new TimeSpan(1, 0, 0);
+			_timer = new DispatcherTimer
+			{
+				Interval = new TimeSpan(0, 10, 0)
+			};
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
 			_deviceClients = new List<DeviceClient>(RoomsCollection
@@ -103,7 +113,7 @@ namespace DHCPServer.ViewModels
 
 		private void DeleteRoom(RoomLineGraphInfo roomInfo)
 		{
-			var d = _deviceClients.FirstOrDefault(x => x.Device == roomInfo.Device);
+			var d = _deviceClients.FirstOrDefault(x => x.Device.IPAddress == roomInfo.Device.IPAddress);
 			d?.Dispose();
 			RoomsCollection.Remove(roomInfo);
 			_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress }));
@@ -135,10 +145,38 @@ namespace DHCPServer.ViewModels
 
 		private void _timer_Tick(object sender, EventArgs e)
 		{
+			timerTick += 1;
+			if (timerTick >= 6)
+			{
+				foreach (var room in RoomsCollection)
+				{
+					room.AddToCollections();
+				}
+				timerTick = 0;
+			}
+
+			foreach (var room in RoomsCollection)
+			{
+				if (room.Humidity < 0)
+					room.Humidity = room.OldPositiveHumidityValue;
+				if (room.Temperature < 0)
+					room.Temperature = room.OldPositiveTemperatureValue;
+				room.Date = DateTime.Now;
+			}
+
+
 			Task.Run(async () =>
 			{
+				
 				await _roomRepository.SaveAsync(RoomsCollection);
-			});
+
+			}).ContinueWith(t=> {
+
+				_logger.Error("Не удлаось добавить данные");
+				_logger.Error("Ошибка {0}", t.Exception?.Message);
+				_logger.Error("Ошибка {0}", t.Exception?.InnerException);
+
+			},TaskContinuationOptions.OnlyOnFaulted);
 
 		}
 

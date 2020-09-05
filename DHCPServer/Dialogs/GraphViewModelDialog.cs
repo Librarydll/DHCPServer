@@ -1,4 +1,5 @@
 ﻿using DHCPServer.Models.Infrastructure;
+using Prism.Commands;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,15 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _graphInfo, value); }
 		}
 
+		public DelegateCommand XCommand { get; set; }
+
 		public GraphViewModelDialog()
 		{
-
+			XCommand = new DelegateCommand(() =>
+			 {
+				 GraphInfo.GraphLineModel.InvalidatePlot(true);
+			 }
+			);
 		}
 
 		public override void OnDialogOpened(IDialogParameters parameters)
@@ -28,6 +35,8 @@ namespace DHCPServer.Dialogs
 			if (parameters != null)
 			{
 				GraphInfo = parameters.GetValue<RoomLineGraphInfo>("model");
+				GraphInfo.GraphLineModel.Axes[0].Reset();
+				GraphInfo.GraphLineModel.Axes[1].Reset();
 			}
 		}
 	}

@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"        
              xmlns:oxy="http://oxyplot.org/wpf"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:oxyw="clr-namespace:OxyPlot.Axes;assembly=OxyPlot"
              xmlns:oxyline="clr-namespace:OxyPlot.Series;assembly=OxyPlot"
              xmlns:converter="clr-namespace:DHCPServer.UICore.Converters"
-             Width="600" Height="600"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             Width="{Binding RelativeSource={RelativeSource findancestor,AncestorType={x:Type Window}},Path=ActualWidth}" 
+             Height="{Binding RelativeSource={RelativeSource findancestor,AncestorType={x:Type Window}},Path=ActualHeight}"
+             x:Name="us">
     <Grid>
         <Grid.Resources>
             <converter:BorderColorConverter x:Key="BorderConverter"/>
@@ -36,7 +38,8 @@
         <CheckBox IsChecked="{Binding GraphInfo.HumidityLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Content="Влажность">
 
         </CheckBox>
-        <oxy:PlotView Grid.ColumnSpan="2" Grid.Row="2" Width="500" Height="500" x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10">
+        <!--<Button Width="100" Command="{Binding XCommand}">XXX</Button>-->
+        <oxy:PlotView Grid.ColumnSpan="2" Grid.Row="2"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
         </oxy:PlotView>
     </Grid>
 </UserControl>

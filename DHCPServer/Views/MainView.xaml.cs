@@ -24,11 +24,11 @@ namespace DHCPServer.Views
                                             };
         private readonly List<MarkerType> markerTypes = new List<MarkerType>
                                                    {
-                                                       MarkerType.Plus,
-                                                       MarkerType.Star,
-                                                       MarkerType.Diamond,
-                                                       MarkerType.Triangle,
-                                                       MarkerType.Cross
+                                                       MarkerType.None,
+                                                       MarkerType.None,
+                                                       MarkerType.None,
+                                                       MarkerType.None,
+                                                       MarkerType.None
                                                    };
 
         public PlotModel PlotModel { get; private set; } = new PlotModel();
@@ -40,8 +40,8 @@ namespace DHCPServer.Views
             //LoadData();
 
             //Plot1.Model = PlotModel;
-
         }
+
         private void SetUpModel()
         {
             PlotModel.LegendTitle = "Legend";
@@ -53,7 +53,7 @@ namespace DHCPServer.Views
 
             var dateAxis = new TimeSpanAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 50, Position = AxisPosition.Bottom, Title = "Date",StringFormat= "mm:ss" };
             PlotModel.Axes.Add(dateAxis);
-            var valueAxis = new LinearAxis() { MajorGridlineStyle = LineStyle.Dot, MinorGridlineStyle = LineStyle.Dot, Title = "Value", Position = AxisPosition.Left, StartPosition = 0, MinimumMajorStep=3,MajorStep=2,Minimum=0 };
+            var valueAxis = new LinearAxis() { MajorGridlineStyle = LineStyle.Dot, MinorGridlineStyle = LineStyle.Dot, Title = "Value", Position = AxisPosition.Left, StartPosition = 0, MinimumMajorStep = 1, MajorStep = 5 ,MaximumRange=60,AbsoluteMaximum=70,AbsoluteMinimum=0};
             PlotModel.Axes.Add(valueAxis);
         }
 

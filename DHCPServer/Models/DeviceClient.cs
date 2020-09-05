@@ -1,5 +1,7 @@
 ﻿using DHCPServer.Models.Enums;
 using DHCPServer.Services;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,18 +71,25 @@ namespace DHCPServer.Models
 				}
 				catch (InvalidOperationException e)
 				{
+					Log.Logger.Error("InvalidOperationException message {0}", e.Message);
+					Log.Logger.Error("InvalidOperationException inner message {0}", e?.InnerException?.Message);
 				}
 				catch (ArgumentException e)
 				{
-
+					Log.Logger.Error("ArgumentException message {0}", e.Message);
+					Log.Logger.Error("ArgumentException inner message {0}", e?.InnerException.Message);
 				}
 				catch (HttpRequestException e)
 				{
+					Log.Logger.Error("HttpRequestException message {0}", e.Message);
+					Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
 					_countRequestForDisableInvaid = 2;
 					ReciveMessageErroRaise(Device);
 				}
-				catch (Exception ex)
+				catch (Exception e)
 				{
+					Log.Logger.Error("HttpRequestException message {0}", e.Message);
+					Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
 					_countRequestForDisableInvaid = 2;
 					ReciveMessageErroRaise(Device);
 				}

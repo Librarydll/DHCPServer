@@ -1,5 +1,9 @@
 ﻿using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using Prism.Services.Dialogs;
 using Serilog;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DHCPServer.Views
@@ -13,5 +17,6 @@ namespace DHCPServer.Views
 		{
 			InitializeComponent();
 		}
+		
 	}
 }

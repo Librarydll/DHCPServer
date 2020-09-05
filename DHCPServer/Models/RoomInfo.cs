@@ -1,4 +1,5 @@
-﻿using DHCPServer.Models.Common;
+﻿using Dapper.Contrib.Extensions;
+using DHCPServer.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +26,7 @@ namespace DHCPServer.Models
 		public double Humidity { get => humidity; set { humidity = value; RaisePropertyChangedEvent(); HumidityChangeEvent?.Invoke(value); } }
 
 		public DateTime Date { get; set; }
+		[Computed]
 
 		public Device Device { get => device; set { device = value; RaisePropertyChangedEvent(); } }
 
