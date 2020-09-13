@@ -182,7 +182,7 @@ namespace DHCPServer.Models.Infrastructure
 		}
 		private void HumidityChangedEventHandler(double value)
 		{
-			if (Temperature > 0) OldPositiveTemperatureValue = Temperature;
+			if (value > 0) OldPositiveTemperatureValue = value;
 
 			if (CanPropertyChange())
 			{
@@ -262,7 +262,7 @@ namespace DHCPServer.Models.Infrastructure
 				t = OldPositiveTemperatureValue;
 			}
 
-			Log.Logger.Information("ADDED TO DATABASE DEVICE : {0} TEMPERATURE {1}", IPAddress, t);
+			Log.Logger.Information("ADDED TO Graph DEVICE : {0} TEMPERATURE {1}", IPAddress, t);
 			_lineSeries.First().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), t));
 
 		}
@@ -278,7 +278,7 @@ namespace DHCPServer.Models.Infrastructure
 				h = OldPositiveHumidityValue;
 			}
 
-			Log.Logger.Information("ADDED TO DATABASE DEVICE : {0} TEMPERATURE {1}", IPAddress, h);
+			Log.Logger.Information("ADDED TO Graph DEVICE : {0} TEMPERATURE {1}", IPAddress, h);
 			_lineSeries.Last().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), h));
 		}
 	}
