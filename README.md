@@ -1,2 +1,2 @@
 # DHCPServer
-Listen Arduno using HttpClient
+Listen multiple arduinos using HttpClient
