@@ -169,6 +169,7 @@ namespace DHCPServer.ViewModels
 			{
 				
 				await _roomRepository.SaveAsync(RoomsCollection);
+				_logger.Information("Не удлаось добавить данные");
 
 			}).ContinueWith(t=> {
 

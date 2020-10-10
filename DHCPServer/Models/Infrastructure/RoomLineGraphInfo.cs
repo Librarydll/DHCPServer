@@ -142,12 +142,12 @@ namespace DHCPServer.Models.Infrastructure
 				Title = "Значение", 
 				Position = AxisPosition.Left,
 				MinorStep =0.5, 
-				MajorStep=0.5,
+				MajorStep=0.2,
 				MinimumMinorStep=0.5,
-				MinimumMajorStep=0.5,
+				MinimumMajorStep=3,
 				IntervalLength=100,
 				AbsoluteMaximum = 70, 
-				AbsoluteMinimum = 26, 
+				AbsoluteMinimum = 0, 
 			};
 			//	valueAxis.AxisChanged += DateAxis_AxisChanged; ;
 			//valueAxis.TransformChanged += DateAxis_TransformChanged;

@@ -1,4 +1,5 @@
-﻿using OxyPlot;
+﻿using DHCPServer.Dialogs;
+using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Services.Dialogs;
@@ -17,6 +18,11 @@ namespace DHCPServer.Views
 		{
 			InitializeComponent();
 		}
-		
+
+		private void Plot1_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+		{
+			var vm = this.DataContext as GraphViewModelDialog;
+			vm.LineMouseWheelEventHandler(e);
+		}
 	}
 }

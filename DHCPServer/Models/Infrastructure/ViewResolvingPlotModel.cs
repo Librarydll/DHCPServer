@@ -1,4 +1,6 @@
 ﻿using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,9 @@ namespace DHCPServer.Models.Infrastructure
 {
     public class ViewResolvingPlotModel : PlotModel, IPlotModel
     {
+        private static readonly OxyColor temperatureColor = OxyColors.Red;
+        private static readonly OxyColor humidityColor = OxyColors.Blue;
+        private static readonly MarkerType markerType = MarkerType.None;
         private static readonly Type BaseType = typeof(ViewResolvingPlotModel).BaseType;
         private static readonly MethodInfo BaseAttachMethod = BaseType
             .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
@@ -31,5 +36,10 @@ namespace DHCPServer.Models.Infrastructure
                 BaseAttachMethod.Invoke(this, new object[] { plotView });
             }
         }
+
+
+
+
+  
     }
 }

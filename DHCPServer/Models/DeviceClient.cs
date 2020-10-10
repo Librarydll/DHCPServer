@@ -81,15 +81,15 @@ namespace DHCPServer.Models
 				}
 				catch (HttpRequestException e)
 				{
-					Log.Logger.Error("HttpRequestException message {0}", e.Message);
-					Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
+				//	Log.Logger.Error("HttpRequestException message {0}", e.Message);
+				//	Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
 					_countRequestForDisableInvaid = 2;
 					ReciveMessageErroRaise(Device);
 				}
 				catch (Exception e)
 				{
-					Log.Logger.Error("HttpRequestException message {0}", e.Message);
-					Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
+					Log.Logger.Error("Exception message {0}", e.Message);
+					Log.Logger.Error("Exception inner message {0}", e?.InnerException.Message);
 					_countRequestForDisableInvaid = 2;
 					ReciveMessageErroRaise(Device);
 				}
