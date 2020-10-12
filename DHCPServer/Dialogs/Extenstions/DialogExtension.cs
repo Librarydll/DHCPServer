@@ -17,5 +17,9 @@ namespace DHCPServer.Dialogs.Extenstions
 		{
 			dialogService.ShowDialog(dialogViewName, null, callBack);
 		}
+		public static void Show(this IDialogService dialogService, string dialogViewName, Action<IDialogResult> callBack)
+		{
+			dialogService.Show(dialogViewName, null, callBack);
+		}
 	}
 }

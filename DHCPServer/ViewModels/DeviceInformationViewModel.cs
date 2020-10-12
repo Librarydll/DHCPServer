@@ -56,8 +56,8 @@ namespace DHCPServer.ViewModels
 		#endregion
 
 
-		public DeviceInformationViewModel(IDialogService dialogService, 
-			IRoomRepository roomRepository, 
+		public DeviceInformationViewModel(IDialogService dialogService,
+			IRoomRepository roomRepository,
 			ILogger logger,
 			XmlDeviceProvider xmlDeviceProvider,
 			IEventAggregator eventAggregator)
@@ -119,7 +119,7 @@ namespace DHCPServer.ViewModels
 			_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress }));
 		}
 
-		private void _clientService_ReciveMessageErrorEvent(Device device)
+		private void ClientService_ReciveMessageErrorEvent(Device device)
 		{
 			var invalidDevide = RoomsCollection.FirstOrDefault(x => x.IPAddress == device.IPAddress);
 			Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(true); }));
@@ -145,14 +145,10 @@ namespace DHCPServer.ViewModels
 
 		private void _timer_Tick(object sender, EventArgs e)
 		{
-			timerTick += 1;
-			if (timerTick >= 6)
+			//	timerTick += 1;
+			foreach (var room in RoomsCollection)
 			{
-				foreach (var room in RoomsCollection)
-				{
-					room.AddToCollections();
-				}
-				timerTick = 0;
+				room.AddToCollections();
 			}
 
 			foreach (var room in RoomsCollection)
@@ -167,17 +163,18 @@ namespace DHCPServer.ViewModels
 
 			Task.Run(async () =>
 			{
-				
-				await _roomRepository.SaveAsync(RoomsCollection);
-				_logger.Information("Не удлаось добавить данные");
 
-			}).ContinueWith(t=> {
+				await _roomRepository.SaveAsync(RoomsCollection);
+				_logger.Information("Данные успешно добавились в бд");
+
+			}).ContinueWith(t =>
+			{
 
 				_logger.Error("Не удлаось добавить данные");
 				_logger.Error("Ошибка {0}", t.Exception?.Message);
 				_logger.Error("Ошибка {0}", t.Exception?.InnerException);
 
-			},TaskContinuationOptions.OnlyOnFaulted);
+			}, TaskContinuationOptions.OnlyOnFaulted);
 
 		}
 
@@ -185,7 +182,7 @@ namespace DHCPServer.ViewModels
 		private async Task SubscribeDeviceAsync(DeviceClient device)
 		{
 			device.ReciveMessageEvent += _clientService_ReciveMessageEvent;
-			device.ReciveMessageErrorEvent += _clientService_ReciveMessageErrorEvent;
+			device.ReciveMessageErrorEvent += ClientService_ReciveMessageErrorEvent;
 			device.EnableDeviceEvent += d =>
 			{
 				var invalidDevide = RoomsCollection.FirstOrDefault(x => x.IPAddress == d.IPAddress);
@@ -216,7 +213,7 @@ namespace DHCPServer.ViewModels
 					var deviceClient = new DeviceClient(newDevice);
 					_deviceClients.Add(deviceClient);
 					Task.Run(async () => await SubscribeDeviceAsync(deviceClient));
-					_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress,Nick=x.Device.Nick }));
+					_xmlDeviceProvider.SaveDevices(RoomsCollection.Select(x => new Device { IPAddress = x.IPAddress, Nick = x.Device.Nick }));
 
 				}
 
@@ -229,10 +226,10 @@ namespace DHCPServer.ViewModels
 				{ "model", roomLineGraphInfo }
 			};
 
-			_dialogService.ShowModal("GraphView", dialogParametr, x =>
+			_dialogService.Show("GraphView", dialogParametr, x =>
 			{
-				
-			});		
+
+			});
 		}
 
 	}

@@ -50,7 +50,7 @@
         <CheckBox IsChecked="{Binding GraphInfo.HumidityLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Content="Влажность">
 
         </CheckBox>
-        <Button Width="100" Command="{Binding XCommand}">XXX</Button>
+        <!--<Button Width="100" Command="{Binding XCommand}">XXX</Button>-->
         <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel" Grid.ColumnSpan="2" Grid.Row="2"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
         </oxy:PlotView>
     </Grid>
