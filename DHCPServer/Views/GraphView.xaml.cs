@@ -24,5 +24,10 @@ namespace DHCPServer.Views
 			var vm = this.DataContext as GraphViewModelDialog;
 			vm.LineMouseWheelEventHandler(e);
 		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+		
+		}
 	}
 }

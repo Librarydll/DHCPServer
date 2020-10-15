@@ -8,6 +8,7 @@
              xmlns:oxyline="clr-namespace:OxyPlot.Series;assembly=OxyPlot"
              xmlns:converter="clr-namespace:DHCPServer.UICore.Converters"      
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+             xmlns:control="clr-namespace:DHCPServer.UICore.Controls"
              x:Name="us">
 
     <prism:Dialog.WindowStyle>
@@ -30,6 +31,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -50,8 +52,25 @@
         <CheckBox IsChecked="{Binding GraphInfo.HumidityLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Content="Влажность">
 
         </CheckBox>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Horizontal">
+                <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding ShowRealTimeGraphComamand}" Background="{x:Null}" Margin="5 0 5 0" VerticalAlignment="Center" Click="Button_Click">
+                    Реальное время
+                </Button>
+                <!--<DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
+                <TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
+                <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>
+                <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Использовать время" VerticalAlignment="Center"/>-->
+                <control:TimeControl Value="{Binding DateTimeSpan.FromTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}"  Margin="5 0 5 0" VerticalAlignment="Center"/>
+                <TextBlock Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5" VerticalAlignment="Center" Text="До"/>
+                <control:TimeControl Value="{Binding DateTimeSpan.ToTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5 0 5 0" VerticalAlignment="Center"/>
+                <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding FilterCommand}" Background="{x:Null}" Margin="5 0 5 0" VerticalAlignment="Center">
+                    Фильтр
+                </Button>
+            </StackPanel>
+        </Grid>
         <!--<Button Width="100" Command="{Binding XCommand}">XXX</Button>-->
-        <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel" Grid.ColumnSpan="2" Grid.Row="2"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
+        <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel" Grid.ColumnSpan="2" Grid.Row="3"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
         </oxy:PlotView>
     </Grid>
 </UserControl>

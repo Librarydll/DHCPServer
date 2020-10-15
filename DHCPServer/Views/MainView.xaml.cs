@@ -34,7 +34,7 @@ namespace DHCPServer.Views
         public PlotModel PlotModel { get; private set; } = new PlotModel();
 
         public MainView()
-        {
+        {   
             InitializeComponent();
             //SetUpModel();
             //LoadData();

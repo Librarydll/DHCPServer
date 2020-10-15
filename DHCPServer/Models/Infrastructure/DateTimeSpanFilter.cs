@@ -21,7 +21,7 @@ namespace DHCPServer.Models.Infrastructure
 			FromDate = DateTime.Now;
 			ToDate = DateTime.Now;
 			FromTime = new TimeSpan(0, 0, 0);
-			ToTime = new TimeSpan(10, 0, 0);
+			ToTime = new TimeSpan(0, 0, 0);
 		}
 
 		public bool Validate()

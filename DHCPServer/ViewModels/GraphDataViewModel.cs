@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.ViewModels
 {
-	public class GraphDataViewModel:BindableBase
+	public class GraphDataViewModel : BindableBase
 	{
 		private readonly IRoomRepository _roomRepository;
 
 		#region Properties
-		private DateTimeSpanFilter _dateTimeSpan =new DateTimeSpanFilter();
+		private DateTimeSpanFilter _dateTimeSpan = new DateTimeSpanFilter();
 
 		public DateTimeSpanFilter DateTimeSpan
 		{
@@ -39,33 +39,29 @@ namespace DHCPServer.ViewModels
 
 		public GraphDataViewModel(IRoomRepository roomRepository)
 		{
-			FilterCommand = new DelegateCommand(Filter);
+			FilterCommand = new DelegateCommand(async () => await Filter());
 			RoomInfoColleciton = new ObservableCollection<RoomInfo>();
 			_roomRepository = roomRepository;
 		}
 
-		private void Filter()
+		private async Task Filter()
 		{
-			Task.Run(async () =>
-			{
-				IEnumerable<RoomInfo> collection = null;
+			IEnumerable<RoomInfo> collection = null;
 
-				if (DateTimeSpan.IsTimeInclude&& DateTimeSpan.Validate())
-				{
-					collection = await _roomRepository.FilterRooms(DateTimeSpan.FromDate, DateTimeSpan.ToDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
-				}
-				else if(DateTimeSpan.IsDateValidate())
-				{
-					collection = await _roomRepository.FilterRooms(DateTimeSpan.FromDate, DateTimeSpan.ToDate);
-				}
-				if(collection!=null)
-					RoomInfoColleciton = new ObservableCollection<RoomInfo>(collection);
-				else
-				{
-					RoomInfoColleciton.Clear();
-				}
-			});
-			
+			if (DateTimeSpan.IsTimeInclude && DateTimeSpan.Validate())
+			{
+				collection = await _roomRepository.FilterRooms(DateTimeSpan.FromDate, DateTimeSpan.ToDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
+			}
+			else if (DateTimeSpan.IsDateValidate())
+			{
+				collection = await _roomRepository.FilterRooms(DateTimeSpan.FromDate, DateTimeSpan.ToDate);
+			}
+			if (collection != null)
+				RoomInfoColleciton = new ObservableCollection<RoomInfo>(collection);
+			else
+			{
+				RoomInfoColleciton.Clear();
+			}
 
 		}
 	}

@@ -145,37 +145,39 @@ namespace DHCPServer.ViewModels
 
 		private void _timer_Tick(object sender, EventArgs e)
 		{
-			//	timerTick += 1;
-			foreach (var room in RoomsCollection)
+			foreach (var room in RoomsCollection.Where(x=>!x.IsAddedToGraph))
 			{
-				room.AddToCollections();
+				room.AddToCollection();
 			}
-
-			foreach (var room in RoomsCollection)
+			if (RoomsCollection.Any(x=>!x.IsAddedToGraph))
 			{
-				if (room.Humidity < 0)
-					room.Humidity = room.OldPositiveHumidityValue;
-				if (room.Temperature < 0)
-					room.Temperature = room.OldPositiveTemperatureValue;
-				room.Date = DateTime.Now;
+				_timer.Interval = new TimeSpan(0, 0, 5);
 			}
-
-
-			Task.Run(async () =>
+			else
 			{
+				foreach (var room in RoomsCollection)
+				{
+					room.IsAddedToGraph = false;
+				}
 
-				await _roomRepository.SaveAsync(RoomsCollection);
-				_logger.Information("Данные успешно добавились в бд");
+				_timer.Interval = new TimeSpan(0, 10, 0);
 
-			}).ContinueWith(t =>
-			{
+				Task.Run(async () =>
+				{
 
-				_logger.Error("Не удлаось добавить данные");
-				_logger.Error("Ошибка {0}", t.Exception?.Message);
-				_logger.Error("Ошибка {0}", t.Exception?.InnerException);
+					await _roomRepository.SaveAsync(RoomsCollection.Where(x => x.IsAddedToGraph));
+					_logger.Information("Данные успешно добавились в бд");
 
-			}, TaskContinuationOptions.OnlyOnFaulted);
+				}).ContinueWith(t =>
+				{
 
+					_logger.Error("Не удлаось добавить данные");
+					_logger.Error("Ошибка {0}", t.Exception?.Message);
+					_logger.Error("Ошибка {0}", t.Exception?.InnerException);
+
+				}, TaskContinuationOptions.OnlyOnFaulted);
+			}
+					
 		}
 
 
@@ -228,7 +230,6 @@ namespace DHCPServer.ViewModels
 
 			_dialogService.Show("GraphView", dialogParametr, x =>
 			{
-
 			});
 		}
 

@@ -55,11 +55,12 @@ namespace DHCPServer.Models.Repositories
 
 			using (var connection = _factory.CreateConnection())
 			{
-				var fd = new DateTime(fromDate.Year,fromDate.Month,fromDate.Day,fromTime.Hours,fromTime.Minutes,0);
-				var ft = new DateTime(toDate.Year, toDate.Month, toDate.Day, toTime.Hours, toTime.Minutes,0);
+				var fromD = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, fromTime.Hours, fromTime.Minutes, 0);
+				var toD = new DateTime(toDate.Year, toDate.Month, toDate.Day, toTime.Hours, toTime.Minutes, 0);
 
+				var asd = toDate.ToString("yyyy-MM-dd HH:mm:ss");
 				var result = await connection.QueryAsync<RoomInfo>(query, new
-				{ from = fd, to = ft });
+				{ from = fromD.ToString("yyyy-MM-dd HH:mm:ss") , to = toD.ToString("yyyy-MM-dd HH:mm:ss") });
 				return result;
 			}
 		}

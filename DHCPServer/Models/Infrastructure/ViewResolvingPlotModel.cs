@@ -37,9 +37,100 @@ namespace DHCPServer.Models.Infrastructure
             }
         }
 
+		public static ViewResolvingPlotModel CreateDefault()
+		{
+			var model = new ViewResolvingPlotModel();
+			SetUpModel(model);
+			var lineSeries = CreateLineSeries();
+			model.Series.Add(lineSeries.First());
+			model.Series.Add(lineSeries.Last());
+
+			return model;
+		}
+
+		public LineSeries GetFirst()
+		{
+			return Series.First() as LineSeries;
+		}
+		public LineSeries GetLast()
+		{
+			return Series.Last() as LineSeries;
+
+		}
+	
+
+		private static LineSeries[] CreateLineSeries()
+		{
+			var temperatureLineSeries = new LineSeries
+			{
+				StrokeThickness = 2,
+				MarkerSize = 3,
+				MarkerStroke = temperatureColor,
+				MarkerType = markerType,
+				CanTrackerInterpolatePoints = true,
+				Title = "Температура",
+				Color = temperatureColor,
+
+				
+			};
+			var humidityLineSeries = new LineSeries
+			{
+				StrokeThickness = 2,
+				MarkerSize = 3,
+				MarkerStroke = humidityColor,
+				MarkerType = markerType,
+				CanTrackerInterpolatePoints = true,
+				Title = "Влажность",
+				Color = humidityColor,
+			};
+
+			return new LineSeries[]
+			{
+				temperatureLineSeries,humidityLineSeries
+			};
+		}
+		private static void SetUpModel(ViewResolvingPlotModel model)
+		{
+			model.LegendTitle = "Данные";
+			model.LegendOrientation = LegendOrientation.Horizontal;
+			model.LegendPlacement = LegendPlacement.Outside;
+			model.LegendPosition = LegendPosition.TopRight;
+			model.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
+			model.LegendBorder = OxyColors.Black;
+			var dt = DateTime.Now;
+			var dateAxis = new DateTimeAxis()
+			{
+				MajorGridlineStyle = LineStyle.Solid,
+				MinorGridlineStyle = LineStyle.Dot,
+				IntervalLength = 200,
+				Position = AxisPosition.Bottom,
+				Title = "Время",
+				MajorStep = 1.0 / 24,
+				StringFormat = "HH:mm",
+				Minimum = DateTimeAxis.ToDouble(dt),
+				Maximum = DateTimeAxis.ToDouble(dt.AddHours(6)),
+				IntervalType = DateTimeIntervalType.Hours,
+				
+				
+			};
+			model.Axes.Add(dateAxis);
+			var valueAxis = new LinearAxis()
+			{
+				MajorGridlineStyle = LineStyle.Solid,
+				MinorGridlineStyle = LineStyle.Dot,
+				Title = "Значение",
+				Position = AxisPosition.Left,
+				MinorStep = 0.5,
+				MajorStep = 0.2,
+				MinimumMinorStep = 0.5,
+				MinimumMajorStep = 3,
+				IntervalLength = 100,
+				AbsoluteMaximum = 70,
+				AbsoluteMinimum = 0,
+			};
+			model.Axes.Add(valueAxis);
+		}
 
 
-
-  
-    }
+	}
 }

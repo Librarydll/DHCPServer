@@ -26,6 +26,7 @@
         </Grid>
         <oxy:PlotView  Grid.Row="1" x:Name="Plot1"  Margin="10">
         </oxy:PlotView>
+      
         <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
         
     </Grid>
