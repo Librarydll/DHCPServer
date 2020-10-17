@@ -8,11 +8,10 @@ namespace DHCPServer.Core.Extensions
 {
 	public static class DateExtensions
 	{
-		public static DateTime ConvertToDateTime(this DateTime date)
+		public static DateTime ToToday(this DateTime date)
 		{
-					
-			return new DateTime(date.Ticks);
+			var today = DateTime.Now;
+			return new DateTime(today.Year, today.Month, today.Day, date.TimeOfDay.Hours, date.TimeOfDay.Minutes, date.TimeOfDay.Seconds);
 		}
-		
 	}
 }

@@ -58,9 +58,22 @@ namespace DHCPServer.Models.Repositories
 				var fromD = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, fromTime.Hours, fromTime.Minutes, 0);
 				var toD = new DateTime(toDate.Year, toDate.Month, toDate.Day, toTime.Hours, toTime.Minutes, 0);
 
-				var asd = toDate.ToString("yyyy-MM-dd HH:mm:ss");
 				var result = await connection.QueryAsync<RoomInfo>(query, new
 				{ from = fromD.ToString("yyyy-MM-dd HH:mm:ss") , to = toD.ToString("yyyy-MM-dd HH:mm:ss") });
+				return result;
+			}
+		}
+
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date,TimeSpan fromTime, TimeSpan toTime)
+		{
+			string query = "SELECT *FROM RoomInfos where deviceid =@deviceid and ( date>=@from and date<=@to)";
+
+			using (var connection = _factory.CreateConnection())
+			{
+				var fromD = new DateTime(date.Year, date.Month, date.Day, fromTime.Hours, fromTime.Minutes, 0);
+				var toD = new DateTime(date.Year, date.Month, date.Day, toTime.Hours, toTime.Minutes, 0);
+				var result = await connection.QueryAsync<RoomInfo>(query, new
+				{ from = fromD.ToString("yyyy-MM-dd HH:mm:ss"), to = toD.ToString("yyyy-MM-dd HH:mm:ss"), deviceid });
 				return result;
 			}
 		}

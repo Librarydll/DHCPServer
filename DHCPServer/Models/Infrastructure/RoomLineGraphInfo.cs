@@ -49,6 +49,9 @@ namespace DHCPServer.Models.Infrastructure
 			HumidityChangeEvent += HumidityChangedEventHandler;
 		}
 
+		public RoomLineGraphInfo(Device device):this(new RoomData(),device)
+		{}
+
 		public void SetInvalid(bool value)
 		{
 			if (value != IsInvalid)
@@ -127,12 +130,12 @@ namespace DHCPServer.Models.Infrastructure
 		public void AddToHumidity()
 		{
 			
-			Log.Logger.Information("ADDED To Graph DEVICE : {0} HUMIDITY {1}", IPAddress, Humidity);
+			Log.Logger.Information("ADDED To Graph DEVICE : {0} HUMIDITY {1}", Device?.IPAddress, Humidity);
 			GraphLineModel.GetLast().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
 		}
 		public void AddToTemperature()
 		{
-			Log.Logger.Information("ADDED To Graph DEVICE : {0} TEMPERATURE {1}", IPAddress, Temperature);
+			Log.Logger.Information("ADDED To Graph DEVICE : {0} TEMPERATURE {1}", Device?.IPAddress, Temperature);
 			GraphLineModel.GetFirst().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Temperature));
 		}
 

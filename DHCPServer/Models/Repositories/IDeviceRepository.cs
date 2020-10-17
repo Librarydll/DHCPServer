@@ -13,5 +13,10 @@ namespace DHCPServer.Models.Repositories
 
 		Task<bool> UpdateAsync(Device device);
 		Task<IEnumerable<Device>> GetAllAsync();
+
+		Task<IEnumerable<Device>> GetDevicesLists();
+
+		Task<DevicesList> CreateDeviceListAsync(DevicesList device);
+		Task<bool> DeleteDeviceListAsync(int deviceId);
 	}
 }

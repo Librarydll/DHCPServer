@@ -40,7 +40,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Margin="20 0 0 0" HorizontalAlignment="Left" FontSize="16" FontWeight="DemiBold">
             <Run>Устройство: </Run>
-            <Run Text="{Binding GraphInfo.IPAddress}"></Run>
+            <Run Text="{Binding GraphInfo.Device.IPAddress}"></Run>
         </TextBlock>
         <TextBlock  Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20 0 0 0" FontWeight="DemiBold">
             <Run>Псевдоним: </Run>
@@ -57,8 +57,8 @@
                 <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding ShowRealTimeGraphComamand}" Background="{x:Null}" Margin="5 0 5 0" VerticalAlignment="Center" Click="Button_Click">
                     Реальное время
                 </Button>
-                <!--<DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
-                <TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
+                <DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
+                <!--<TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
                 <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>
                 <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Использовать время" VerticalAlignment="Center"/>-->
                 <control:TimeControl Value="{Binding DateTimeSpan.FromTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}"  Margin="5 0 5 0" VerticalAlignment="Center"/>

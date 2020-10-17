@@ -42,7 +42,7 @@ namespace DHCPServer.Models.Repositories
 			}
 		}
 
-		public async Task<bool> DeleteAsync(Device device)
+		public async Task<bool> DeleteAsync(Device device) 
 		{
 			using (var connection = _factory.CreateConnection())
 			{
@@ -60,5 +60,48 @@ namespace DHCPServer.Models.Repositories
 			}
 		}
 
+		public async Task<IEnumerable<Device>> GetDevicesLists()
+		{
+			string query = @"SELECT *FROM DevicesLists as dl left 
+							join devices as d on dl.deviceid=d.id";
+			using (var connection = _factory.CreateConnection())
+			{
+				var entities = await connection.QueryAsync<DevicesList, Device, Device>(query,
+					(dl, d) =>
+					{
+						return d;
+					});
+				return entities;
+			}
+		}
+
+		public async Task<DevicesList> CreateDeviceListAsync(DevicesList device)
+		{
+			string query = "SELECT *FROM DevicesLists WHERE deviceid = @id";
+			using (var connection = _factory.CreateConnection())
+			{
+				var dev = await connection.QueryFirstOrDefaultAsync<DevicesList>(query, new { id = device.DeviceId });
+
+				if (dev != null) return dev;
+
+
+				int id = await connection.InsertAsync(device);
+				device.Id = id;
+				return device;
+			}
+		}
+
+	
+		public async Task<bool> DeleteDeviceListAsync(int deviceId)
+		{
+			string query = "Select *from deviceslists where DEVICEID=@deviceId";
+			var sqlStatement = "DELETE from deviceslists WHERE Id = @Id";
+			using (var connection = _factory.CreateConnection())
+			{
+				var device = await connection.QueryFirstOrDefaultAsync<DevicesList>(query,new {deviceId });
+				var count = await connection.ExecuteAsync(sqlStatement, new { Id = device.Id });
+				return count>0;
+			}
+		}
 	}
 }

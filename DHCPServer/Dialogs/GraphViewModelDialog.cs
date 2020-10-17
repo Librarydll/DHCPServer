@@ -59,16 +59,9 @@ namespace DHCPServer.Dialogs
 
 		private async Task FilterHandler()
 		{
-			IEnumerable<RoomInfo> collection = null;
+			if (!DateTimeSpan.IsTimeValidate()) return;
 			
-			if (DateTimeSpan.IsTimeValidate())
-			{
-				collection = await _roomRepository.FilterRooms(DateTimeSpan.FromDate, DateTimeSpan.ToDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
-			}
-			else if (DateTimeSpan.IsDateValidate())
-			{
-				collection = await _roomRepository.FilterRooms(DateTimeSpan.FromDate, DateTimeSpan.ToDate);
-			}
+			var collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId,DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
 
 			GraphInfo = FillModel(collection);
 			GraphInfo.GraphLineModel.InvalidatePlot(true);
@@ -81,8 +74,8 @@ namespace DHCPServer.Dialogs
 			var humidityLineSerie = result.GraphLineModel.GetLast();
 			var temperatureLineSerie = result.GraphLineModel.GetFirst();
 
-			var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Humidity)).ToList();
-			var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Temperature)).ToList();
+			var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date.ToToday()), x.Humidity)).ToList();
+			var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date.ToToday()), x.Temperature)).ToList();
 
 			temperatureLineSerie.Points.AddRange(temperaturePoints);
 			humidityLineSerie.Points.AddRange(humidityPoints);
