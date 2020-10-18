@@ -1,4 +1,5 @@
 ﻿using DHCPServer.Dialogs;
+using DHCPServer.Models;
 using DHCPServer.Models.Repositories;
 using DHCPServer.Services;
 using DHCPServer.Views;
@@ -32,7 +33,7 @@ namespace DHCPServer
 			containerRegistry.RegisterInstance(Log.Logger);
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
 			containerRegistry.RegisterSingleton<IDeviceRepository, DeviceRepository>();
-			containerRegistry.RegisterSingleton<XmlDeviceProvider>();
+			containerRegistry.RegisterSingleton<Transfer>();
 
 			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();
 			containerRegistry.RegisterDialog<GraphView, GraphViewModelDialog>();

@@ -57,7 +57,7 @@ namespace DHCPServer.ViewModels
 			IRoomRepository roomRepository,
 			ILogger logger,
 			IEventAggregator eventAggregator,
-			IDeviceRepository deviceRepository)
+			IDeviceRepository deviceRepository,Transfer transfer)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
@@ -76,6 +76,7 @@ namespace DHCPServer.ViewModels
 			};
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
+			
 
 			Task.Run(async () =>
 		   {
@@ -90,7 +91,7 @@ namespace DHCPServer.ViewModels
 			   await StartListenAsync();
 		   });
 
-		
+
 			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
 		}
 
@@ -155,11 +156,11 @@ namespace DHCPServer.ViewModels
 
 		private void _timer_Tick(object sender, EventArgs e)
 		{
-			foreach (var room in RoomsCollection.Where(x=>!x.IsAddedToGraph))
+			foreach (var room in RoomsCollection.Where(x => !x.IsAddedToGraph))
 			{
 				room.AddToCollection();
 			}
-			if (RoomsCollection.Any(x=>!x.IsAddedToGraph))
+			if (RoomsCollection.Any(x => !x.IsAddedToGraph))
 			{
 				_timer.Interval = new TimeSpan(0, 0, 5);
 			}
@@ -187,7 +188,7 @@ namespace DHCPServer.ViewModels
 
 				}, TaskContinuationOptions.OnlyOnFaulted);
 			}
-					
+
 		}
 
 
@@ -244,4 +245,5 @@ namespace DHCPServer.ViewModels
 		}
 
 	}
+
 }

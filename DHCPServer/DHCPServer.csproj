@@ -174,6 +174,7 @@
     <Compile Include="Models\Repositories\RoomRepository.cs" />
     <Compile Include="Models\RoomData.cs" />
     <Compile Include="Models\RoomInfo.cs" />
+    <Compile Include="Models\Transfer.cs" />
     <Compile Include="Services\HtmlHelper.cs" />
     <Compile Include="Services\XmlDeviceProvider.cs" />
     <Compile Include="UICore\Converters\BorderColorConverter.cs" />

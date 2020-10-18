@@ -10,7 +10,7 @@ namespace DHCPServer.Models.Context
 {
 	public class ApplicationContextFactory
 	{
-		private static readonly string connString = "Data Source=data2.db;";
+		private static readonly string connString = "Data Source=data.db;";
 		public IDbConnection CreateConnection()
 		{
 			return new SQLiteConnection(connString);

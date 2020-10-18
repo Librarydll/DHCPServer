@@ -40,10 +40,17 @@ namespace DHCPServer.Models.Repositories
 
 		public async Task<IEnumerable<RoomInfo>> FilterRooms(DateTime from, DateTime to)
 		{
-			string query = "SELECT *FROM RoomInfos where date>=@from and date<=@to";
+			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=d.id where date>=@from and date<=@to";
 			using (var connection = _factory.CreateConnection())
 			{
-				var result = await connection.QueryAsync<RoomInfo>(query, new 
+				var result = await connection.QueryAsync<RoomInfo,Device,RoomInfo>(query, 
+					(r,d) 
+					=> 
+					{
+						r.Device = d;
+						return r;
+					},
+					new 
 				{ from = from.Date.ToString("yyyy-MM-dd"), to = to.Date.ToString("yyyy-MM-dd") });
 				return result;
 			}
@@ -51,14 +58,20 @@ namespace DHCPServer.Models.Repositories
 
 		public async Task<IEnumerable<RoomInfo>> FilterRooms(DateTime fromDate, DateTime toDate, TimeSpan fromTime, TimeSpan toTime)
 		{
-			string query = "SELECT *FROM RoomInfos where date>=@from and date<=@to";
+			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=d.id where date>=@from and date<=@to";
 
 			using (var connection = _factory.CreateConnection())
 			{
 				var fromD = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, fromTime.Hours, fromTime.Minutes, 0);
 				var toD = new DateTime(toDate.Year, toDate.Month, toDate.Day, toTime.Hours, toTime.Minutes, 0);
 
-				var result = await connection.QueryAsync<RoomInfo>(query, new
+				var result = await connection.QueryAsync<RoomInfo, Device, RoomInfo>(query, (r, d)
+					 =>
+				{
+					r.Device = d;
+					return r;
+				},
+				new 
 				{ from = fromD.ToString("yyyy-MM-dd HH:mm:ss") , to = toD.ToString("yyyy-MM-dd HH:mm:ss") });
 				return result;
 			}
@@ -74,6 +87,25 @@ namespace DHCPServer.Models.Repositories
 				var toD = new DateTime(date.Year, date.Month, date.Day, toTime.Hours, toTime.Minutes, 0);
 				var result = await connection.QueryAsync<RoomInfo>(query, new
 				{ from = fromD.ToString("yyyy-MM-dd HH:mm:ss"), to = toD.ToString("yyyy-MM-dd HH:mm:ss"), deviceid });
+				return result;
+			}
+		}
+
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date)
+		{
+			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=d.id where  date(date)=@date";
+
+			using (var connection = _factory.CreateConnection())
+			{
+
+				var result = await connection.QueryAsync<RoomInfo, Device, RoomInfo>(query, (r, d)
+					 =>
+				{
+					r.Device = d;
+					return r;
+				},
+				new
+				{ date = date.Date.ToString("yyyy-MM-dd")});
 				return result;
 			}
 		}

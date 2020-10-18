@@ -32,6 +32,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -58,19 +59,25 @@
                     Реальное время
                 </Button>
                 <DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
-                <!--<TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
-                <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>
-                <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Использовать время" VerticalAlignment="Center"/>-->
-                <control:TimeControl Value="{Binding DateTimeSpan.FromTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}"  Margin="5 0 5 0" VerticalAlignment="Center"/>
-                <TextBlock Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5" VerticalAlignment="Center" Text="До"/>
-                <control:TimeControl Value="{Binding DateTimeSpan.ToTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5 0 5 0" VerticalAlignment="Center"/>
+                <!--<TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>-->
+                <!--<DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>-->
+                <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Целый день" VerticalAlignment="Center"/>
+                <control:TimeControl Value="{Binding DateTimeSpan.FromTime}"   Margin="5 0 5 0" VerticalAlignment="Center"/>
+                <TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
+                <control:TimeControl Value="{Binding DateTimeSpan.ToTime}"  Margin="5 0 5 0" VerticalAlignment="Center"/>
                 <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding FilterCommand}" Background="{x:Null}" Margin="5 0 5 0" VerticalAlignment="Center">
                     Фильтр
                 </Button>
             </StackPanel>
         </Grid>
+
+        <Grid Grid.Row="3">
+            <StackPanel>
+                <Label Content="{Binding Result}" Padding="5" Margin="5" FontSize="16"></Label>
+            </StackPanel>
+        </Grid>
         <!--<Button Width="100" Command="{Binding XCommand}">XXX</Button>-->
-        <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel" Grid.ColumnSpan="2" Grid.Row="3"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
+        <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel" Grid.ColumnSpan="2" Grid.Row="4"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
         </oxy:PlotView>
     </Grid>
 </UserControl>

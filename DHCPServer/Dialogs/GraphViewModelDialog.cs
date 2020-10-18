@@ -42,6 +42,13 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _graphInfo, value); }
 		}
 
+		private string _result;
+		public string Result
+		{
+			get { return _result; }
+			set { SetProperty(ref _result, value); }
+		}
+
 		public DelegateCommand FilterCommand { get; set; }
 		public DelegateCommand ShowRealTimeGraphComamand { get; set; }
 
@@ -59,12 +66,29 @@ namespace DHCPServer.Dialogs
 
 		private async Task FilterHandler()
 		{
-			if (!DateTimeSpan.IsTimeValidate()) return;
-			
-			var collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId,DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
+			Result = string.Empty;
+			if (!DateTimeSpan.IsTimeValidate()) 
+			{
+				Result = "Ввод времени ошибочное";
+				return;
+			}
+			IEnumerable<RoomInfo> collection = null;
+			if (DateTimeSpan.IsTimeInclude)
+			{
+				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate);
+			}
+			else
+			{
+				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
+			}
 
-			GraphInfo = FillModel(collection);
-			GraphInfo.GraphLineModel.InvalidatePlot(true);
+			if (collection.Count() > 0)
+			{
+				GraphInfo = FillModel(collection);
+				GraphInfo.GraphLineModel.InvalidatePlot(true);
+			}
+			
+			Result = $"Найдено данных {collection.Count()} шт на {DateTimeSpan.FromDate.ToString("yyyy/MM/dd")}";
 		}
 
 		public RoomLineGraphInfo FillModel(IEnumerable<RoomInfo> collection)
