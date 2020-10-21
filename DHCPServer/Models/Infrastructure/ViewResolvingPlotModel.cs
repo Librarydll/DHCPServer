@@ -132,5 +132,26 @@ namespace DHCPServer.Models.Infrastructure
 		}
 
 
+		public bool SetLastNHours(int n)
+		{
+			var dateTimeAxis = Axes.First() as DateTimeAxis;
+			var lineSeries = GetFirst();
+			var dates = lineSeries.Points.Select(x =>DateTimeAxis.ToDateTime(x.X));
+			var beginingDate = dates.FirstOrDefault();
+			var lastDate = dates.LastOrDefault();
+
+			if (beginingDate == null || lastDate == null) return false;
+
+			var subsctractDate = lastDate - beginingDate;
+
+			if (Math.Abs(subsctractDate.Hours) <= n) return false;
+
+			var lastNDate = lastDate.Subtract(new TimeSpan(n, 0, 0));
+
+			dateTimeAxis.Minimum = DateTimeAxis.ToDouble(lastNDate);
+			dateTimeAxis.Maximum = DateTimeAxis.ToDouble(lastDate);
+
+			return true;
+		}
 	}
 }
