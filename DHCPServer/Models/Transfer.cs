@@ -20,7 +20,6 @@ namespace DHCPServer.Models
 		}
 		public async Task TransferData()
 		{
-			throw new ArgumentException();
 			List<RoomInfo> roomInfos = new List<RoomInfo>();
 			using (var file =new StreamReader("log.log"))
 			{

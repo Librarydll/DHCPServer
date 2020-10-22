@@ -1,4 +1,5 @@
-﻿using DHCPServer.Models.Common;
+﻿using Dapper.Contrib.Extensions;
+using DHCPServer.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,12 +13,26 @@ namespace DHCPServer.Models
 {
 	public class Device : BaseEntity, IDevice
 	{
+
 		private string iPAddress;
+		public string IPAddress
+		{
+			get { return iPAddress; }
+			set { SetProperty(ref iPAddress, value); }
+		}
+
 		private string nick;
+		public string Nick
+		{
+			get { return nick; }
+			set { SetProperty(ref nick, value); }
+		}
 
-		public string IPAddress { get => iPAddress; set { iPAddress = value; RaisePropertyChangedEvent(); } }
-
-		public string Nick { get => nick; set { nick = value; RaisePropertyChangedEvent(); } }
-
+		private bool isAdded;
+		public bool IsAdded
+		{
+			get { return isAdded; }
+			set { SetProperty(ref isAdded, value); }
+		}
 	}
 }

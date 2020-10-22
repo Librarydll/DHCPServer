@@ -162,7 +162,6 @@
     <Compile Include="Models\Context\ApplicationContextFactory.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DeviceClient.cs" />
-    <Compile Include="Models\DevicesList.cs" />
     <Compile Include="Models\DeviceXml.cs" />
     <Compile Include="Models\Enums\DeviceResponseStatus.cs" />
     <Compile Include="Models\IDevice.cs" />

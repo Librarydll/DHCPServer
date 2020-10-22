@@ -28,6 +28,21 @@ namespace DHCPServer.Core.Extensions
 			}
 		}
 
+		public static IEnumerable<Device> CheckDevice(this IEnumerable<Device> newDevices,IEnumerable<Device> oldDevices)
+		{
+			foreach (var device in newDevices)
+			{
+				var d = oldDevices.FirstOrDefault(x => x.Id == device.Id);
+
+				if (d != null)
+				{
+					device.IsAdded = true;
+				}
+			}
+
+			return newDevices;
+		}
+
 
 	}
 }

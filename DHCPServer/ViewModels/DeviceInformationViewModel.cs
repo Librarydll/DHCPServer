@@ -76,11 +76,14 @@ namespace DHCPServer.ViewModels
 			};
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
-			
+
+
 
 			Task.Run(async () =>
-		   {
-			   var devices = await _deviceRepository.GetDevicesLists();
+			{
+			 //await	transfer.TransferData();
+
+				var devices = await _deviceRepository.GetDevicesLists();
 			   var rooms = devices.Select(x => new RoomLineGraphInfo(x));
 			   RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
 
@@ -89,6 +92,7 @@ namespace DHCPServer.ViewModels
 			.ToDeviceClient());
 
 			   await StartListenAsync();
+
 		   });
 
 
@@ -113,10 +117,10 @@ namespace DHCPServer.ViewModels
 
 		private async Task StartListenAsync()
 		{
-			Task[] tasks = new Task[_deviceClients.Count];
+			var tasks = new List<Task>();
 			foreach (var device in _deviceClients)
 			{
-				tasks.Append(SubscribeDeviceAsync(device));
+				tasks.Add(SubscribeDeviceAsync(device));
 			}
 
 			await Task.WhenAll(tasks);
@@ -127,13 +131,17 @@ namespace DHCPServer.ViewModels
 			var d = _deviceClients.FirstOrDefault(x => x.Device.IPAddress == roomInfo.Device.IPAddress);
 			d?.Dispose();
 			RoomsCollection.Remove(roomInfo);
-			_deviceRepository.DeleteDeviceListAsync(roomInfo.Device.Id);
+			roomInfo.Device.IsAdded = false;
+
+			_deviceRepository.UpdateAsync(roomInfo.Device).Wait();
 		}
 
 		private void ClientService_ReciveMessageErrorEvent(Device device)
 		{
 			var invalidDevide = RoomsCollection.FirstOrDefault(x => x.Device.IPAddress == device.IPAddress);
-			Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(true); }));
+
+			if(invalidDevide!=null)
+				Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(true); }));
 
 		}
 		private void _clientService_ReciveMessageEvent(RoomInfo roomInfo, DeviceResponseStatus status)
@@ -166,18 +174,20 @@ namespace DHCPServer.ViewModels
 			}
 			else
 			{
-				foreach (var room in RoomsCollection)
-				{
-					room.IsAddedToGraph = false;
-				}
-
-				_timer.Interval = new TimeSpan(0, 10, 0);
+				
 
 				Task.Run(async () =>
 				{
 
 					await _roomRepository.SaveAsync(RoomsCollection.Where(x => x.IsAddedToGraph));
 					_logger.Information("Данные успешно добавились в бд");
+
+					foreach (var room in RoomsCollection)
+					{
+						room.IsAddedToGraph = false;
+					}
+
+					_timer.Interval = new TimeSpan(0, 10, 0);
 
 				}).ContinueWith(t =>
 				{
@@ -199,39 +209,74 @@ namespace DHCPServer.ViewModels
 			device.EnableDeviceEvent += d =>
 			{
 				var invalidDevide = RoomsCollection.FirstOrDefault(x => x.Device.IPAddress == d.IPAddress);
-				Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(false); }));
+				if(invalidDevide!=null)
+					Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(false); }));
 			};
 			await device.ListenAsync(tokenSource.Token);
 		}
 
 		private void OpenNewDevcieView()
 		{
-			Device newDevice = null;
-
+			ObservableCollection<Device> devices = null;
 			_dialogService.ShowModal("SelectionDeviceView", x =>
 			{
 				if (x.Result == ButtonResult.OK)
 				{
-					newDevice = x.Parameters.GetValue<Device>("model");
+
+					devices = x.Parameters.GetValue<ObservableCollection<Device>>("model");
 				}
 			});
 
-			if (newDevice != null)
+			if (devices != null)
 			{
-				var room = RoomsCollection.FirstOrDefault(x => x.Device.IPAddress == newDevice.IPAddress);
-				if (room == null)
+				foreach (var device in devices.Where(x=>x.IsAdded))
 				{
-					var newRomm = new RoomLineGraphInfo(new RoomData(), newDevice);
-					RoomsCollection.Add(newRomm);
-					var deviceClient = new DeviceClient(newDevice);
-					_deviceClients.Add(deviceClient);
-					Task.Run(async () => await SubscribeDeviceAsync(deviceClient));
-					_deviceRepository.CreateDeviceListAsync(new DevicesList() { DeviceId = newDevice.Id }).Wait();
+					var room = RoomsCollection.FirstOrDefault(x => x.Device.IPAddress == device.IPAddress);
+
+					if (room == null)
+					{
+
+						var newRomm = new RoomLineGraphInfo(new RoomData(), device);
+						RoomsCollection.Add(newRomm);
+						var deviceClient = new DeviceClient(device);
+						_deviceClients.Add(deviceClient);
+						Task.Run(async() =>
+						{
+							await SubscribeDeviceAsync(deviceClient);
+
+						}).ContinueWith(t => {
+
+							_logger.Error(t.Exception.Message);
+							_logger.Error(t.Exception?.InnerException?.Message);
+						}, TaskContinuationOptions.OnlyOnFaulted);
+					}
 
 				}
 
+				foreach (var device in devices.Where(x=>!x.IsAdded))
+				{
+					var room = RoomsCollection.FirstOrDefault(x => x.Device.IPAddress == device.IPAddress);
+
+					if (room != null)
+					{
+						RoomsCollection.Remove(room);
+					}
+				}
+
+
+				Task.Run(async () =>
+				{
+					await _deviceRepository.UpdateRangeAsync(devices);
+				}).ContinueWith(t => {
+
+					_logger.Error(t.Exception.Message);
+					_logger.Error(t.Exception?.InnerException?.Message);
+				}, TaskContinuationOptions.OnlyOnFaulted);
+
 			}
 		}
+//		ALTER TABLE Devices
+//add column IsAdded INTEGER
 		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
 		{
 			var dialogParametr = new DialogParameters

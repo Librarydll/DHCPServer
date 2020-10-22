@@ -18,5 +18,18 @@ namespace DHCPServer.Models.Common
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 		}
+
+
+		public bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+		{
+
+			if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
+
+			storage = value;
+			RaisePropertyChangedEvent(propertyName);
+
+			return true;
+
+		}
 	}
 }

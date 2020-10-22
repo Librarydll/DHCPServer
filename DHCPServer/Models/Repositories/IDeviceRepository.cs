@@ -12,11 +12,11 @@ namespace DHCPServer.Models.Repositories
 		Task<bool> DeleteAsync(Device device);
 
 		Task<bool> UpdateAsync(Device device);
+		Task<int> UpdateRangeAsync(IEnumerable<Device> devices);
 		Task<IEnumerable<Device>> GetAllAsync();
 
 		Task<IEnumerable<Device>> GetDevicesLists();
 
-		Task<DevicesList> CreateDeviceListAsync(DevicesList device);
-		Task<bool> DeleteDeviceListAsync(int deviceId);
+
 	}
 }
