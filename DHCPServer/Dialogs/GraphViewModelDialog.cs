@@ -88,10 +88,9 @@ namespace DHCPServer.Dialogs
 			if (collection.Count() > 0)
 			{
 				GraphInfo = FillModel(collection);
-				GraphInfo.GraphLineModel.InvalidatePlot(true);
 			}
 			
-			LabelResult = $"Найдено данных {collection.Count()} шт на {DateTimeSpan.FromDate.ToString("yyyy/MM/dd")}";
+			LabelResult = $"Найдено данных {collection.Count()} шт на {DateTimeSpan.FromDate:yyyy/MM/dd}";
 		}
 
 		public RoomLineGraphInfo FillModel(IEnumerable<RoomInfo> collection)
@@ -103,7 +102,7 @@ namespace DHCPServer.Dialogs
 
 			var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date.ToToday()), x.Humidity)).ToList();
 			var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date.ToToday()), x.Temperature)).ToList();
-
+			result.GraphLineModel.SetLastNHours(6);
 			temperatureLineSerie.Points.AddRange(temperaturePoints);
 			humidityLineSerie.Points.AddRange(humidityPoints);
 			GraphInfo.GraphLineModel.InvalidatePlot(true);

@@ -93,7 +93,7 @@ namespace DHCPServer.Models.Repositories
 
 		public async Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date)
 		{
-			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=d.id where  date(date)=@date";
+			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=@id where  date(date)=@date";
 
 			using (var connection = _factory.CreateConnection())
 			{
@@ -105,7 +105,7 @@ namespace DHCPServer.Models.Repositories
 					return r;
 				},
 				new
-				{ date = date.Date.ToString("yyyy-MM-dd")});
+				{ id=deviceid ,date = date.Date.ToString("yyyy-MM-dd")});
 				return result;
 			}
 		}
