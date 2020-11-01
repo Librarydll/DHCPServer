@@ -6,7 +6,6 @@ using DHCPServer.Models;
 using DHCPServer.Models.Enums;
 using DHCPServer.Models.Infrastructure;
 using DHCPServer.Models.Repositories;
-using DHCPServer.Services;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -276,8 +275,18 @@ namespace DHCPServer.ViewModels
 
 			}
 		}
-//		ALTER TABLE Devices
-//add column IsAdded INTEGER
+		//		ALTER TABLE Devices
+		//add column IsAdded INTEGER
+//		CREATE TABLE "Reports" (
+//	"Id"	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+//	"Title"	TEXT NOT NULL,
+//	"LastUpdated"	TEXT,
+//	"FromTime"	TEXT,
+//	"ToTime"	TEXT,
+//	"DeviceId"	INTEGER,
+//	FOREIGN KEY("DeviceId") REFERENCES "Devices"("id")
+//);
+
 		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
 		{
 			var dialogParametr = new DialogParameters

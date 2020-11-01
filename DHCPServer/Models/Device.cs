@@ -13,6 +13,10 @@ namespace DHCPServer.Models
 {
 	public class Device : BaseEntity, IDevice
 	{
+		public Device()
+		{
+			Reports = new List<Report>();
+		}
 
 		private string iPAddress;
 		public string IPAddress
@@ -34,5 +38,7 @@ namespace DHCPServer.Models
 			get { return isAdded; }
 			set { SetProperty(ref isAdded, value); }
 		}
+
+		public ICollection<Report> Reports { get; set; }
 	}
 }

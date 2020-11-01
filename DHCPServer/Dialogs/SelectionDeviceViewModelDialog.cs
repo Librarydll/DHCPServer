@@ -16,6 +16,7 @@ namespace DHCPServer.Dialogs
 	public class SelectionDeviceViewModelDialog : DialogViewModelBase
 	{
 		private readonly IDeviceRepository _deviceRepository;
+		private readonly IReportRepository _reportRepository;
 		private IEnumerable<Device> _addedDevices;
 
 
@@ -35,9 +36,17 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _dateTimeSpan, value); }
 		}
 
-		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository)
+		private Report _report;
+		public Report Report
+		{
+			get { return _report; }
+			set { SetProperty(ref _report, value); }
+		}
+
+		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository,IReportRepository reportRepository)
 		{
 			_deviceRepository = deviceRepository;
+			_reportRepository = reportRepository;
 		}
 
 		public override void OnDialogOpened(IDialogParameters parameters)
@@ -48,7 +57,9 @@ namespace DHCPServer.Dialogs
 				_addedDevices = await _deviceRepository.GetDevicesLists();
 
 				DevicesColleciton.CheckDevice(_addedDevices);
-
+				var device = _addedDevices.FirstOrDefault();
+			//	if(device ==null)
+				//Report = await _reportRepository.GetLastReport()
 			});
 
 		}

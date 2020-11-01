@@ -144,6 +144,9 @@
     </ApplicationDefinition>
     <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfoSetting.cs" />
+    <Compile Include="Models\Report.cs" />
+    <Compile Include="Models\Repositories\IReportRepository.cs" />
+    <Compile Include="Models\Repositories\ReportRepository.cs" />
     <Compile Include="UICore\Converters\BooleanReverseVisibilityConverter.cs" />
     <Compile Include="Core\Events\ApplicationEvents.cs" />
     <Compile Include="Core\Events\Model\DeviceEventModel.cs" />

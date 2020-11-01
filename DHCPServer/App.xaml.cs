@@ -33,6 +33,7 @@ namespace DHCPServer
 			containerRegistry.RegisterInstance(Log.Logger);
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
 			containerRegistry.RegisterSingleton<IDeviceRepository, DeviceRepository>();
+			containerRegistry.RegisterSingleton<IReportRepository, ReportRepository>();
 			containerRegistry.RegisterSingleton<Transfer>();
 
 			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();
