@@ -45,4 +45,45 @@
             <TextBlock Padding="8 8 0 0" Text="{Binding Path=Device.IPAddress}" FontSize="15" HorizontalAlignment="Center"/>
         </StackPanel>
     </DataTemplate>
+
+
+    <Style x:Key="GridViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                    <Border BorderThickness="0,0,1,0" BorderBrush="White" Background="#FF0B245B" Margin="0,0,0,0">
+                        <TextBlock x:Name="ContentHeader" Padding="0,5,0,0" Height="30" Text="{TemplateBinding Content}"  Width="{TemplateBinding Width}" TextAlignment="Center" FlowDirection="RightToLeft" HorizontalAlignment="Center" VerticalAlignment="Center"  Cursor="Arrow" Foreground="White" Background="#FF0B245B" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+
+
+    <Style x:Key="LVItemStyleX" TargetType="{x:Type ListViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <!--B211377A-->
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <Border Padding="0" BorderBrush="#B211377A" BorderThickness="0,0,0,1" Margin="5,0,0,0" Background="{TemplateBinding Background}" VerticalAlignment="Stretch">
+                        <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="-5,0,0,0" Content="{TemplateBinding Content}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+                <DataTrigger Binding="{Binding IsInvalid}"
+                      Value="true">
+                    <Setter Property="Background"
+                  Value="#FFAB0000" />
+                </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
 </ResourceDictionary>

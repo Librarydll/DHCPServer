@@ -11,7 +11,7 @@
              xmlns:control="clr-namespace:DHCPServer.UICore.Controls"
              x:Name="us">
 
-    
+
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="prism:Dialog.WindowStartupLocation" 
@@ -24,8 +24,6 @@
         </Style>
     </prism:Dialog.WindowStyle>
 
-
-    
     <Grid>
         <Grid.Resources>
             <converter:BooleanReverseVisibilityConverter x:Key="conv"/>
@@ -43,28 +41,45 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Margin="20 0 0 0" HorizontalAlignment="Left" FontSize="16" FontWeight="DemiBold">
+        <TextBlock Style="{StaticResource CurrentTextBlock}">
             <Run>Устройство: </Run>
             <Run Text="{Binding GraphInfo.Device.IPAddress}"></Run>
         </TextBlock>
-        <TextBlock  Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20 0 0 0" FontWeight="DemiBold">
+        <TextBlock  Grid.Row="1" Style="{StaticResource CurrentTextBlock}">
             <Run>Псевдоним: </Run>
             <Run Text="{Binding GraphInfo.Device.Nick}"></Run>
         </TextBlock>
         <CheckBox Margin="0 0 50 0" IsChecked="{Binding GraphInfo.TemperatureLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Left" Content="Температура">
-            
+
         </CheckBox>
         <CheckBox IsChecked="{Binding GraphInfo.HumidityLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Content="Влажность">
 
         </CheckBox>
-        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+
+        <Grid Grid.Row="2">
+            <TextBlock Width="150" Foreground="Red" Style="{StaticResource CurrentTextBlock}">
+              <Run>Температура </Run>
+              <Run Text="{Binding GraphInfo.Temperature}"></Run>
+              <Run> C</Run>
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="3" >
+            <TextBlock Width="150"  Foreground="DarkBlue" Style="{StaticResource CurrentTextBlock}">
+             <Run>Влажность</Run>
+             <Run Text="{Binding GraphInfo.Humidity}"></Run>
+             <Run>%</Run>
+            </TextBlock>
+        </Grid>
+        <!--<Grid Grid.Row="2" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
                 <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding ShowRealTimeGraphComamand}" Background="{x:Null}" Margin="5 0 5 0" VerticalAlignment="Center" Click="Button_Click">
                     Реальное время
                 </Button>
                 <DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
-                <!--<TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>-->
-                <!--<DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>-->
+                -->
+        <!--<TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>-->
+        <!--<DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>-->
+        <!--
                 <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Целый день" VerticalAlignment="Center"/>
                 <control:TimeControl  Visibility="{Binding Converter={StaticResource conv},ElementName=check,Path=IsChecked}" Value="{Binding DateTimeSpan.FromTime}"   Margin="5 0 5 0" VerticalAlignment="Center"/>
                 <TextBlock Visibility="{Binding Converter={StaticResource conv},ElementName=check,Path=IsChecked}" Margin="5" VerticalAlignment="Center" Text="До"/>
@@ -74,13 +89,11 @@
                 </Button>
             </StackPanel>
         </Grid>
-
         <Grid Grid.Row="3">
             <StackPanel>
                 <Label Content="{Binding LabelResult}" Padding="5" Margin="5" FontSize="16"></Label>
             </StackPanel>
-        </Grid>
-        <!--<Button Width="100" Command="{Binding XCommand}">XXX</Button>-->
+        </Grid>-->
         <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel" Grid.ColumnSpan="2" Grid.Row="4"  x:Name="Plot1" Model="{Binding GraphInfo.GraphLineModel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="50">
         </oxy:PlotView>
     </Grid>

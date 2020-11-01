@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Dictionaries/DataGridColumStyles.xaml"/>
                 <ResourceDictionary Source="Dictionaries/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="Dictionaries/TextBlockStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </prism:PrismApplication.Resources>

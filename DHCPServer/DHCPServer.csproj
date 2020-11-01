@@ -72,12 +72,6 @@
       <HintPath>..\packages\Prism.Wpf.7.2.0.1422\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework" />
-    <Reference Include="ScottPlot, Version=4.0.42.0, Culture=neutral, PublicKeyToken=86698dc10387c39e, processorArchitecture=MSIL">
-      <HintPath>..\packages\ScottPlot.4.0.42\lib\netstandard2.0\ScottPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="ScottPlot.WPF, Version=4.0.42.0, Culture=neutral, PublicKeyToken=e53b06131e34a3aa, processorArchitecture=MSIL">
-      <HintPath>..\packages\ScottPlot.WPF.4.0.42\lib\net472\ScottPlot.WPF.dll</HintPath>
-    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -148,6 +142,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
+    <Compile Include="Models\Infrastructure\RoomLineGraphInfoSetting.cs" />
     <Compile Include="UICore\Converters\BooleanReverseVisibilityConverter.cs" />
     <Compile Include="Core\Events\ApplicationEvents.cs" />
     <Compile Include="Core\Events\Model\DeviceEventModel.cs" />
@@ -185,6 +181,9 @@
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\CalibrationView.xaml.cs">
+      <DependentUpon>CalibrationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DeviceInformationView.xaml.cs">
       <DependentUpon>DeviceInformationView.xaml</DependentUpon>
     </Compile>
@@ -218,7 +217,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dictionaries\TextBlockStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UICore\Controls\TimeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CalibrationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -277,7 +284,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\IconChartBlue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\IconClose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\IconEdit.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

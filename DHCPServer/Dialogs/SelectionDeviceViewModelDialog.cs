@@ -1,5 +1,6 @@
 ﻿using DHCPServer.Core.Extensions;
 using DHCPServer.Models;
+using DHCPServer.Models.Infrastructure;
 using DHCPServer.Models.Repositories;
 using Prism.Commands;
 using Prism.Services.Dialogs;
@@ -24,6 +25,14 @@ namespace DHCPServer.Dialogs
 		{
 			get { return _devicesColleciton; }
 			set { SetProperty(ref _devicesColleciton, value); }
+		}
+
+		private DateTimeSpanFilter _dateTimeSpan = new DateTimeSpanFilter();
+
+		public DateTimeSpanFilter DateTimeSpan
+		{
+			get { return _dateTimeSpan; }
+			set { SetProperty(ref _dateTimeSpan, value); }
 		}
 
 		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository)

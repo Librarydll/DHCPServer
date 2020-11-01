@@ -5,24 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DHCPServer.Views"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:control="clr-namespace:DHCPServer.UICore.Controls"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
-            d:DesignHeight="500" d:DesignWidth="500">
+            d:DesignHeight="500" d:DesignWidth="700">
 
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="prism:Dialog.WindowStartupLocation" 
                     Value="CenterScreen" />
             <Setter Property="Height" Value="500"/>
-            <Setter Property="Width" Value="500"/>
+            <Setter Property="Width" Value="800"/>
             <!--<Setter Property="Width" Value="400"/>
             <Setter Property="Height" Value="170"/>-->
         </Style>
     </prism:Dialog.WindowStyle>
     
     <Grid>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </Grid.Resources>
         <!--<Grid Margin="25">
-            <Grid.RowDefinitions>
+            <Grid.RowDefinitions> 
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -47,17 +51,33 @@
         </Grid>-->
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        <Grid>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource CurrentTextBlock}">Название:</TextBlock>
+                <TextBox Margin="5" Width="200"></TextBox>
+                <StackPanel Orientation="Horizontal">
+                    <DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
+                    <TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
+                    <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Использовать время" VerticalAlignment="Center"/>
+                    <control:TimeControl Value="{Binding DateTimeSpan.FromTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}"  Margin="5 0 5 0" VerticalAlignment="Center"/>
+                    <TextBlock Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5" VerticalAlignment="Center" Text="До"/>
+                    <control:TimeControl Value="{Binding DateTimeSpan.ToTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5 0 5 0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
 
-        <DataGrid x:Name="dg" SelectionMode="Single" CanUserAddRows="False" Margin="5" ItemsSource="{Binding Path=DevicesColleciton}" AutoGenerateColumns="False">
+        </Grid>
+        <DataGrid x:Name="dg" Grid.Row="1" SelectionMode="Single" CanUserAddRows="False" Margin="5" ItemsSource="{Binding Path=DevicesColleciton}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="100" Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
                 <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding Nick}"/>
                 <DataGridCheckBoxColumn Width="50" Header="Флаг" Binding="{Binding IsAdded}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right">Сохранить</Button>
+        <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right">Сохранить</Button>
     </Grid>
 </UserControl>

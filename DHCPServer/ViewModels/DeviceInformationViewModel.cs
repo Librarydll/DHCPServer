@@ -41,6 +41,7 @@ namespace DHCPServer.ViewModels
 		public DelegateCommand OpenNewDevcieViewCommand { get; set; }
 		public DelegateCommand<RoomLineGraphInfo> DeleteRoomCommand { get; set; }
 		public DelegateCommand<RoomLineGraphInfo> OpenGraphCommand { get; set; }
+		public DelegateCommand<RoomLineGraphInfo> OpenCalibrationCommand { get; set; }
 		#endregion
 		#region BindingProperties
 		private ObservableCollection<RoomLineGraphInfo> _roomsCollection;
@@ -62,6 +63,7 @@ namespace DHCPServer.ViewModels
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
 			OpenGraphCommand = new DelegateCommand<RoomLineGraphInfo>(OpenGraph);
+			OpenCalibrationCommand = new DelegateCommand<RoomLineGraphInfo>(OpenCalibration);
 
 			_dialogService = dialogService;
 			_roomRepository = roomRepository;
@@ -99,6 +101,7 @@ namespace DHCPServer.ViewModels
 			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
 		}
 
+		
 		private void DeviceUpdateEventHandler(DeviceEventModel device)
 		{
 			var dc = _deviceClients.FirstOrDefault(x => x.Device.IPAddress == device.OldValue.IPAddress);
@@ -288,6 +291,19 @@ namespace DHCPServer.ViewModels
 			{
 			});
 		}
+
+		private void OpenCalibration(RoomLineGraphInfo roomLineGraphInfo)
+		{
+			var dialogParametr = new DialogParameters
+			{
+				{ "model", roomLineGraphInfo }
+			};
+
+			_dialogService.ShowModal("CalibrationView", dialogParametr, x =>
+			{
+			});
+		}
+
 
 	}
 

@@ -7,6 +7,7 @@ namespace DHCPServer.Models.Infrastructure
 {
 	public class RoomLineGraphInfo : RoomInfo
 	{
+		public RoomLineGraphInfoSetting Setting { get; set; }
 
 		//Колличество обращений 
 		//сколько раз пытались записать данные
@@ -47,6 +48,7 @@ namespace DHCPServer.Models.Infrastructure
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
 			TemperatureChangeEvent += TemperateChangedEventHandler;
 			HumidityChangeEvent += HumidityChangedEventHandler;
+			Setting = new RoomLineGraphInfoSetting();
 		}
 
 		public RoomLineGraphInfo(Device device):this(new RoomData(),device)

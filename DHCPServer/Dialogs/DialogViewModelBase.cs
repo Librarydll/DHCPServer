@@ -14,7 +14,12 @@ namespace DHCPServer.Dialogs
 		public event Action<IDialogResult> RequestClose;
 
 		public ButtonResult Result { get; set; }
-		public string Title => string.Empty;
+		private string _title;
+		public string Title
+		{
+			get { return _title; }
+			set { SetProperty(ref _title, value); }
+		}
 		public DelegateCommand<IDialogParameters> CloseDialogCancelCommand =>
 			new DelegateCommand<IDialogParameters>(CloseDialogOnCancel);
 

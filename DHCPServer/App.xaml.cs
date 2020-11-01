@@ -38,6 +38,7 @@ namespace DHCPServer
 			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();
 			containerRegistry.RegisterDialog<GraphView, GraphViewModelDialog>();
 			containerRegistry.RegisterDialog<SelectionDeviceView, SelectionDeviceViewModelDialog>();
+			containerRegistry.RegisterDialog<CalibrationView, CalibrationViewModelDialog>();
 		}
 	}
 }
