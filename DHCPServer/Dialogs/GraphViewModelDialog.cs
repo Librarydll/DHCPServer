@@ -1,4 +1,6 @@
 ﻿using DHCPServer.Core.Extensions;
+using DHCPServer.Domain.Interfaces;
+using DHCPServer.Domain.Models;
 using DHCPServer.Models;
 using DHCPServer.Models.Infrastructure;
 using DHCPServer.Models.Repositories;

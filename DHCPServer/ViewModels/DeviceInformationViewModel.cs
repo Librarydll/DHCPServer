@@ -2,6 +2,8 @@
 using DHCPServer.Core.Events.Model;
 using DHCPServer.Core.Extensions;
 using DHCPServer.Dialogs.Extenstions;
+using DHCPServer.Domain.Interfaces;
+using DHCPServer.Domain.Models;
 using DHCPServer.Models;
 using DHCPServer.Models.Enums;
 using DHCPServer.Models.Infrastructure;
@@ -275,18 +277,7 @@ namespace DHCPServer.ViewModels
 
 			}
 		}
-		//		ALTER TABLE Devices
-		//add column IsAdded INTEGER
-//		CREATE TABLE "Reports" (
-//	"Id"	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-//	"Title"	TEXT NOT NULL,
-//	"LastUpdated"	TEXT,
-//	"FromTime"	TEXT,
-//	"ToTime"	TEXT,
-//	"DeviceId"	INTEGER,
-//	FOREIGN KEY("DeviceId") REFERENCES "Devices"("id")
-//);
-
+		
 		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
 		{
 			var dialogParametr = new DialogParameters

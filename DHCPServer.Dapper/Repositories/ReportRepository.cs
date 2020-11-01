@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using DHCPServer.Models.Context;
+using DHCPServer.Dapper.Context;
+using DHCPServer.Domain.Interfaces;
+using DHCPServer.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

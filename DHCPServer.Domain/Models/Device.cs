@@ -1,5 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
-using DHCPServer.Models.Common;
+using DHCPServer.Domain.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,9 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace DHCPServer.Models
+namespace DHCPServer.Domain.Models
 {
-	public class Device : BaseEntity, IDevice
+	public class Device : BaseEntity
 	{
 		public Device()
 		{
@@ -39,6 +39,7 @@ namespace DHCPServer.Models
 			set { SetProperty(ref isAdded, value); }
 		}
 
+		[Computed]
 		public ICollection<Report> Reports { get; set; }
 	}
 }

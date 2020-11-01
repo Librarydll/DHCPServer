@@ -1,4 +1,5 @@
-﻿using DHCPServer.Models;
+﻿using DHCPServer.Domain.Models;
+using DHCPServer.Models;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;

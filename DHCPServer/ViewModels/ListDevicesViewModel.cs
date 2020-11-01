@@ -1,6 +1,8 @@
 ﻿using DHCPServer.Core.Events;
 using DHCPServer.Core.Events.Model;
 using DHCPServer.Dialogs.Extenstions;
+using DHCPServer.Domain.Interfaces;
+using DHCPServer.Domain.Models;
 using DHCPServer.Models;
 using DHCPServer.Models.Repositories;
 using Prism.Commands;

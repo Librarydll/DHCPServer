@@ -1,14 +1,11 @@
 ﻿using DHCPServer.Core.Extensions;
-using DHCPServer.Models;
+using DHCPServer.Domain.Interfaces;
+using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure;
-using DHCPServer.Models.Repositories;
-using Prism.Commands;
 using Prism.Services.Dialogs;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DHCPServer.Dialogs

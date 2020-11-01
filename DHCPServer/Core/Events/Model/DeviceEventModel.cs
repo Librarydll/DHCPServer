@@ -1,4 +1,5 @@
-﻿using DHCPServer.Models;
+﻿using DHCPServer.Domain.Models;
+using DHCPServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

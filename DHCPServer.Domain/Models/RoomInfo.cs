@@ -1,14 +1,8 @@
 ﻿using Dapper.Contrib.Extensions;
-using DHCPServer.Models.Common;
+using DHCPServer.Domain.Models.Common;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DHCPServer.Models
+namespace DHCPServer.Domain.Models
 {
 	public class RoomInfo : BaseEntity
 	{

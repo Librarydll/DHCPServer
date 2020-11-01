@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHCPServer", "DHCPServer\DHCPServer.csproj", "{2442D788-2612-4AF1-B940-51D7AEA88770}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHCPServer.Console", "DHCPServer.Console\DHCPServer.Console.csproj", "{2753787E-E703-4639-A9D4-D2DF58757F1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHCPServer.Domain", "DHCPServer.Domain\DHCPServer.Domain.csproj", "{2CE15A68-DBCA-4A0A-A20F-8BE649FCA46B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DHCPServer.Dapper", "DHCPServer.Dapper\DHCPServer.Dapper.csproj", "{99E3C8DB-58CE-4670-850B-1126DF4565AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{2442D788-2612-4AF1-B940-51D7AEA88770}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2442D788-2612-4AF1-B940-51D7AEA88770}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2442D788-2612-4AF1-B940-51D7AEA88770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2753787E-E703-4639-A9D4-D2DF58757F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2753787E-E703-4639-A9D4-D2DF58757F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2753787E-E703-4639-A9D4-D2DF58757F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2753787E-E703-4639-A9D4-D2DF58757F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CE15A68-DBCA-4A0A-A20F-8BE649FCA46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CE15A68-DBCA-4A0A-A20F-8BE649FCA46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CE15A68-DBCA-4A0A-A20F-8BE649FCA46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CE15A68-DBCA-4A0A-A20F-8BE649FCA46B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99E3C8DB-58CE-4670-850B-1126DF4565AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99E3C8DB-58CE-4670-850B-1126DF4565AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99E3C8DB-58CE-4670-850B-1126DF4565AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99E3C8DB-58CE-4670-850B-1126DF4565AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

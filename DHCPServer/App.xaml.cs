@@ -1,17 +1,11 @@
 ﻿using DHCPServer.Dialogs;
+using DHCPServer.Domain.Interfaces;
 using DHCPServer.Models;
 using DHCPServer.Models.Repositories;
-using DHCPServer.Services;
 using DHCPServer.Views;
 using Prism.Ioc;
 using Prism.Unity;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace DHCPServer

@@ -1,4 +1,5 @@
-﻿using DHCPServer.Models.Enums;
+﻿using DHCPServer.Domain.Models;
+using DHCPServer.Models.Enums;
 using DHCPServer.Services;
 using Serilog;
 using Serilog.Core;

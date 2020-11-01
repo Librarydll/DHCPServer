@@ -1,4 +1,5 @@
-﻿using OxyPlot;
+﻿using DHCPServer.Domain.Models;
+using OxyPlot;
 using OxyPlot.Axes;
 using Serilog;
 using System;

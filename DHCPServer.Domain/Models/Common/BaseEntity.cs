@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DHCPServer.Models.Common
+namespace DHCPServer.Domain.Models.Common
 {
 	public class BaseEntity: INotifyPropertyChanged
 	{
