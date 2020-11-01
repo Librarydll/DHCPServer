@@ -142,6 +142,13 @@ namespace DHCPServer.Models.Infrastructure
 		}
 
 
+		public void Calculate()
+		{
+			var temp = Temperature - Setting.TemperatureRange;
+			var hum = Humidity - Setting.HumidityRange;
+			Temperature = temp;
+			Humidity = hum;
+		}
 
 	}
 

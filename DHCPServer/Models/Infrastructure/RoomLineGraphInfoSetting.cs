@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DHCPServer.Models.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,20 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Models.Infrastructure
 {
-	public class RoomLineGraphInfoSetting
+	public class RoomLineGraphInfoSetting: BaseEntity
 	{
-		public double TemperatureRange { get; set; }
-		public double HumidityRange { get; set; }
+		private double _temperatureRange;
+		public double TemperatureRange
+		{
+			get { return _temperatureRange; }
+			set { SetProperty(ref _temperatureRange, value); }
+		}
+
+		private double _humidityRange;
+		public double HumidityRange
+		{
+			get { return _humidityRange; }
+			set { SetProperty(ref _humidityRange, value); }
+		}
 	}
 }

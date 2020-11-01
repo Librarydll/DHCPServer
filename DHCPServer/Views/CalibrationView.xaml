@@ -24,6 +24,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -38,14 +39,17 @@
             Влажность
         </TextBlock>
 
-        <TextBox Text="{Binding RoomInfo.Setting.TemperatureRange}" Margin="10" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
+        <TextBox Text="{Binding RoomInfo.TemperatureRange}" Margin="10" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
                  Width="100">
             
         </TextBox>
 
-        <TextBox  Text="{Binding RoomInfo.Setting.HumidityRange}" Margin="10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
+        <TextBox  Text="{Binding RoomInfo.HumidityRange}" Margin="10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
                  Width="100">
 
         </TextBox>
+        <Button  Command="{Binding CloseDialogOkCommand}" Style="{StaticResource DefaultButton}" Grid.Column="1" Grid.Row="2">
+            Сохранить
+        </Button>
     </Grid>
 </UserControl>

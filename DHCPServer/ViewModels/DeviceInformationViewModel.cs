@@ -156,9 +156,7 @@ namespace DHCPServer.ViewModels
 				{
 					if (old != null)
 					{
-						old.Humidity = roomInfo.Humidity;
-						old.Temperature = roomInfo.Temperature;
-
+						old.Calculate();
 					}
 				});
 
@@ -298,10 +296,19 @@ namespace DHCPServer.ViewModels
 			{
 				{ "model", roomLineGraphInfo }
 			};
+			RoomLineGraphInfoSetting setting=null;
 
 			_dialogService.ShowModal("CalibrationView", dialogParametr, x =>
 			{
+				if (x.Result == ButtonResult.OK)
+				{
+					setting = x.Parameters.GetValue<RoomLineGraphInfoSetting>("model");
+				}
 			});
+			if (setting != null)
+			{
+				roomLineGraphInfo.Setting = setting;
+			}
 		}
 
 
