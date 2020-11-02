@@ -8,25 +8,62 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Domain.Models
 {
-	public class Report: BaseEntity
+	public class Report : BaseEntity
 	{
 		public Report()
 		{
 			ActiveDevices = new List<ActiveDevice>();
 		}
-		public string Title { get; set; }
+		public Report(Report report) : this()
+		{
+			Days = report.Days;
+			Id = report.Id;
+			FromTime = report.FromTime;
+			LastUpdated = report.LastUpdated;
+			Title = report.Title;
+		}
+		private string _title;
+		public string Title
+		{
+			get { return _title; }
+			set { SetProperty(ref _title, value); }
+		}
 		public DateTime LastUpdated { get; set; }
 
-		public DateTime FromTime { get; set; }
-		public DateTime ToTime => FromTime.AddDays(Days);
-
-		public int DeviceId { get; set; }
-
-		public int Days { get; set; }
-
+		private DateTime _fromTime;
+		public DateTime FromTime
+		{
+			get { return _fromTime; }
+			set { SetProperty(ref _fromTime, value); }
+		}
+		private int _days;
+		public int Days
+		{
+			get { return _days; }
+			set { SetProperty(ref _days, value); }
+		}
 		[Computed]
 		public ICollection<ActiveDevice> ActiveDevices { get; set; }
 
+
+		public bool IsEdited(Report newReport)
+		{
+			if (newReport == null) throw new ArgumentNullException("newReport is null");
+			if (Title != newReport.Title)
+			{
+				return true;
+			}
+			if (Days != newReport.Days)
+			{
+				return true;
+			}
+
+			if (FromTime != newReport.FromTime)
+			{
+				return true;
+			}
+			return false;
+		}
 
 	}
 }

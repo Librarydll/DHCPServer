@@ -38,6 +38,18 @@ namespace DHCPServer.Models
 			_url = "http://" + device.IPAddress;
 		}
 
+		public DeviceClient(ActiveDevice activeDevice)
+		{
+			if(activeDevice==null) throw new ArgumentNullException("ActiveDevice should not be null");
+			if (activeDevice?.Device?.IPAddress == null) throw new ArgumentNullException("device IPAddress should not be null");
+			ActiveDevice = activeDevice;
+			client = new HttpClient
+			{
+				Timeout = new TimeSpan(0, 0, 5)
+			};
+			_url = "http://" + activeDevice.Device.IPAddress;
+		}
+
 		public async Task ListenAsync(CancellationToken token)
 		{
 			HttpResponseMessage response = null;

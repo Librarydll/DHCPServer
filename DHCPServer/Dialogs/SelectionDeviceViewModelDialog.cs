@@ -15,8 +15,7 @@ namespace DHCPServer.Dialogs
 	{
 		private readonly IDeviceRepository _deviceRepository;
 		private readonly IReportRepository _reportRepository;
-		private IEnumerable<Device> _addedDevices;
-
+		private Report _unChangedReport = null;
 
 		private ObservableCollection<Device> _devicesColleciton;
 
@@ -41,17 +40,12 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _report, value); }
 		}
 
-		private int _days;
-		public int Days
-		{
-			get { return _days; }
-			set { SetProperty(ref _days, value); }
-		}
 
 		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository,IReportRepository reportRepository)
 		{
 			_deviceRepository = deviceRepository;
 			_reportRepository = reportRepository;
+			Title = "Добавление";
 		}
 
 		public override void OnDialogOpened(IDialogParameters parameters)
@@ -59,34 +53,53 @@ namespace DHCPServer.Dialogs
 			Task.Run(async () =>
 			{
 				DevicesColleciton = new ObservableCollection<Device>(await _deviceRepository.GetAllAsync());
-				var _addedDevices = await _deviceRepository.GetActiveDevicesLists();
+				var _addedDevices = await _deviceRepository.GetAppropriateDevicesLists();
 
 				//DevicesColleciton.CheckDevice(_addedDevices);
 				var device = _addedDevices.FirstOrDefault();
 				Report = await _reportRepository.GetLastReport();
-
-				if (Report != null)
+				if (Report == null)
 				{
-					Days = Report.Days;
+					Report = new Report();
+					Report.FromTime = DateTime.Now;
 				}
+
+
+				_unChangedReport = new Report(Report);
 			});
 
 		}
 
 		protected override void CloseDialogOnOk(IDialogParameters parameters)
 		{
+
+			if (string.IsNullOrWhiteSpace(Report.Title)) return;
+
 			Result = ButtonResult.OK;
 			parameters = new DialogParameters();
 			parameters.Add("model", DevicesColleciton);
+			parameters.Add("report", Report);
+			HandleReport();
+			foreach (var device in DevicesColleciton.Where(x=>x.ActiveDevice.IsAdded))
+			{
+				device.ActiveDevice.ReportId = Report.Id;
+			}
 			CloseDialog(parameters);
 		}
 
-		private async Task ReportHandle()
+		private void HandleReport()
 		{
-			Report.LastUpdated = DateTime.Now;
-			//Report.ToTime = Report.FromTime.AddDays(Days);
+			if (Report.Id == 0)
+			{
+				Report.LastUpdated = DateTime.Now;
+				_reportRepository.CreateAsync(Report).Wait();
+			}
+			else if(_unChangedReport.IsEdited(Report))
+			{
+				Report.LastUpdated = DateTime.Now;
+				_reportRepository.UpdateAsync(Report).Wait();
+			}
+
 		}
-
-
 	}
 }

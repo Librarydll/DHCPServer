@@ -33,11 +33,21 @@ namespace DHCPServer.Domain.Interfaces
 		Task<IEnumerable<ActiveDevice>> CheckDevices(IEnumerable<ActiveDevice> activeDevice);
 
 		/// <summary>
-		/// Set device as inactive
+		/// Get List where isActive true
 		/// </summary>
 		/// <returns></returns>
-		Task<bool> InactiveDevice(ActiveDevice activeDevice);
-		Task<int> InactiveDevices(IEnumerable<ActiveDevice> activeDevices);
+		Task<IEnumerable<ActiveDevice>> GetAppropriateDevicesLists();
+
+		/// <summary>
+		/// Set device isadded false
+		/// </summary>
+		/// <returns>is operation successfully completed</returns>
+		Task<bool> DeatachDevice(ActiveDevice activeDevice);
+		/// <summary>
+		/// Set devices isadded false
+		/// </summary>
+		/// <returns>row affected</returns>
+		Task<int> DeatachDevices(IEnumerable<ActiveDevice> activeDevices);
 
 
 	}

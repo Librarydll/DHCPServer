@@ -139,7 +139,7 @@ namespace DHCPServer.ViewModels
 			RoomsCollection.Remove(roomInfo);
 			roomInfo.ActiveDevice.IsAdded = false;
 
-			_deviceRepository.UpdateAsync(roomInfo.ActiveDevice.Device).Wait();
+			_deviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
 		}
 
 		private void ClientService_ReciveMessageErrorEvent(ActiveDevice device)
@@ -234,11 +234,10 @@ namespace DHCPServer.ViewModels
 			{
 				if (x.Result == ButtonResult.OK)
 				{
-
 					devices = x.Parameters.GetValue<ObservableCollection<Device>>("model");
 				}
 			});
-			
+
 			if (devices != null)
 			{
 				foreach (var device in devices)
@@ -261,6 +260,7 @@ namespace DHCPServer.ViewModels
 							var newRomm = new RoomLineGraphInfo(new RoomData(), device.ActiveDevice);
 							var deviceClient = new DeviceClient(device);
 							_deviceClients.Add(deviceClient);
+							device.ActiveDevice.Device = device;
 							activeDevices.Add(device.ActiveDevice);
 							rooms.Add(newRomm);
 
@@ -272,7 +272,7 @@ namespace DHCPServer.ViewModels
 				}
 				Task.Run(async () =>
 				{
-					await _deviceRepository.InactiveDevices(inactiveDevices);
+					await _deviceRepository.DeatachDevices(inactiveDevices);
 					var actives = await _deviceRepository.CheckDevices(activeDevices);
 
 					Application.Current.Dispatcher.Invoke(() =>
@@ -288,6 +288,8 @@ namespace DHCPServer.ViewModels
 				}, TaskContinuationOptions.OnlyOnFaulted);
 
 			}
+
+			
 		}
 
 		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)

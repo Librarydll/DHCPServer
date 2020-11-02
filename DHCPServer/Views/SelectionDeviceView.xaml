@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DHCPServer.Views"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:control="clr-namespace:DHCPServer.UICore.Controls"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -62,7 +63,7 @@
                 <StackPanel Orientation="Horizontal">
                     <DatePicker SelectedDate="{Binding Report.FromTime}" Margin="5" VerticalAlignment="Center"/>
                     <TextBlock Margin="5" Style="{StaticResource CurrentTextBlock}" >Дней</TextBlock>
-                    <TextBox Text="{Binding Days}" Margin="5" Width="50" TextAlignment="Center" Padding="2"></TextBox>
+                    <TextBox Text="{Binding Report.Days,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,TargetNullValue={x:Static sys:String.Empty}}" Margin="5" Width="50" TextAlignment="Center" Padding="2"></TextBox>
                 </StackPanel>
             </StackPanel>
 

@@ -10,7 +10,7 @@ namespace DHCPServer.Core.Extensions
 	{
 		public static IEnumerable<DeviceClient> ToDeviceClient(this IEnumerable<ActiveDevice> devices)
 		{
-			return devices.Select(x => new DeviceClient(x.Device)).ToList();
+			return devices.Select(x => new DeviceClient(x)).ToList();
 		}
 
 		public static IEnumerable<RoomLineGraphInfo> ToRoomLineGraphInfo(this IEnumerable<RoomInfo> collection)

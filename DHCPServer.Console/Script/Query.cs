@@ -17,9 +17,7 @@ namespace DHCPServer.Console.Script
 			+"\"Title\"	TEXT NOT NULL," 
 			+"\"LastUpdated\"	TEXT," 
 			+"\"FromTime\"	TEXT," 
-			+"\"Days\"	INTEGER," 
-			+"\"DeviceId\"	INTEGER,"
-			+"FOREIGN KEY(\"DeviceId\") REFERENCES \"ActiveDevices\"(\"id\"));";
+			+"\"Days\"	INTEGER NOT NULL DEFAULT 0);";
 		public static string dropDeviceListTable = "DROP TABLE IF EXISTS DevicesLists;";
 
 		public static string alterDeviceQuery = "BEGIN TRANSACTION;"
@@ -37,10 +35,10 @@ namespace DHCPServer.Console.Script
 
 		public static string createActiveDeviceTable = "CREATE TABLE `ActiveDevices` ("
 							+ "`Id`	INTEGER PRIMARY KEY AUTOINCREMENT,"
-							+ "`IsActive`	INTEGER,"
-							+ "`IsAdded`	INTEGER,"
-							+ "`DeviceId`	INTEGER,"
-							+ "`ReportId`	INTEGER,"
+							+ "`IsActive`	INTEGER NOT NULL DEFAULT 0,"
+							+ "`IsAdded`	INTEGER NOT NULL DEFAULT 0,"
+							+ "`DeviceId`	INTEGER NOT NULL,"
+							+ "`ReportId`	INTEGER NOT NULL,"
 							+ "FOREIGN KEY(`DeviceId`) REFERENCES `Devices`(`id`),"
 							+ "FOREIGN KEY(`ReportId`) REFERENCES `Reports`(`id`));";
 
