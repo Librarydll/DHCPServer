@@ -1,0 +1,50 @@
+﻿using Dapper.Contrib.Extensions;
+using DHCPServer.Domain.Models.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DHCPServer.Domain.Models
+{
+	public class ActiveDevice:BaseEntity
+	{
+		public ActiveDevice()
+		{
+			RoomInfos = new List<RoomInfo>();
+		}
+		private bool _isActive;
+		public bool IsActive
+		{
+			get { return _isActive; }
+			set { SetProperty(ref _isActive, value); }
+		}
+		private bool isAdded;
+		public bool IsAdded
+		{
+			get { return isAdded; }
+			set { SetProperty(ref isAdded, value); }
+		}
+
+		public int DeviceId { get; set; }
+		public int ReportId { get; set; }
+		[Computed]
+		public Report Report { get; set; }
+
+		[Computed]
+		public Device Device { get; set; }
+
+		[Computed]
+		public ICollection<RoomInfo> RoomInfos { get; set; }
+
+		public void Set(ActiveDevice device)
+		{
+			this.Id = device.Id;
+			this.IsActive = device.IsActive;
+			this.IsAdded = device.IsAdded;
+			this.DeviceId = device.DeviceId;
+			this.ReportId = device.ReportId;
+		}
+	}
+}

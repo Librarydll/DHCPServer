@@ -30,7 +30,7 @@ namespace DHCPServer.Dialogs
 				var room = parameters.GetValue<RoomLineGraphInfo>("model");
 				RoomInfo.TemperatureRange = room.Setting.TemperatureRange;
 				RoomInfo.HumidityRange = room.Setting.HumidityRange;
-				var title = $"{room?.Device?.Nick} {room?.Device?.IPAddress}";
+				var title = $"{room?.ActiveDevice?.Device?.Nick} {room?.ActiveDevice?.Device?.IPAddress}";
 				Title = title;
 			}
 		}

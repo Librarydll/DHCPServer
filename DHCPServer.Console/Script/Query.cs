@@ -17,9 +17,50 @@ namespace DHCPServer.Console.Script
 			+"\"Title\"	TEXT NOT NULL," 
 			+"\"LastUpdated\"	TEXT," 
 			+"\"FromTime\"	TEXT," 
-			+"\"ToTime\"	TEXT," 
+			+"\"Days\"	INTEGER," 
 			+"\"DeviceId\"	INTEGER,"
-			+"FOREIGN KEY(\"DeviceId\") REFERENCES \"Devices\"(\"id\"));";
+			+"FOREIGN KEY(\"DeviceId\") REFERENCES \"ActiveDevices\"(\"id\"));";
 		public static string dropDeviceListTable = "DROP TABLE IF EXISTS DevicesLists;";
+
+		public static string alterDeviceQuery = "BEGIN TRANSACTION;"
+							+ "CREATE TEMPORARY TABLE t1_backup(Id, IpAddress, Nick);"
+							+ "INSERT INTO t1_backup SELECT Id,IpAddress,Nick FROM  Devices;"
+							+ "DROP TABLE Devices;"
+							+ "CREATE TABLE `Devices` ("
+							+ "`Id`	INTEGER PRIMARY KEY AUTOINCREMENT,"
+							+ "`IPAddress`	TEXT NOT NULL UNIQUE,"
+							+ "`Nick`	TEXT UNIQUE"
+							+ "); INSERT INTO Devices SELECT Id,IpAddress,Nick FROM t1_backup;"
+							+ "DROP TABLE t1_backup;"
+							+ "COMMIT;";
+
+
+		public static string createActiveDeviceTable = "CREATE TABLE `ActiveDevices` ("
+							+ "`Id`	INTEGER PRIMARY KEY AUTOINCREMENT,"
+							+ "`IsActive`	INTEGER,"
+							+ "`IsAdded`	INTEGER,"
+							+ "`DeviceId`	INTEGER,"
+							+ "`ReportId`	INTEGER,"
+							+ "FOREIGN KEY(`DeviceId`) REFERENCES `Devices`(`id`),"
+							+ "FOREIGN KEY(`ReportId`) REFERENCES `Reports`(`id`));";
+
+		public static string alterRoomInfos = "BEGIN TRANSACTION;"
+							+ "CREATE TEMPORARY TABLE t1_backup(Id, Temperature, Humidity, Date, DeviceId);"
+							+ "INSERT INTO t1_backup SELECT Id,Temperature,Humidity,Date,DeviceId FROM RoomInfos;"
+							+ "DROP TABLE RoomInfos;"
+							+ "CREATE TABLE `RoomInfos` ("
+							+ "`Id`	INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,"
+							+ "`Temperature`	REAL,"
+							+ "`Humidity`	REAL,"
+							+ "`Date`	TEXT,"
+							+ "`DeviceId`	INTEGER,"
+							+ "FOREIGN KEY(`DeviceId`) REFERENCES `ActiveDevices`(`id`));"
+							+ "INSERT INTO RoomInfos SELECT Id,Temperature,Humidity,Date,DeviceId FROM t1_backup;"
+							+ "DROP TABLE t1_backup; COMMIT;";
+
+		public static string dropReportTable = "Drop Table Reports";
+
+
+
 	}
 }

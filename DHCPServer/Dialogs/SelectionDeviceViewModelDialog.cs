@@ -3,6 +3,7 @@ using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure;
 using Prism.Services.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -40,6 +41,13 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _report, value); }
 		}
 
+		private int _days;
+		public int Days
+		{
+			get { return _days; }
+			set { SetProperty(ref _days, value); }
+		}
+
 		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository,IReportRepository reportRepository)
 		{
 			_deviceRepository = deviceRepository;
@@ -51,12 +59,16 @@ namespace DHCPServer.Dialogs
 			Task.Run(async () =>
 			{
 				DevicesColleciton = new ObservableCollection<Device>(await _deviceRepository.GetAllAsync());
-				_addedDevices = await _deviceRepository.GetDevicesLists();
+				var _addedDevices = await _deviceRepository.GetActiveDevicesLists();
 
-				DevicesColleciton.CheckDevice(_addedDevices);
+				//DevicesColleciton.CheckDevice(_addedDevices);
 				var device = _addedDevices.FirstOrDefault();
-			//	if(device ==null)
-				//Report = await _reportRepository.GetLastReport()
+				Report = await _reportRepository.GetLastReport();
+
+				if (Report != null)
+				{
+					Days = Report.Days;
+				}
 			});
 
 		}
@@ -67,6 +79,12 @@ namespace DHCPServer.Dialogs
 			parameters = new DialogParameters();
 			parameters.Add("model", DevicesColleciton);
 			CloseDialog(parameters);
+		}
+
+		private async Task ReportHandle()
+		{
+			Report.LastUpdated = DateTime.Now;
+			//Report.ToTime = Report.FromTime.AddDays(Days);
 		}
 
 

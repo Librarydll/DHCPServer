@@ -58,15 +58,11 @@
         <Grid>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CurrentTextBlock}">Название:</TextBlock>
-                <TextBox Margin="5" Width="200"></TextBox>
+                <TextBox Padding="2" Text="{Binding Path=Report.Title}" Margin="5" Width="200"></TextBox>
                 <StackPanel Orientation="Horizontal">
-                    <DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
-                    <TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
-                    <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding Path=DateTimeSpan.IsTimeInclude}" x:Name="check" Margin="5" Content="Использовать время" VerticalAlignment="Center"/>
-                    <control:TimeControl Value="{Binding DateTimeSpan.FromTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}"  Margin="5 0 5 0" VerticalAlignment="Center"/>
-                    <TextBlock Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5" VerticalAlignment="Center" Text="До"/>
-                    <control:TimeControl Value="{Binding DateTimeSpan.ToTime}" Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter},ElementName=check,Path=IsChecked}" Margin="5 0 5 0" VerticalAlignment="Center"/>
+                    <DatePicker SelectedDate="{Binding Report.FromTime}" Margin="5" VerticalAlignment="Center"/>
+                    <TextBlock Margin="5" Style="{StaticResource CurrentTextBlock}" >Дней</TextBlock>
+                    <TextBox Text="{Binding Days}" Margin="5" Width="50" TextAlignment="Center" Padding="2"></TextBox>
                 </StackPanel>
             </StackPanel>
 
@@ -75,7 +71,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="100" Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
                 <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding Nick}"/>
-                <DataGridCheckBoxColumn Width="50" Header="Флаг" Binding="{Binding IsAdded}"/>
+                <DataGridCheckBoxColumn Width="50" Header="Флаг" Binding="{Binding ActiveDevice.IsAdded}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right">Сохранить</Button>

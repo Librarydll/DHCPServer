@@ -8,6 +8,7 @@
     <Grid>
         <Grid.Resources>
             <converter:BorderColorConverter x:Key="BorderConverter"/>
+            <converter:NumberConverter x:Key="NumberToTextConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -20,7 +21,6 @@
                 <Button Command="{Binding OpenNewDevcieViewCommand}">Добавить</Button>
             </ToolBar>
         </Grid>
-
         <Grid Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
@@ -36,6 +36,7 @@
             <Grid Grid.Column="3" x:Name="col4"/>
             <Grid Grid.Column="4" x:Name="col5"/>
         </Grid>
+
 
         <ListView ItemsSource="{Binding RoomsCollection,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
                       x:Name="AppDetailslistView" Grid.Row="1" Margin="10,0"
@@ -55,7 +56,7 @@
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Device.Nick}" 
+                                <TextBlock Text="{Binding ActiveDevice.Device.Nick}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="10,2,0,2" Margin="0" 
                                                Foreground="#FF0B245B" 
@@ -71,7 +72,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
 
-                                <TextBlock Text="{Binding Path=Device.IPAddress}" 
+                                <TextBlock Text="{Binding Path=ActiveDevice.Device.IPAddress}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="10,2,0,2" Margin="0,0,15,0" 
                                                Foreground="#FF0B245B"
@@ -95,6 +96,12 @@
                                                HorizontalAlignment="Center" 
                                                Foreground="Red" 
                                                VerticalAlignment="Center">
+                                        <Run Text="    ">
+                                            
+                                        </Run>
+                                        <Run Text="{Binding Path=Setting.TemperatureRange,Converter={StaticResource NumberToTextConverter},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                            
+                                        </Run>
                                     </TextBlock>
                                 </Border>
                             </DataTemplate>
@@ -112,7 +119,15 @@
                                                Padding="5,4" Margin="0,0,15,0" 
                                                HorizontalAlignment="Center" 
                                                Foreground="Blue" 
-                                               VerticalAlignment="Center"/>
+                                               VerticalAlignment="Center">
+                                         <Run Text="    ">
+                                            
+                                        </Run>
+                                          <Run Text="{Binding Path=Setting.HumidityRange,Converter={StaticResource NumberToTextConverter},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                            
+                                        </Run>
+                                    </TextBlock>
+                                    
                                 </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

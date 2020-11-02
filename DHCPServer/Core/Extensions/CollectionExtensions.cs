@@ -8,9 +8,9 @@ namespace DHCPServer.Core.Extensions
 {
 	public static class CollectionextEnsioncs
 	{
-		public static IEnumerable<DeviceClient> ToDeviceClient(this IEnumerable<Device> devices)
+		public static IEnumerable<DeviceClient> ToDeviceClient(this IEnumerable<ActiveDevice> devices)
 		{
-			return devices.Select(x => new DeviceClient(x));
+			return devices.Select(x => new DeviceClient(x.Device)).ToList();
 		}
 
 		public static IEnumerable<RoomLineGraphInfo> ToRoomLineGraphInfo(this IEnumerable<RoomInfo> collection)
@@ -21,24 +21,24 @@ namespace DHCPServer.Core.Extensions
 					Temperature = room.Temperature,
 					Humidity = room.Humidity
 				},
-					room.Device);
+					room.ActiveDevice);
 			}
 		}
 
-		public static IEnumerable<Device> CheckDevice(this IEnumerable<Device> newDevices,IEnumerable<Device> oldDevices)
-		{
-			foreach (var device in newDevices)
-			{
-				var d = oldDevices.FirstOrDefault(x => x.Id == device.Id);
+		//public static IEnumerable<Device> CheckDevice(this IEnumerable<Device> newDevices,IEnumerable<Device> oldDevices)
+		//{
+		//	foreach (var device in newDevices)
+		//	{
+		//		var d = oldDevices.FirstOrDefault(x => x.Id == device.Id);
 
-				if (d != null)
-				{
-					device.IsAdded = true;
-				}
-			}
+		//		if (d != null)
+		//		{
+		//			device.IsAdded = true;
+		//		}
+		//	}
 
-			return newDevices;
-		}
+		//	return newDevices;
+		//}
 
 
 	}

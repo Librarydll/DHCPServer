@@ -8,7 +8,7 @@ namespace DHCPServer.Domain.Models
 	{
 		private double temperature;
 		private double humidity;
-		private Device device;
+		private ActiveDevice device;
 
 		public event Action<double> TemperatureChangeEvent;
 		public event Action<double> HumidityChangeEvent;
@@ -18,23 +18,23 @@ namespace DHCPServer.Domain.Models
 
 		public DateTime Date { get; set; }
 
-		public int DeviceId { get; set; }
+		public int ActiveDeviceId { get; set; }
 		[Computed]
 
-		public Device Device { get => device; set { device = value; RaisePropertyChangedEvent(); } }
+		public ActiveDevice ActiveDevice { get => device; set { device = value; RaisePropertyChangedEvent(); } }
 
-		public RoomInfo(RoomData roomData, Device device)
+		public RoomInfo(RoomData roomData, ActiveDevice device)
 		{
 			Temperature = roomData.Temperature;
 			Humidity = roomData.Humidity;
-			Device = device;
+			ActiveDevice = device;
 			Date = DateTime.Now;
-			DeviceId = device.Id;
+			ActiveDeviceId = device.Id;
 		}
-		public RoomInfo(Device device)
+		public RoomInfo(ActiveDevice device)
 		{
-			Device = device;
-			DeviceId = device.Id;
+			ActiveDevice = device;
+			ActiveDeviceId = device.Id;
 		}
 		public RoomInfo()
 		{

@@ -9,6 +9,7 @@
         WindowState="Maximized"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/Resources/chart-1_111423.ico"
         Title="MainView" Height="450" Width="800">
 
     <Grid>

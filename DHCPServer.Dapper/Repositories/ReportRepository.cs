@@ -30,7 +30,17 @@ namespace DHCPServer.Models.Repositories
 			}
 		}
 
-		public async Task<Report> GetLastReport(int deviceId)
+		public async Task<Report> GetLastReport()
+		{
+			string query = "SELECT *FROM Reports order by id desc  LIMIT 1";
+			using (var connection = _factory.CreateConnection())
+			{
+				var report = await connection.QueryFirstOrDefaultAsync<Report>(query);
+				return report;
+			}
+		}
+
+		public async Task<Report> GetLastReportByDeviceId(int deviceId)
 		{
 			string query = "SELECT *FROM Reports Where deviceid=@deviceId order by id desc  LIMIT 1";
 			using (var connection = _factory.CreateConnection())

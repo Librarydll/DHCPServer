@@ -12,6 +12,7 @@ namespace DHCPServer.Domain.Interfaces
 		Task<Report> CreateAsync(Report report);
 		Task<bool> UpdateAsync(Report report);
 
-		Task<Report> GetLastReport(int deviceId);
+		Task<Report> GetLastReportByDeviceId(int deviceId);
+		Task<Report> GetLastReport();
 	}
 }

@@ -13,11 +13,6 @@ namespace DHCPServer.Domain.Models
 {
 	public class Device : BaseEntity
 	{
-		public Device()
-		{
-			Reports = new List<Report>();
-		}
-
 		private string iPAddress;
 		public string IPAddress
 		{
@@ -32,14 +27,7 @@ namespace DHCPServer.Domain.Models
 			set { SetProperty(ref nick, value); }
 		}
 
-		private bool isAdded;
-		public bool IsAdded
-		{
-			get { return isAdded; }
-			set { SetProperty(ref isAdded, value); }
-		}
-
 		[Computed]
-		public ICollection<Report> Reports { get; set; }
+		public ActiveDevice ActiveDevice { get; set; }
 	}
 }

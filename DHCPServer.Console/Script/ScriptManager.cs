@@ -24,11 +24,15 @@ namespace DHCPServer.Console.Script
 			{
 				try
 				{
-					var dropDevicesList = connection.Execute(Query.dropDeviceListTable);
+					connection.Execute(Query.alterDeviceQuery);
 					
-					var alterTable = connection.Execute(Query.updateDeviceQuery);
+					connection.Execute(Query.createActiveDeviceTable);
 					
-					var create = connection.Execute(Query.createReportTable);
+					connection.Execute(Query.alterRoomInfos);
+
+					connection.Execute(Query.dropReportTable);
+					connection.Execute(Query.createReportTable);
+
 					System.Console.WriteLine("Success");
 				}
 				catch (Exception ex)

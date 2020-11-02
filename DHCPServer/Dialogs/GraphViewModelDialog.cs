@@ -80,11 +80,11 @@ namespace DHCPServer.Dialogs
 			IEnumerable<RoomInfo> collection;
 			if (DateTimeSpan.IsTimeInclude)
 			{
-				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate);
+				collection = await _roomRepository.FilterRooms(GraphInfo.ActiveDeviceId, DateTimeSpan.FromDate);
 			}
 			else
 			{
-				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
+				collection = await _roomRepository.FilterRooms(GraphInfo.ActiveDeviceId, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
 			}
 
 			if (collection.Count() > 0)
@@ -97,7 +97,7 @@ namespace DHCPServer.Dialogs
 
 		public RoomLineGraphInfo FillModel(IEnumerable<RoomInfo> collection)
 		{
-			var result = new RoomLineGraphInfo(new RoomData(), GraphInfo.Device);
+			var result = new RoomLineGraphInfo(new RoomData(), GraphInfo.ActiveDevice);
 
 			var humidityLineSerie = result.GraphLineModel.GetLast();
 			var temperatureLineSerie = result.GraphLineModel.GetFirst();

@@ -39,14 +39,18 @@ namespace DHCPServer.Models.Repositories
 
 		public async Task<IEnumerable<RoomInfo>> FilterRooms(DateTime from, DateTime to)
 		{
-			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=d.id where date>=@from and date<=@to";
+			string query = @"SELECT *FROM RoomInfos as r 
+							left join ActiveDevices as ad on ad.id = r.drviceid
+							left join devices as d on ad.deviceid=d.id 
+							where date>=@from and date<=@to";
 			using (var connection = _factory.CreateConnection())
 			{
-				var result = await connection.QueryAsync<RoomInfo,Device,RoomInfo>(query, 
-					(r,d) 
+				var result = await connection.QueryAsync<RoomInfo,ActiveDevice,Device,RoomInfo>(query, 
+					(r,ad,d) 
 					=> 
 					{
-						r.Device = d;
+						r.ActiveDevice = ad;
+						r.ActiveDevice.Device = d;
 						return r;
 					},
 					new 
@@ -57,17 +61,21 @@ namespace DHCPServer.Models.Repositories
 
 		public async Task<IEnumerable<RoomInfo>> FilterRooms(DateTime fromDate, DateTime toDate, TimeSpan fromTime, TimeSpan toTime)
 		{
-			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=d.id where date>=@from and date<=@to";
+			string query = @"SELECT *FROM RoomInfos as r 
+							left join activeDevices as ad on ad.id=r.deviceid
+							left join devices as d on ad.deviceid=d.id 
+							where date>=@from and date<=@to";
 
 			using (var connection = _factory.CreateConnection())
 			{
 				var fromD = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, fromTime.Hours, fromTime.Minutes, 0);
 				var toD = new DateTime(toDate.Year, toDate.Month, toDate.Day, toTime.Hours, toTime.Minutes, 0);
 
-				var result = await connection.QueryAsync<RoomInfo, Device, RoomInfo>(query, (r, d)
+				var result = await connection.QueryAsync<RoomInfo,ActiveDevice ,Device, RoomInfo>(query, (r,ad ,d)
 					 =>
 				{
-					r.Device = d;
+					r.ActiveDevice = ad;
+					r.ActiveDevice.Device = d;
 					return r;
 				},
 				new 
@@ -92,15 +100,19 @@ namespace DHCPServer.Models.Repositories
 
 		public async Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date)
 		{
-			string query = "SELECT *FROM RoomInfos as r left join devices as d on r.deviceid=@id where  date(date)=@date";
+			string query = @"SELECT *FROM RoomInfos as r
+							left join activeDevices as ad on ad.id=r.deviceid
+							left join devices as d on ad.deviceid=@id 
+							where  date(date)=@date";
 
 			using (var connection = _factory.CreateConnection())
 			{
 
-				var result = await connection.QueryAsync<RoomInfo, Device, RoomInfo>(query, (r, d)
+				var result = await connection.QueryAsync<RoomInfo,ActiveDevice ,Device, RoomInfo>(query, (r, ad,d)
 					 =>
 				{
-					r.Device = d;
+					r.ActiveDevice = ad;
+					r.ActiveDevice.Device = d;
 					return r;
 				},
 				new
