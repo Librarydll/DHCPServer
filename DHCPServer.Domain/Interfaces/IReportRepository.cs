@@ -1,4 +1,5 @@
-﻿using DHCPServer.Domain.Models;
+﻿using DHCPServer.Domain.Enumerations;
+using DHCPServer.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,11 @@ namespace DHCPServer.Domain.Interfaces
 
 		Task<Report> GetLastReportByDeviceId(int deviceId);
 		Task<Report> GetLastReport();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="searchingString"></param>
+		/// <returns></returns>
+		Task<Report> GetReport(string searchingString,Specification specification);
 	}
 }

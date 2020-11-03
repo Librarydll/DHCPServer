@@ -1,0 +1,174 @@
+﻿<UserControl x:Class="DHCPServer.Views.ReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"          
+             xmlns:converter="clr-namespace:DHCPServer.UICore.Converters"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    
+    <Grid>
+        <Grid.Resources>
+            <converter:BorderColorConverter x:Key="BorderConverter"/>
+            <converter:NumberConverter x:Key="NumberToTextConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Column="0" x:Name="col1"/>
+            <Grid Grid.Column="1" x:Name="col2"/>
+            <Grid Grid.Column="2" x:Name="col3"/>
+            <Grid Grid.Column="3" x:Name="col4"/>
+        </Grid>
+
+
+        <StackPanel Margin="10 0 0 0" Orientation="Horizontal">
+            <TextBox Padding="2" Text="{Binding SearchingString}" Width="250" Margin="5">
+                
+            </TextBox>
+            <Button Style="{StaticResource DefaultButton}" Command="{Binding FilterCommand}">
+                Поиск
+            </Button>
+        </StackPanel>
+        
+        <ListView ItemsSource="{Binding ReportsCollection,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                      x:Name="AppDetailslistView" Grid.Row="1" Margin="10,0"
+                      ItemContainerStyle="{StaticResource LVItemStyleX}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                      HorizontalContentAlignment="Stretch" Foreground="#DDF9F9F9" 
+                      Background="{x:Null}" BorderBrush="{x:Null}">
+          
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn Width="{Binding ElementName=col1,Path=ActualWidth}"                              
+                                    Header="Псевдоним"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ActiveDevice.Device.Nick}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0" 
+                                               Foreground="#FF0B245B" 
+                                               VerticalAlignment="Center">
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
+                                    Header="IPAddress"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=ActiveDevice.Device.IPAddress}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                    <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
+                                    Header="Архив"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=ActiveDevice.Device.IPAddress}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+
+                    <GridViewColumn  Width="{Binding ElementName=col4,Path=ActualWidth}"
+                                        Header="Действие"
+                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" Margin="2,5,-5,5">
+                                        <Button Margin="0 0 5 0" CommandParameter="{Binding}" 
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.OpenGraphCommand}"
+                                                Style="{DynamicResource LightBlueBtnStyle}" 
+                                                HorizontalAlignment="Right" Height="28" 
+                                                VerticalAlignment="Center" Width="40">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Resources/IconChartBlue.png" Stretch="Uniform"/>
+                                            </Button.Background>
+                                            <Button.ToolTip>
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                        График устройства
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Button.ToolTip>
+                                        </Button>
+
+                                        <Button CommandParameter="{Binding}" 
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.OpenCalibrationCommand}"
+                                                Style="{DynamicResource LightBlueBtnStyle}" 
+                                                HorizontalAlignment="Right" Height="28" 
+                                                VerticalAlignment="Center" Width="40">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Resources/IconEdit.png" Stretch="Uniform"/>
+                                            </Button.Background>
+                                            <Button.ToolTip>
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                        Калибровка устройства
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Button.ToolTip>
+                                        </Button>
+
+                                        <Button  Margin="5 0 0 0" CommandParameter="{Binding}" 
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.DeleteRoomCommand}"
+                                                Style="{DynamicResource LightBlueBtnStyle}" 
+                                                HorizontalAlignment="Right" Height="28" 
+                                                VerticalAlignment="Center" Width="40">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Resources/IconClose.png" Stretch="Uniform"/>
+                                            </Button.Background>
+                                            <Button.ToolTip>
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                        Удалить устройство
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Button.ToolTip>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

@@ -1,12 +1,9 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using DHCPServer.Dapper.Context;
+using DHCPServer.Domain.Enumerations;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DHCPServer.Dapper.Repositories
@@ -48,6 +45,31 @@ namespace DHCPServer.Dapper.Repositories
 				var report = await connection.QueryFirstOrDefaultAsync<Report>(query, new { deviceId });
 				return report;
 			}
+		}
+
+		public Task<Report> GetReport(string searchingString, Specification specification)
+		{
+			string query="SELECT *FROM"
+			using (var connection = _factory.CreateConnection())
+			{
+				switch (specification)
+				{
+					case Specification.IpAddress:
+
+						break;
+					case Specification.Report:
+
+						break;
+					default:
+						break;
+				}
+			}
+			return null;
+		}
+
+		public Task<Report> GetReport(string searchingString)
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public async Task<bool> UpdateAsync(Report report)
