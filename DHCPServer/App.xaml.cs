@@ -1,7 +1,7 @@
-﻿using DHCPServer.Dialogs;
+﻿using DHCPServer.Dapper.Repositories;
+using DHCPServer.Dialogs;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Models;
-using DHCPServer.Models.Repositories;
 using DHCPServer.Views;
 using Prism.Ioc;
 using Prism.Unity;
@@ -28,6 +28,7 @@ namespace DHCPServer
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
 			containerRegistry.RegisterSingleton<IDeviceRepository, DeviceRepository>();
 			containerRegistry.RegisterSingleton<IReportRepository, ReportRepository>();
+			containerRegistry.RegisterSingleton<IActiveDeviceRepository, ActiveDeviceRepository>();
 			containerRegistry.RegisterSingleton<Transfer>();
 
 			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();

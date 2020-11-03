@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DHCPServer.Models.Repositories
+namespace DHCPServer.Dapper.Repositories
 {
 	public class ReportRepository : IReportRepository
 	{

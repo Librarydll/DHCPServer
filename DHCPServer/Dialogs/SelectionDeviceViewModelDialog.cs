@@ -15,6 +15,7 @@ namespace DHCPServer.Dialogs
 	{
 		private readonly IDeviceRepository _deviceRepository;
 		private readonly IReportRepository _reportRepository;
+		private readonly IActiveDeviceRepository _activeDeviceRepository;
 		private Report _unChangedReport = null;
 
 		private ObservableCollection<Device> _devicesColleciton;
@@ -41,10 +42,11 @@ namespace DHCPServer.Dialogs
 		}
 
 
-		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository,IReportRepository reportRepository)
+		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository,IReportRepository reportRepository,IActiveDeviceRepository activeDeviceRepository)
 		{
 			_deviceRepository = deviceRepository;
 			_reportRepository = reportRepository;
+			_activeDeviceRepository = activeDeviceRepository;
 			Title = "Добавление";
 		}
 
@@ -53,7 +55,7 @@ namespace DHCPServer.Dialogs
 			Task.Run(async () =>
 			{
 				DevicesColleciton = new ObservableCollection<Device>(await _deviceRepository.GetAllAsync());
-				var _addedDevices = await _deviceRepository.GetAppropriateDevicesLists();
+				var _addedDevices = await _activeDeviceRepository.GetAppropriateDevicesLists();
 
 				//DevicesColleciton.CheckDevice(_addedDevices);
 				var device = _addedDevices.FirstOrDefault();

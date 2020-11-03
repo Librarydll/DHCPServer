@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Domain.Models
 {
-	public class ActiveDevice:BaseEntity
+	public class ActiveDevice : BaseEntity
 	{
 		public ActiveDevice()
 		{
@@ -21,6 +21,8 @@ namespace DHCPServer.Domain.Models
 			set { SetProperty(ref _isActive, value); }
 		}
 		private bool isAdded;
+		private Device device;
+
 		public bool IsAdded
 		{
 			get { return isAdded; }
@@ -33,7 +35,7 @@ namespace DHCPServer.Domain.Models
 		public Report Report { get; set; }
 
 		[Computed]
-		public Device Device { get; set; }
+		public Device Device { get => device; set => SetProperty(ref device, value); }
 
 		[Computed]
 		public ICollection<RoomInfo> RoomInfos { get; set; }

@@ -1,12 +1,9 @@
 ﻿using DHCPServer.Core.Extensions;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
-using DHCPServer.Models;
 using DHCPServer.Models.Infrastructure;
-using DHCPServer.Models.Repositories;
 using OxyPlot;
 using OxyPlot.Axes;
-using OxyPlot.Series;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 using System;
@@ -138,30 +135,47 @@ namespace DHCPServer.Dialogs
 				_wheelCount++;
 			}
 
-			var axis = GraphInfo.GraphLineModel.Axes[1];
+			var leftAxis = GraphInfo.GraphLineModel.Axes[1];
+			var rightAxis = GraphInfo.GraphLineModel.Axes[0];
+
+			if (_wheelCount == 0)
+			{
+				rightAxis.MajorStep = 1.0 / 24;
+			}
+
+			if(_wheelCount== -4)
+			{
+				rightAxis.MajorStep = 1.0 / 12;
+			}
+
+			if (_wheelCount == -6)
+			{
+				rightAxis.MajorStep = 1.0 / 6;
+			}
+
 			if (_wheelCount == 8)
 			{
-				axis.MinimumMajorStep = 3;
+				leftAxis.MinimumMajorStep = 3;
 			}
 
 			if (_wheelCount == 9)
 			{
-				axis.MinimumMajorStep = 2;
+				leftAxis.MinimumMajorStep = 2;
 			}
 			if (_wheelCount == 13)
 			{
 
-				axis.MinimumMajorStep = 1;
+				leftAxis.MinimumMajorStep = 1;
 			}
 			if (_wheelCount == 17)
 			{
 
-				axis.MinimumMajorStep = 0.5;
+				leftAxis.MinimumMajorStep = 0.5;
 			}
 			if (_wheelCount == 19)
 			{
 
-				axis.MinimumMajorStep = 0.2;
+				leftAxis.MinimumMajorStep = 0.2;
 			}
 		}
 

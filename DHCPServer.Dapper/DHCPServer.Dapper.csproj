@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Context\ApplicationContextFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ActiveDeviceRepository.cs" />
     <Compile Include="Repositories\DeviceRepository.cs" />
     <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Repositories\RoomRepository.cs" />

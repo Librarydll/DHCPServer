@@ -7,7 +7,6 @@ using DHCPServer.Domain.Models;
 using DHCPServer.Models;
 using DHCPServer.Models.Enums;
 using DHCPServer.Models.Infrastructure;
-using DHCPServer.Models.Repositories;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -30,6 +29,7 @@ namespace DHCPServer.ViewModels
 		#region Fields
 		private readonly IDialogService _dialogService;
 		private readonly IRoomRepository _roomRepository;
+		private readonly IActiveDeviceRepository _activeDeviceRepository;
 		private readonly ILogger _logger;
 		private readonly IEventAggregator _eventAggregator;
 		private readonly IDeviceRepository _deviceRepository;
@@ -56,6 +56,7 @@ namespace DHCPServer.ViewModels
 
 		public DeviceInformationViewModel(IDialogService dialogService,
 			IRoomRepository roomRepository,
+			IActiveDeviceRepository activeDeviceRepository,
 			ILogger logger,
 			IEventAggregator eventAggregator,
 			IDeviceRepository deviceRepository, Transfer transfer)
@@ -67,6 +68,7 @@ namespace DHCPServer.ViewModels
 
 			_dialogService = dialogService;
 			_roomRepository = roomRepository;
+			_activeDeviceRepository = activeDeviceRepository;
 			_logger = logger;
 			_eventAggregator = eventAggregator;
 			_deviceRepository = deviceRepository;
@@ -85,7 +87,7 @@ namespace DHCPServer.ViewModels
 			{
 				//await	transfer.TransferData();
 
-				var devices = await _deviceRepository.GetActiveDevicesLists();
+				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
 				var rooms = devices.Select(x => new RoomLineGraphInfo(x));
 				RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
 				var activeDevices = RoomsCollection.Select(x => x.ActiveDevice);
@@ -139,7 +141,7 @@ namespace DHCPServer.ViewModels
 			RoomsCollection.Remove(roomInfo);
 			roomInfo.ActiveDevice.IsAdded = false;
 
-			_deviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
+			_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
 		}
 
 		private void ClientService_ReciveMessageErrorEvent(ActiveDevice device)
@@ -272,8 +274,8 @@ namespace DHCPServer.ViewModels
 				}
 				Task.Run(async () =>
 				{
-					await _deviceRepository.DeatachDevices(inactiveDevices);
-					var actives = await _deviceRepository.CheckDevices(activeDevices);
+					await _activeDeviceRepository.DeatachDevices(inactiveDevices);
+					var actives = await _activeDeviceRepository.CheckDevices(activeDevices);
 
 					Application.Current.Dispatcher.Invoke(() =>
 					{
