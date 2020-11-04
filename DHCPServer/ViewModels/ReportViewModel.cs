@@ -1,8 +1,10 @@
 ﻿using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models.DTO;
+using DHCPServer.Models.Infrastructure;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +16,7 @@ namespace DHCPServer.ViewModels
 	public class ReportViewModel : BindableBase
 	{
 		private readonly IReportRepository _reportRepository;
-
+		private readonly IDialogService _dialogService;
 		private string _searchingString;
 		public string SearchingString
 		{
@@ -31,10 +33,27 @@ namespace DHCPServer.ViewModels
 		}
 
 		public DelegateCommand FilterCommand { get; set; }
-		public ReportViewModel(IReportRepository reportRepository)
+		public DelegateCommand<ReportDTO> OpenGraphCommand { get; set; }
+
+		public ReportViewModel(IReportRepository reportRepository,IDialogService dialogService)
 		{
 			FilterCommand = new DelegateCommand( async()=>await Filter());
+			OpenGraphCommand = new DelegateCommand<ReportDTO>(OpenGraph);
 			_reportRepository = reportRepository;
+			_dialogService = dialogService;
+		}
+
+		private void OpenGraph(ReportDTO reportDTO)
+		{
+			var room = new RoomLineGraphInfo(reportDTO.ActiveDevice);
+			var dialogParametr = new DialogParameters
+			{
+				{ "model", room }
+			};
+
+			_dialogService.Show("GraphView", dialogParametr, x =>
+			{
+			});
 		}
 
 		private async Task Filter()
@@ -47,5 +66,7 @@ namespace DHCPServer.ViewModels
 			ReportsCollection = new ObservableCollection<ReportDTO>(result);
 
 		}
+
+
 	}
 }

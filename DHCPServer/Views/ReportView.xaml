@@ -23,12 +23,16 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
             <Grid Grid.Column="0" x:Name="col1"/>
             <Grid Grid.Column="1" x:Name="col2"/>
             <Grid Grid.Column="2" x:Name="col3"/>
             <Grid Grid.Column="3" x:Name="col4"/>
+            <Grid Grid.Column="4" x:Name="col5"/>
+            <Grid Grid.Column="5" x:Name="col6"/>
         </Grid>
 
 
@@ -86,12 +90,29 @@
 
 
                     <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
-                                    Header="Архив"
+                                    Header="Название архива"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
 
                                 <TextBlock Text="{Binding Path=Report.Title}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
+                                    Header="Начало записи"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=Report.FromTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="10,2,0,2" Margin="0,0,15,0" 
                                                Foreground="#FF0B245B"
@@ -102,9 +123,32 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
+                    <GridViewColumn Width="{Binding ElementName=col5,Path=ActualWidth}"
+                                    Header="Конец записи"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=Report.ToTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center">
+                                    <Run Text="    "/>
+                              
+                                    <Run Text="{Binding Path=Report.Days}"/>
+                                        
+                                    <Run Text=" (дней)"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
 
 
-                    <GridViewColumn  Width="{Binding ElementName=col4,Path=ActualWidth}"
+
+                    <GridViewColumn  Width="{Binding ElementName=col6,Path=ActualWidth}"
                                         Header="Действие"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -123,40 +167,6 @@
                                                 <StackPanel>
                                                     <TextBlock FontWeight="DemiBold" Foreground="Blue">
                                                         График устройства
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Button.ToolTip>
-                                        </Button>
-
-                                        <Button CommandParameter="{Binding}" 
-                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.OpenCalibrationCommand}"
-                                                Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" Height="28" 
-                                                VerticalAlignment="Center" Width="40">
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="/Resources/IconEdit.png" Stretch="Uniform"/>
-                                            </Button.Background>
-                                            <Button.ToolTip>
-                                                <StackPanel>
-                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
-                                                        Калибровка устройства
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Button.ToolTip>
-                                        </Button>
-
-                                        <Button  Margin="5 0 0 0" CommandParameter="{Binding}" 
-                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.DeleteRoomCommand}"
-                                                Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" Height="28" 
-                                                VerticalAlignment="Center" Width="40">
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="/Resources/IconClose.png" Stretch="Uniform"/>
-                                            </Button.Background>
-                                            <Button.ToolTip>
-                                                <StackPanel>
-                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
-                                                        Удалить устройство
                                                     </TextBlock>
                                                 </StackPanel>
                                             </Button.ToolTip>

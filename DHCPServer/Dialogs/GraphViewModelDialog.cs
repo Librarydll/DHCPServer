@@ -57,7 +57,6 @@ namespace DHCPServer.Dialogs
 			ShowRealTimeGraphComamand = new DelegateCommand(ShowRealTimeGraphHandler);
 			_roomRepository = roomRepository;
 
-			
 		}
 
 		private void ShowRealTimeGraphHandler()
@@ -115,12 +114,10 @@ namespace DHCPServer.Dialogs
 			{
 				_current = parameters.GetValue<RoomLineGraphInfo>("model");
 				GraphInfo = _current;
-				GraphInfo.GraphLineModel.Axes[0].Reset();
-				GraphInfo.GraphLineModel.Axes[1].Reset();
 
-				if(GraphInfo.GraphLineModel.SetLastNHours(6))
-					GraphInfo.GraphLineModel.InvalidatePlot(true);
-
+				var title = $"{_current?.ActiveDevice?.Device?.Nick} {_current?.ActiveDevice?.Device?.IPAddress}";
+				Title = title;
+				SetSettings();
 			}
 		}
 
@@ -179,5 +176,15 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
+		private void SetSettings()
+		{
+			if (GraphInfo?.GraphLineModel == null) return;
+
+			GraphInfo.GraphLineModel.Axes[0].Reset();
+			GraphInfo.GraphLineModel.Axes[1].Reset();
+
+			if (GraphInfo.GraphLineModel.SetLastNHours(6))
+				GraphInfo.GraphLineModel.InvalidatePlot(true);
+		}
 	}
 }

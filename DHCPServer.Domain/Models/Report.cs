@@ -45,7 +45,8 @@ namespace DHCPServer.Domain.Models
 		[Computed]
 		public ICollection<ActiveDevice> ActiveDevices { get; set; }
 
-
+		[Computed]
+		public DateTime ToTime => FromTime.AddDays(Days);
 		public bool IsEdited(Report newReport)
 		{
 			if (newReport == null) throw new ArgumentNullException("newReport is null");
