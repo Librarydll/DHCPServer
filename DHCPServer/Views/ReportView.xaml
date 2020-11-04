@@ -91,7 +91,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
 
-                                <TextBlock Text="{Binding Path=ActiveDevice.Device.IPAddress}" 
+                                <TextBlock Text="{Binding Path=Report.Title}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="10,2,0,2" Margin="0,0,15,0" 
                                                Foreground="#FF0B245B"

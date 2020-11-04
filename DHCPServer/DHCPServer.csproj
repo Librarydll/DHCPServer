@@ -146,6 +146,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
+    <Compile Include="Models\DTO\ReportDTO.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfoSetting.cs" />
     <Compile Include="UICore\Converters\BooleanReverseVisibilityConverter.cs" />
     <Compile Include="Core\Events\ApplicationEvents.cs" />
@@ -173,7 +174,7 @@
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\ReportViewViewModel.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="Views\CalibrationView.xaml.cs">
       <DependentUpon>CalibrationView.xaml</DependentUpon>
     </Compile>

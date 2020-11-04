@@ -5,6 +5,8 @@ using DHCPServer.Domain.Enumerations;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
 namespace DHCPServer.Dapper.Repositories
 {
@@ -47,29 +49,43 @@ namespace DHCPServer.Dapper.Repositories
 			}
 		}
 
-		public Task<Report> GetReport(string searchingString, Specification specification)
+		public async Task<IEnumerable<Report>> GetReportsByString(string searchingString, Specification specification)
 		{
-			string query="SELECT *FROM"
+			string query = @"SELECT *FROM Reports as r
+						   Left join ActiveDevices as ad on r.id=ad.reportid
+						   Left join Devices as d on d.id=ad.deviceid
+						   Where r.Title like @title";
+			var qwe = query.Replace("@title", searchingString);
+			var lookup = new Dictionary<int, Report>();
+
 			using (var connection = _factory.CreateConnection())
 			{
 				switch (specification)
 				{
 					case Specification.IpAddress:
-
+						throw new NotImplementedException();
 						break;
 					case Specification.Report:
+						var entity = await connection.QueryAsync<Report,ActiveDevice,Device,Report>(query,
+							(report, activeDevice, device) =>
+							{
 
+								if (!lookup.TryGetValue(report.Id, out Report r))
+								{
+									lookup.Add(report.Id, r = report);
+								}
+								activeDevice.Device = device;
+
+								r.ActiveDevices.Add(activeDevice);
+								return r;
+
+							}, new { title = "%"+ searchingString+"%" });
 						break;
 					default:
 						break;
 				}
 			}
-			return null;
-		}
-
-		public Task<Report> GetReport(string searchingString)
-		{
-			throw new System.NotImplementedException();
+			return lookup.Values;
 		}
 
 		public async Task<bool> UpdateAsync(Report report)

@@ -20,6 +20,6 @@ namespace DHCPServer.Domain.Interfaces
 		/// </summary>
 		/// <param name="searchingString"></param>
 		/// <returns></returns>
-		Task<Report> GetReport(string searchingString,Specification specification);
+		Task<IEnumerable<Report>> GetReportsByString(string searchingString,Specification specification);
 	}
 }
