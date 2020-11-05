@@ -103,6 +103,7 @@ namespace DHCPServer.Dialogs
 			result.GraphLineModel.SetLastNHours(6);
 			temperatureLineSerie.Points.AddRange(temperaturePoints);
 			humidityLineSerie.Points.AddRange(humidityPoints);
+			result.GraphLineModel.AddAnnotations(4);
 			GraphInfo.GraphLineModel.InvalidatePlot(true);
 			return result;
 		}
@@ -117,7 +118,17 @@ namespace DHCPServer.Dialogs
 
 				var title = $"{_current?.ActiveDevice?.Device?.Nick} {_current?.ActiveDevice?.Device?.IPAddress}";
 				Title = title;
+				if(parameters.TryGetValue("id",out int id))
+				{
+					Task.Run(async () =>
+					{
+						var collection = await _roomRepository.FilterRooms(id, GraphInfo.ActiveDeviceId);
+						GraphInfo = FillModel(collection);
+				
+					});
+				} 
 				SetSettings();
+
 			}
 		}
 

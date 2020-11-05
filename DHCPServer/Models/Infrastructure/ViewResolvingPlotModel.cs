@@ -1,4 +1,5 @@
 ﻿using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
@@ -72,7 +73,7 @@ namespace DHCPServer.Models.Infrastructure
 				Color = temperatureColor,
 
 				
-			};
+			};			
 			var humidityLineSeries = new LineSeries
 			{
 				StrokeThickness = 2,
@@ -152,6 +153,44 @@ namespace DHCPServer.Models.Infrastructure
 			dateTimeAxis.Maximum = DateTimeAxis.ToDouble(lastDate);
 
 			return true;
+		}
+
+
+		public void AddAnnotations(int n)
+		{
+			var points = GetFirst().Points;
+
+			var firstPoint = points.Min(x => x.X);
+			var lastPoint = points.Max(x=>x.X);
+			foreach (var item in points)
+			{
+				Console.WriteLine(DateTimeAxis.ToDateTime(item.X));
+			}
+			var beginingDate = DateTimeAxis.ToDateTime(lastPoint);
+			var lastDate = DateTimeAxis.ToDateTime(firstPoint);
+			double Y = 70;
+			double X = DateTimeAxis.ToDouble(lastDate);
+			var hours =(int)(lastDate - beginingDate).Hours;
+
+			for (int i = 0; i < hours/n; i++)
+			{
+				LineAnnotation Line = new LineAnnotation()
+				{
+					StrokeThickness = 1,
+					Color = OxyColors.Green,
+					Type = LineAnnotationType.Vertical,
+					Text = (Y).ToString(),
+					TextColor = OxyColors.White,
+					X = X,
+					Y = Y,
+					LineStyle = LineStyle.Solid
+				};
+				Annotations.Add(Line);
+				X= DateTimeAxis.ToDouble(lastDate.AddHours(n));
+			}
+
+
+			
 		}
 	}
 }

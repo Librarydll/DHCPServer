@@ -16,6 +16,8 @@ namespace DHCPServer.Domain.Interfaces
 		Task<IEnumerable<RoomInfo>> FilterRooms(DateTime fromDate, DateTime toDate,TimeSpan fromTime,TimeSpan toTime);
 		Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date, TimeSpan fromTime, TimeSpan toTime);
 		Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date);
+		Task<IEnumerable<RoomInfo>> FilterRooms(int reportId, int deviceId);
+
 
 	}
 }

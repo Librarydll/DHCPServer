@@ -114,5 +114,31 @@ namespace DHCPServer.Dapper.Repositories
 				return result;
 			}
 		}
+
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(int reportId,int deviceId)
+		{
+			string query = @"SELECT *FROM RoomInfos as r 
+						   left join activedevices as ad on r.deviceid=ad.id
+						   left join reports as rep on rep.id = ad.reportid
+						   Where ad.reportid=@reportId and r.deviceId=@deviceId and 
+						   (r.date >=rep.FromTime and r.date<=datetime(rep.FromTime ,'+'||rep.Days||' days'))
+						   order by r.Date";
+
+			using (var connection = _factory.CreateConnection())
+			{
+				var result = await connection.QueryAsync<RoomInfo, ActiveDevice,Report, RoomInfo>(query, (r,ad, repo)
+					 =>
+				{			
+					r.ActiveDevice = ad;
+					if (r.ActiveDevice == null)
+						r.ActiveDevice = new ActiveDevice();
+
+					return r;
+				},
+				new
+				{ reportId, deviceId });
+				return result;
+			}
+		}
 	}
 }

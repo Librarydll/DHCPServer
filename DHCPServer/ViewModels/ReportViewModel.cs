@@ -48,7 +48,8 @@ namespace DHCPServer.ViewModels
 			var room = new RoomLineGraphInfo(reportDTO.ActiveDevice);
 			var dialogParametr = new DialogParameters
 			{
-				{ "model", room }
+				{ "model", room },
+				{"id",reportDTO.Report.Id }
 			};
 
 			_dialogService.Show("GraphView", dialogParametr, x =>
