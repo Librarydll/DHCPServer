@@ -196,9 +196,10 @@ namespace DHCPServer.Dialogs
 
 			GraphInfo.GraphLineModel.Axes[0].Reset();
 			GraphInfo.GraphLineModel.Axes[1].Reset();
+			GraphInfo.GraphLineModel.SetLastNHours(6);
+			GraphInfo.GraphLineModel.AddAnnotations(6);
 
-			if (GraphInfo.GraphLineModel.SetLastNHours(6))
-				GraphInfo.GraphLineModel.InvalidatePlot(true);
+			//	GraphInfo.GraphLineModel.InvalidatePlot(true);
 		}
 	}
 }

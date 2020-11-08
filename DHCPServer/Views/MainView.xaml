@@ -6,8 +6,10 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"      
         xmlns:local="clr-namespace:DHCPServer.Views"
+        xmlns:b="clr-namespace:DHCPServer.UICore.Behaviors"
         WindowState="Maximized"
         xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Icon="pack://application:,,,/Resources/chart-1_111423.ico"
         Title="MainView" Height="450" Width="800">
@@ -17,20 +19,36 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <ToolBar>
+        <Grid >
+            <ToolBar >
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">График</Button>
-                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица</Button>
-                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceViewCommand}">Устройства</Button>
-                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenReportViewCommand}">Архив</Button>
+                    <Button Margin="5"  Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">График
+                        <i:Interaction.Behaviors>
+                            <b:ActiveButton/>
+                        </i:Interaction.Behaviors>
+                    </Button>
+                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица
+                        <i:Interaction.Behaviors>
+                            <b:ActiveButton/>
+                        </i:Interaction.Behaviors>
+                    </Button>
+                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceViewCommand}">Устройства
+                        <i:Interaction.Behaviors>
+                            <b:ActiveButton/>
+                        </i:Interaction.Behaviors>
+                    </Button>
+                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenReportViewCommand}">Архив
+                        <i:Interaction.Behaviors>
+                            <b:ActiveButton/>
+                        </i:Interaction.Behaviors>
+                    </Button>
                 </StackPanel>
             </ToolBar>
         </Grid>
         <oxy:PlotView  Grid.Row="1" x:Name="Plot1"  Margin="10">
         </oxy:PlotView>
-      
+
         <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
-        
+
     </Grid>
 </Window>

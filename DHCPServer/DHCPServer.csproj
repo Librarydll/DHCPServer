@@ -170,6 +170,7 @@
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UICore\Converters\NumberConverter.cs" />
+    <Compile Include="UICore\Behaviors\ActiveButton.cs" />
     <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />

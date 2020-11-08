@@ -159,6 +159,7 @@ namespace DHCPServer.Models.Infrastructure
         public void AddAnnotations(int n)
 		{
             var points = GetFirst().Points;
+			if (points.Count == 0) return;
             var lastPoint = points.Max(x => x.X);
 			var firstPoint = points.Min(x => x.X);
 
