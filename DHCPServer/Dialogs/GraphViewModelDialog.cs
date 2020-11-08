@@ -97,9 +97,12 @@ namespace DHCPServer.Dialogs
 
 			var humidityLineSerie = result.GraphLineModel.GetLast();
 			var temperatureLineSerie = result.GraphLineModel.GetFirst();
+			var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Humidity)).ToList();
+			var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Temperature)).ToList();
+			var min = collection.Min(x => x.Date);
+			result.GraphLineModel.Axes[0].Minimum = DateTimeAxis.ToDouble(min);
+			result.GraphLineModel.Axes[0].Maximum = DateTimeAxis.ToDouble(min.AddHours(6));
 
-			var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date.ToToday()), x.Humidity)).ToList();
-			var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date.ToToday()), x.Temperature)).ToList();
 			result.GraphLineModel.SetLastNHours(6);
 			temperatureLineSerie.Points.AddRange(temperaturePoints);
 			humidityLineSerie.Points.AddRange(humidityPoints);

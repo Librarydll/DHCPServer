@@ -42,11 +42,11 @@ namespace DHCPServer.Domain.Models
 
 		public void Set(ActiveDevice device)
 		{
-			this.Id = device.Id;
-			this.IsActive = device.IsActive;
-			this.IsAdded = device.IsAdded;
-			this.DeviceId = device.DeviceId;
-			this.ReportId = device.ReportId;
+			Id = device.Id;
+            IsActive = device.IsActive;
+			IsAdded = device.IsAdded;
+			DeviceId = device.DeviceId;
+			ReportId = device.ReportId;
 		}
 	}
 }

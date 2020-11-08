@@ -156,37 +156,36 @@ namespace DHCPServer.Models.Infrastructure
 		}
 
 
-		public void AddAnnotations(int n)
+        public void AddAnnotations(int n)
 		{
-			var points = GetFirst().Points;
-
+            var points = GetFirst().Points;
+            var lastPoint = points.Max(x => x.X);
 			var firstPoint = points.Min(x => x.X);
-			var lastPoint = points.Max(x=>x.X);
-			foreach (var item in points)
-			{
-				Console.WriteLine(DateTimeAxis.ToDateTime(item.X));
-			}
-			var beginingDate = DateTimeAxis.ToDateTime(lastPoint);
-			var lastDate = DateTimeAxis.ToDateTime(firstPoint);
-			double Y = 70;
-			double X = DateTimeAxis.ToDouble(lastDate);
-			var hours =(int)(lastDate - beginingDate).Hours;
 
+			var beginingDate = DateTimeAxis.ToDateTime(firstPoint);
+
+            var lastDate = DateTimeAxis.ToDateTime(lastPoint);
+            double Y = 70;
+			var hours =(int)(lastDate - beginingDate).TotalHours;
+			var date = beginingDate;
+			double X = DateTimeAxis.ToDouble(date);
 			for (int i = 0; i < hours/n; i++)
 			{
 				LineAnnotation Line = new LineAnnotation()
 				{
-					StrokeThickness = 1,
+					StrokeThickness = 3,
 					Color = OxyColors.Green,
 					Type = LineAnnotationType.Vertical,
-					Text = (Y).ToString(),
+					Text = Y.ToString(),
 					TextColor = OxyColors.White,
 					X = X,
 					Y = Y,
-					LineStyle = LineStyle.Solid
+					LineStyle = LineStyle.Dash,
+
 				};
 				Annotations.Add(Line);
-				X= DateTimeAxis.ToDouble(lastDate.AddHours(n));
+				date = date.AddHours(n);
+				X = DateTimeAxis.ToDouble(date);
 			}
 
 
