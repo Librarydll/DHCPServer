@@ -38,7 +38,7 @@ namespace DHCPServer.Models
 					var agg = time.Aggregate((a, b) => a + " " + b);
 					var t = DateTime.Parse(agg.Trim());
 					room.Date = t;
-					room.ActiveDeviceId = 2;
+					room.DeviceId = 2;
 					if (i == 1)
 					{
 						var h = line.Split().ElementAt(11);

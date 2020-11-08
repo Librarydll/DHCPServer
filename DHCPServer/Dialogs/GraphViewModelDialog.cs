@@ -76,11 +76,11 @@ namespace DHCPServer.Dialogs
 			IEnumerable<RoomInfo> collection;
 			if (DateTimeSpan.IsTimeInclude)
 			{
-				collection = await _roomRepository.FilterRooms(GraphInfo.ActiveDeviceId, DateTimeSpan.FromDate);
+				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate);
 			}
 			else
 			{
-				collection = await _roomRepository.FilterRooms(GraphInfo.ActiveDeviceId, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
+				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
 			}
 
 			if (collection.Count() > 0)
@@ -119,13 +119,13 @@ namespace DHCPServer.Dialogs
 				_current = parameters.GetValue<RoomLineGraphInfo>("model");
 				GraphInfo = _current;
 
-				var title = $"{_current?.ActiveDevice?.Device?.Nick} {_current?.ActiveDevice?.Device?.IPAddress}";
+				var title = $"{_current?.ActiveDevice?.Nick} {_current?.ActiveDevice?.IPAddress}";
 				Title = title;
 				if(parameters.TryGetValue("id",out int id))
 				{
 					Task.Run(async () =>
 					{
-						var collection = await _roomRepository.FilterRooms(id, GraphInfo.ActiveDeviceId);
+						var collection = await _roomRepository.FilterRooms(id, GraphInfo.DeviceId);
 						GraphInfo = FillModel(collection);
 				
 					});

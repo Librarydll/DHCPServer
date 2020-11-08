@@ -26,8 +26,5 @@ namespace DHCPServer.Domain.Models
 			get { return nick; }
 			set { SetProperty(ref nick, value); }
 		}
-
-		[Computed]
-		public ActiveDevice ActiveDevice { get; set; }
 	}
 }

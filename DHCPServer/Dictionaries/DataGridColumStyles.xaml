@@ -42,7 +42,7 @@
 
     <DataTemplate x:Key="DataGridIp2">
         <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Width="100" Height="40" HorizontalAlignment="Center">
-            <TextBlock Padding="8 8 0 0" Text="{Binding Path=ActiveDevice.Device.IPAddress}" FontSize="15" HorizontalAlignment="Center"/>
+            <TextBlock Padding="8 8 0 0" Text="{Binding Path=ActiveDevice.IPAddress}" FontSize="15" HorizontalAlignment="Center"/>
         </StackPanel>
     </DataTemplate>
 

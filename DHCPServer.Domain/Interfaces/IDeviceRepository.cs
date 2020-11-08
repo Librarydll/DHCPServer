@@ -16,7 +16,7 @@ namespace DHCPServer.Domain.Interfaces
 		Task<int> UpdateRangeAsync(IEnumerable<Device> devices);
 		Task<IEnumerable<Device>> GetAllAsync();
 
-		
+		Task<bool> UpdateDevices(Device newDivece, Device oldDevice);
 
 
 	}

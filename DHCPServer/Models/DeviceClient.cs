@@ -24,13 +24,12 @@ namespace DHCPServer.Models
 		public bool IsInvalid => _countRequestForDisableInvaid!=0;
 		private int _countRequestForDisableInvaid = 0;
 		private bool loop = true;
-		private bool disposed = false;
-		public DeviceClient(Device device)
+		private bool _disposed = false;
+		public DeviceClient(ActiveDevice device)
 		{
 			if (device == null) throw new ArgumentNullException("device should not be null");
 			if (device?.IPAddress == null) throw new ArgumentNullException("device IPAddress should not be null");
-			if(device.ActiveDevice==null) throw new ArgumentNullException("ActiveDevice should not be null");
-			ActiveDevice = device.ActiveDevice;
+			ActiveDevice = device;
 			client = new HttpClient
 			{
 				Timeout = new TimeSpan(0, 0, 5)
@@ -38,17 +37,7 @@ namespace DHCPServer.Models
 			_url = "http://" + device.IPAddress;
 		}
 
-		public DeviceClient(ActiveDevice activeDevice)
-		{
-			if(activeDevice==null) throw new ArgumentNullException("ActiveDevice should not be null");
-			if (activeDevice?.Device?.IPAddress == null) throw new ArgumentNullException("device IPAddress should not be null");
-			ActiveDevice = activeDevice;
-			client = new HttpClient
-			{
-				Timeout = new TimeSpan(0, 0, 5)
-			};
-			_url = "http://" + activeDevice.Device.IPAddress;
-		}
+	
 
 		public async Task ListenAsync(CancellationToken token)
 		{
@@ -92,7 +81,7 @@ namespace DHCPServer.Models
 					Log.Logger.Error("ArgumentException message {0}", e.Message);
 					Log.Logger.Error("ArgumentException inner message {0}", e?.InnerException.Message);
 				}
-				catch (HttpRequestException e)
+				catch (HttpRequestException)
 				{
 				//	Log.Logger.Error("HttpRequestException message {0}", e.Message);
 				//	Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
@@ -141,7 +130,7 @@ namespace DHCPServer.Models
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!disposed&& disposing)
+			if (!_disposed&& disposing)
 			{
 				client?.Dispose();
 				loop = false;

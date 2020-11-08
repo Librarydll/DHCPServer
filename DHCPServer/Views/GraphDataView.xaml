@@ -33,7 +33,7 @@
         <DataGrid IsReadOnly="True" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=RoomInfoColleciton}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="IPAddress" CellTemplate="{StaticResource  DataGridIp2}"/>
-                <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding ActiveDevice.Device.Nick}"/>
+                <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding ActiveDevice.Nick}"/>
                 <DataGridTemplateColumn Header="Температура" CellTemplate="{StaticResource  DataGridTemperature}"/>
                 <DataGridTemplateColumn Header="Влажность" CellTemplate="{StaticResource  DataGridHumidity}"/>
                 <DataGridTemplateColumn Header="Время" CellTemplate="{StaticResource  DataGridTemplate}"/>

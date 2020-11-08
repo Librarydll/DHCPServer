@@ -56,7 +56,7 @@
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ActiveDevice.Device.Nick}" 
+                                <TextBlock Text="{Binding ActiveDevice.Nick}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="10,2,0,2" Margin="0" 
                                                Foreground="#FF0B245B" 
@@ -72,7 +72,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
 
-                                <TextBlock Text="{Binding Path=ActiveDevice.Device.IPAddress}" 
+                                <TextBlock Text="{Binding Path=ActiveDevice.IPAddress}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="10,2,0,2" Margin="0,0,15,0" 
                                                Foreground="#FF0B245B"

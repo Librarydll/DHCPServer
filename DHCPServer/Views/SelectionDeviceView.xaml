@@ -72,7 +72,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="100" Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
                 <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding Nick}"/>
-                <DataGridCheckBoxColumn Width="50" Header="Флаг" Binding="{Binding ActiveDevice.IsAdded}"/>
+                <DataGridCheckBoxColumn Width="50" Header="Флаг" Binding="{Binding IsAdded}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right">Сохранить</Button>

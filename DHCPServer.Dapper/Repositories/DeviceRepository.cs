@@ -52,34 +52,9 @@ namespace DHCPServer.Dapper.Repositories
 
 		public async Task<IEnumerable<Device>> GetAllAsync()
 		{
-			string query = @"SELECT *FROM DEVICES as d
-							Left Join ActiveDevices as ad
-							on d.id = ad.deviceid
-							where ad.isActive=1 or ad.isActive is null";
 			using (var connection = _factory.CreateConnection())
 			{
-				var entities = await connection.QueryAsync<Device,ActiveDevice,Device>(query,
-					(d,ad)=> 
-					{
-						d.ActiveDevice = ad;
-						if (d.ActiveDevice == null)
-						{
-							d.ActiveDevice = new ActiveDevice();
-						}
-						return d;
-					});
-				return entities;
-			}
-		}
-
-
-		public async Task<IEnumerable<Device>> GetDevicesLists()
-		{
-			string query = @"SELECT *FROM Devices where isAdded = 1";
-			using (var connection = _factory.CreateConnection())
-			{
-				var entities = await connection.QueryAsync<Device>(query);
-
+				var entities = await connection.GetAllAsync<Device>();
 				return entities;
 			}
 		}
@@ -98,6 +73,20 @@ namespace DHCPServer.Dapper.Repositories
 			}
 		}
 
-
-	}
+        public async Task<bool> UpdateDevices(Device newDivece, Device oldDevice)
+        {
+			using (var connection = _factory.CreateConnection())
+			{
+				var query = "Select *from activedevices where ipaddress=@address and isactive=1 and isadded=1";
+				var isUpdated = await connection.UpdateAsync(newDivece);
+				var device = await connection.QueryFirstOrDefaultAsync<ActiveDevice>(query,new { address=oldDevice.IPAddress});
+                if (device !=null)
+                {
+					device.Set(newDivece);
+				}
+				await connection.UpdateAsync(device);
+				return isUpdated;
+			}
+		}
+    }
 }

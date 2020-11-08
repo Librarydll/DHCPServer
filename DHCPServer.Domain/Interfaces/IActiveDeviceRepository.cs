@@ -9,6 +9,8 @@ namespace DHCPServer.Domain.Interfaces
 {
 	public interface IActiveDeviceRepository
 	{
+
+		Task<bool> UpdateAsync(ActiveDevice activeDevice);
 		Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists();
 
 		/// <summary>
@@ -25,11 +27,7 @@ namespace DHCPServer.Domain.Interfaces
 		/// <returns></returns>
 		Task<IEnumerable<ActiveDevice>> CheckDevices(IEnumerable<ActiveDevice> activeDevice);
 
-		/// <summary>
-		/// Get List where isActive true
-		/// </summary>
-		/// <returns></returns>
-		Task<IEnumerable<ActiveDevice>> GetAppropriateDevicesLists();
+
 
 		/// <summary>
 		/// Set device isadded false
@@ -41,5 +39,8 @@ namespace DHCPServer.Domain.Interfaces
 		/// </summary>
 		/// <returns>row affected</returns>
 		Task<int> DeatachDevices(IEnumerable<ActiveDevice> activeDevices);
+
+
+		Task<IEnumerable<ActiveDevice>> GetActiveDevicesByReportId(int reportId);
 	}
 }

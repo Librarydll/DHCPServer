@@ -25,20 +25,30 @@ namespace DHCPServer.Core.Extensions
 			}
 		}
 
-		//public static IEnumerable<Device> CheckDevice(this IEnumerable<Device> newDevices,IEnumerable<Device> oldDevices)
-		//{
-		//	foreach (var device in newDevices)
-		//	{
-		//		var d = oldDevices.FirstOrDefault(x => x.Id == device.Id);
+		public static void DisposeRange(this IEnumerable<DeviceClient> deviceClients)
+        {
+            foreach (var device in deviceClients)
+            {
+				device?.Dispose();
+            }
+        }
 
-		//		if (d != null)
-		//		{
-		//			device.IsAdded = true;
-		//		}
-		//	}
+		public static IEnumerable<ActiveDevice> CreateActiveDevices(this IEnumerable<Device> devices,IEnumerable<ActiveDevice> activeDevices)
+        {
 
-		//	return newDevices;
-		//}
+            foreach (var device in devices)
+            {
+				var ad = activeDevices.FirstOrDefault(x => x.IPAddress == device.IPAddress);
+                if (ad != null)
+                {
+					yield return ad;
+                }
+                else
+                {
+					yield return new ActiveDevice(device);        
+                }
+            }
+        }
 
 
 	}

@@ -21,8 +21,9 @@ namespace DHCPServer.ViewModels
 		private readonly IDeviceRepository _deviceRepository;
 		private readonly ILogger _logger;
 		private readonly IEventAggregator _eventAggregator;
+        private readonly IActiveDeviceRepository _activeDeviceRepository;
 
-		public DelegateCommand CreateNewDeviceCommand { get; set; }
+        public DelegateCommand CreateNewDeviceCommand { get; set; }
 		public DelegateCommand<Device> EditDeviceCommand { get; set; }
 		public DelegateCommand<Device> DeleteDeviceCommand { get; set; }
 
@@ -34,7 +35,11 @@ namespace DHCPServer.ViewModels
 			set { SetProperty(ref _devicesColleciton, value); }
 		}
 
-		public ListDevicesViewModel(IDialogService dialogService,IDeviceRepository deviceRepository,ILogger logger,IEventAggregator eventAggregator)
+		public ListDevicesViewModel(IDialogService dialogService,
+			IDeviceRepository deviceRepository,
+			ILogger logger,
+			IEventAggregator eventAggregator,
+			IActiveDeviceRepository activeDeviceRepository)
 		{
 			CreateNewDeviceCommand = new DelegateCommand(CreateNewDevice);
 			EditDeviceCommand = new DelegateCommand<Device>(EditDevice);
@@ -43,7 +48,8 @@ namespace DHCPServer.ViewModels
 			_deviceRepository = deviceRepository;
 			_logger = logger;
 			_eventAggregator = eventAggregator;
-			Task.Run(async () =>
+            _activeDeviceRepository = activeDeviceRepository;
+            Task.Run(async () =>
 			{
 				DevicesColleciton = new ObservableCollection<Device>(await deviceRepository.GetAllAsync());
 			});
@@ -114,9 +120,8 @@ namespace DHCPServer.ViewModels
 			{
 				Task.Run(async () =>
 				{
-					var b = await _deviceRepository.UpdateAsync(updatedDevice);
-
-					if (b)
+					var updated = await _deviceRepository.UpdateDevices(updatedDevice,device);
+					if (updated)
 					{
 
 						_eventAggregator.GetEvent<DeviceUpdateEvent>().Publish(new DeviceEventModel

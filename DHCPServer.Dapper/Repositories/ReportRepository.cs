@@ -18,8 +18,8 @@ namespace DHCPServer.Dapper.Repositories
 		{
 			_factory = new ApplicationContextFactory();
 		}
-
-		public async Task<Report> CreateAsync(Report report)
+   
+        public async Task<Report> CreateAsync(Report report)
 		{
 			using (var connection = _factory.CreateConnection())
 			{
@@ -29,22 +29,27 @@ namespace DHCPServer.Dapper.Repositories
 			}
 		}
 
-		public async Task<Report> GetLastReport()
+        public async Task<Report> CreateReport(Report report, IEnumerable<ActiveDevice> activeDevices)
+        {
+            using (var connection = _factory.CreateConnection())
+            {
+				int id = await connection.InsertAsync(report);
+				report.Id = id;
+                foreach (var device in activeDevices)
+                {
+					device.ReportId = id;
+					device.Id = await connection.InsertAsync(device);
+				}
+				return report;
+			}
+        }
+
+        public async Task<Report> GetLastReport()
 		{
-			string query = "SELECT *FROM Reports order by id desc  LIMIT 1";
+			string query = "SELECT *FROM Reports WHERE IsClosed = 0 order by id desc LIMIT 1";
 			using (var connection = _factory.CreateConnection())
 			{
 				var report = await connection.QueryFirstOrDefaultAsync<Report>(query);
-				return report;
-			}
-		}
-
-		public async Task<Report> GetLastReportByDeviceId(int deviceId)
-		{
-			string query = "SELECT *FROM Reports Where deviceid=@deviceId order by id desc  LIMIT 1";
-			using (var connection = _factory.CreateConnection())
-			{
-				var report = await connection.QueryFirstOrDefaultAsync<Report>(query, new { deviceId });
 				return report;
 			}
 		}
@@ -53,9 +58,7 @@ namespace DHCPServer.Dapper.Repositories
 		{
 			string query = @"SELECT *FROM Reports as r
 						   Left join ActiveDevices as ad on r.id=ad.reportid
-						   Left join Devices as d on d.id=ad.deviceid
 						   Where r.Title like @title";
-			var qwe = query.Replace("@title", searchingString);
 			var lookup = new Dictionary<int, Report>();
 
 			using (var connection = _factory.CreateConnection())
@@ -66,15 +69,14 @@ namespace DHCPServer.Dapper.Repositories
 						throw new NotImplementedException();
 						break;
 					case Specification.Report:
-						var entity = await connection.QueryAsync<Report,ActiveDevice,Device,Report>(query,
-							(report, activeDevice, device) =>
+						var entity = await connection.QueryAsync<Report,ActiveDevice,Report>(query,
+							(report, activeDevice) =>
 							{
 
 								if (!lookup.TryGetValue(report.Id, out Report r))
 								{
 									lookup.Add(report.Id, r = report);
 								}
-								activeDevice.Device = device;
 
 								r.ActiveDevices.Add(activeDevice);
 								return r;
@@ -88,7 +90,33 @@ namespace DHCPServer.Dapper.Repositories
 			return lookup.Values;
 		}
 
-		public async Task<bool> UpdateAsync(Report report)
+        public async Task<bool> TryCloseReport(ActiveDevice activeDevice)
+        {
+			if (activeDevice == null) return false;
+
+
+			string updateQuery = @"UPDATE ActiveDevices SET IsActive=0,IsAdded=0 WHERE Id in
+							(SELECT id FROM ActiveDevices where reportId = @reportid);";
+
+
+			string query = "SELECT *FROM Reports Where id=@id order by id desc  LIMIT 1";
+
+			using (var connection = _factory.CreateConnection())
+			{
+
+				var report = await connection.QueryFirstOrDefaultAsync<Report>(query, new { id= activeDevice.ReportId });
+				if (report == null) return false;
+
+				if (report.FromTime > DateTime.Now) return false;
+
+				var rowCount = await connection.ExecuteAsync(updateQuery, new { reportid = report.Id });
+				report.IsClosed = true;
+				var x = await connection.UpdateAsync(report);
+				return (rowCount>0 && x);
+			}
+		}
+
+        public async Task<bool> UpdateAsync(Report report)
 		{
 			using (var connection = _factory.CreateConnection())
 			{

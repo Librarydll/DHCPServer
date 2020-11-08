@@ -42,6 +42,13 @@ namespace DHCPServer.Domain.Models
 			get { return _days; }
 			set { SetProperty(ref _days, value); }
 		}
+
+		private bool _isClosed;
+		public bool IsClosed
+		{
+			get { return _isClosed; }
+			set { SetProperty(ref _isClosed, value); }
+		}
 		[Computed]
 		public ICollection<ActiveDevice> ActiveDevices { get; set; }
 

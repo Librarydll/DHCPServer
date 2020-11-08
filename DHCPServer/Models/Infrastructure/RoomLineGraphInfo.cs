@@ -133,12 +133,12 @@ namespace DHCPServer.Models.Infrastructure
 		public void AddToHumidity()
 		{
 			
-			Log.Logger.Information("ADDED To Graph DEVICE : {0} HUMIDITY {1}", ActiveDevice?.Device?.IPAddress, Humidity);
+			Log.Logger.Information("ADDED To Graph DEVICE : {0} HUMIDITY {1}", ActiveDevice?.IPAddress, Humidity);
 			GraphLineModel.GetLast().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Humidity));
 		}
 		public void AddToTemperature()
 		{
-			Log.Logger.Information("ADDED To Graph DEVICE : {0} TEMPERATURE {1}", ActiveDevice?.Device?.IPAddress, Temperature);
+			Log.Logger.Information("ADDED To Graph DEVICE : {0} TEMPERATURE {1}", ActiveDevice?.IPAddress, Temperature);
 			GraphLineModel.GetFirst().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), Temperature));
 		}
 

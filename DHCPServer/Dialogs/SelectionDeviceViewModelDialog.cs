@@ -18,9 +18,9 @@ namespace DHCPServer.Dialogs
 		private readonly IActiveDeviceRepository _activeDeviceRepository;
 		private Report _unChangedReport = null;
 
-		private ObservableCollection<Device> _devicesColleciton;
+		private ObservableCollection<ActiveDevice> _devicesColleciton;
 
-		public ObservableCollection<Device> DevicesColleciton
+		public ObservableCollection<ActiveDevice> DevicesColleciton
 		{
 			get { return _devicesColleciton; }
 			set { SetProperty(ref _devicesColleciton, value); }
@@ -42,7 +42,10 @@ namespace DHCPServer.Dialogs
 		}
 
 
-		public SelectionDeviceViewModelDialog(IDeviceRepository deviceRepository,IReportRepository reportRepository,IActiveDeviceRepository activeDeviceRepository)
+		public SelectionDeviceViewModelDialog(
+			IDeviceRepository deviceRepository,
+			IReportRepository reportRepository,
+			IActiveDeviceRepository activeDeviceRepository)
 		{
 			_deviceRepository = deviceRepository;
 			_reportRepository = reportRepository;
@@ -54,18 +57,18 @@ namespace DHCPServer.Dialogs
 		{
 			Task.Run(async () =>
 			{
-				DevicesColleciton = new ObservableCollection<Device>(await _deviceRepository.GetAllAsync());
-				var _addedDevices = await _activeDeviceRepository.GetAppropriateDevicesLists();
-
-				//DevicesColleciton.CheckDevice(_addedDevices);
-				var device = _addedDevices.FirstOrDefault();
 				Report = await _reportRepository.GetLastReport();
 				if (Report == null)
 				{
 					Report = new Report();
 					Report.FromTime = DateTime.Now;
+					Report.Days = 1;
 				}
 
+				var devices = await _deviceRepository.GetAllAsync();
+				var activeDevices = await _activeDeviceRepository.GetActiveDevicesByReportId(Report.Id);
+
+				DevicesColleciton = new ObservableCollection<ActiveDevice>(devices.CreateActiveDevices(activeDevices));
 
 				_unChangedReport = new Report(Report);
 			});
@@ -78,14 +81,14 @@ namespace DHCPServer.Dialogs
 			if (string.IsNullOrWhiteSpace(Report.Title)) return;
 
 			Result = ButtonResult.OK;
-			parameters = new DialogParameters();
-			parameters.Add("model", DevicesColleciton);
-			parameters.Add("report", Report);
-			HandleReport();
-			foreach (var device in DevicesColleciton.Where(x=>x.ActiveDevice.IsAdded))
-			{
-				device.ActiveDevice.ReportId = Report.Id;
-			}
+            parameters = new DialogParameters
+            {
+                { "model", DevicesColleciton },
+                { "report", Report }
+            };
+
+            HandleReport();
+
 			CloseDialog(parameters);
 		}
 
@@ -94,14 +97,13 @@ namespace DHCPServer.Dialogs
 			if (Report.Id == 0)
 			{
 				Report.LastUpdated = DateTime.Now;
-				_reportRepository.CreateAsync(Report).Wait();
+				_reportRepository.CreateReport(Report, DevicesColleciton.Where(x=>x.IsAdded)).Wait();
 			}
 			else if(_unChangedReport.IsEdited(Report))
 			{
 				Report.LastUpdated = DateTime.Now;
 				_reportRepository.UpdateAsync(Report).Wait();
 			}
-
 		}
 	}
 }

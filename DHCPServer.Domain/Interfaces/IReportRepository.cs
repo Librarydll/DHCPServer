@@ -13,7 +13,6 @@ namespace DHCPServer.Domain.Interfaces
 		Task<Report> CreateAsync(Report report);
 		Task<bool> UpdateAsync(Report report);
 
-		Task<Report> GetLastReportByDeviceId(int deviceId);
 		Task<Report> GetLastReport();
 		/// <summary>
 		/// 
@@ -21,5 +20,9 @@ namespace DHCPServer.Domain.Interfaces
 		/// <param name="searchingString"></param>
 		/// <returns></returns>
 		Task<IEnumerable<Report>> GetReportsByString(string searchingString,Specification specification);
+
+		Task<bool> TryCloseReport(ActiveDevice device);
+
+		Task<Report> CreateReport(Report report,IEnumerable<ActiveDevice> activeDevices);
 	}
 }
