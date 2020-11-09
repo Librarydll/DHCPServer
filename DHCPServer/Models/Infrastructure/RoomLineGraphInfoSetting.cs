@@ -17,5 +17,11 @@ namespace DHCPServer.Models.Infrastructure
 			get { return _humidityRange; }
 			set { SetProperty(ref _humidityRange, value); }
 		}
+
+		public void SetSetting(double temp,double hum)
+		{
+			TemperatureRange = temp;
+			HumidityRange = hum;
+		}
 	}
 }

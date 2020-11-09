@@ -21,11 +21,18 @@ namespace DHCPServer.Dapper.Repositories
         }
         public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists()
         {
-            string query = @"SELECT *FROM ActiveDevices 
-							where isAdded = 1 and isActive=1";
+            string query = @"SELECT *FROM ActiveDevices as ad
+                            Left join Reports as r on ad.reportid=r.id
+							where ad.isAdded = 1 and ad.isActive=1 and r.isclosed=0";
             using (var connection = _factory.CreateConnection())
             {
-                var entities = await connection.QueryAsync<ActiveDevice>(query);
+                var entities = await connection.QueryAsync<ActiveDevice,Report,ActiveDevice>(query,
+                    (ad,r)=>
+                    {
+                        ad.Report = r;
+                        ad.ReportId = r.Id;
+                        return ad;
+                    });
 
                 return entities;
             }
@@ -112,7 +119,7 @@ namespace DHCPServer.Dapper.Repositories
         public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesByReportId(int reportId)
         {
             string query = @"SELECT *FROM ActiveDevices 
-							where reportid=@reportId";
+							where reportid=@reportId and isactive=1";
             using (var connection = _factory.CreateConnection())
             {
                 var entities = await connection.QueryAsync<ActiveDevice>(query,new { reportId });

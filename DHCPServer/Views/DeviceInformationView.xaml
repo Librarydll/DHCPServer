@@ -28,6 +28,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
             <Grid Grid.Column="0" x:Name="col1"/>
@@ -35,6 +36,7 @@
             <Grid Grid.Column="2" x:Name="col3"/>
             <Grid Grid.Column="3" x:Name="col4"/>
             <Grid Grid.Column="4" x:Name="col5"/>
+            <Grid Grid.Column="5" x:Name="col6"/>
         </Grid>
 
 
@@ -83,8 +85,25 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-
                     <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
+                                    Header="Название архива"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=ActiveDevice.Report.Title}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                    <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
                                         Header="Температура  C"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -108,7 +127,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn   Width="{Binding ElementName=col4,Path=ActualWidth}"
+                    <GridViewColumn   Width="{Binding ElementName=col5,Path=ActualWidth}"
                                         Header="%  Влажность"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -133,7 +152,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn  Width="{Binding ElementName=col5,Path=ActualWidth}"
+                    <GridViewColumn  Width="{Binding ElementName=col6,Path=ActualWidth}"
                                         Header="Действия"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>

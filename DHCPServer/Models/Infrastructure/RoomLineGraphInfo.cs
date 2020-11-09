@@ -11,10 +11,14 @@ namespace DHCPServer.Models.Infrastructure
 {
 	public class RoomLineGraphInfo : RoomInfo,IDisposable
 	{
-		public RoomLineGraphInfoSetting Setting { get; set; }
         public DeviceClient DeviceClient { get; set; }
-		public Task Initialization { get; private set; }
 
+		private RoomLineGraphInfoSetting _setting;
+		public RoomLineGraphInfoSetting Setting
+		{
+			get { return _setting; }
+			set { SetProperty(ref _setting, value); }
+		}
 		private CancellationTokenSource tokenSource = null;
 		private bool _disposed = false;
 		//Колличество обращений 
@@ -55,22 +59,24 @@ namespace DHCPServer.Models.Infrastructure
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
 			Setting = new RoomLineGraphInfoSetting();
-			Initialization = InitializeDeviceAsync();
+			tokenSource = new CancellationTokenSource();
+			DeviceClient = new DeviceClient(ActiveDevice);
+			DeviceClient.ReciveMessageEvent += ReciveMessageEventHandler;
+			DeviceClient.ReciveMessageErrorEvent += ReciveMessageOnErrorEventHandler;
+			DeviceClient.EnableDeviceEvent += ReciveMessageOnValidEventHandler;
 		}
 
 		public RoomLineGraphInfo(ActiveDevice device) :this(new RoomData(),device)
 		{}
 
 		public async Task InitializeDeviceAsync()
-        {
-			tokenSource = new CancellationTokenSource();
-			DeviceClient = new DeviceClient(ActiveDevice);
-			DeviceClient.ReciveMessageEvent += ReciveMessageEventHandler;
-			DeviceClient.ReciveMessageErrorEvent += ReciveMessageOnErrorEventHandler;
-			DeviceClient.EnableDeviceEvent += ReciveMessageOnValidEventHandler;
-			
+		{		
 			await DeviceClient.ListenAsync(tokenSource.Token);
+		}
 
+		public void CancelToken()
+		{
+			tokenSource.Cancel();
 		}
 
         private void ReciveMessageEventHandler(RoomInfo roomInfo, DeviceResponseStatus status)
@@ -92,6 +98,10 @@ namespace DHCPServer.Models.Infrastructure
 		}
 
 
+		public void SetSetting(double t,double h)
+		{
+			Setting.SetSetting(t, h);
+		}
 		public void SetInvalid(bool value)
 		{
 			if (value != IsInvalid)

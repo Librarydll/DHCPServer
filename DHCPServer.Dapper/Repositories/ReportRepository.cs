@@ -44,7 +44,17 @@ namespace DHCPServer.Dapper.Repositories
 			}
         }
 
-        public async Task<Report> GetLastReport()
+		public async Task<IEnumerable<Report>> GetActiveReports()
+		{
+			string query = "SELECT *FROM Reports WHERE IsClosed = 0";
+			using (var connection = _factory.CreateConnection())
+			{
+				var report = await connection.QueryAsync<Report>(query);
+				return report;
+			}
+		}
+
+		public async Task<Report> GetLastReport()
 		{
 			string query = "SELECT *FROM Reports WHERE IsClosed = 0 order by id desc LIMIT 1";
 			using (var connection = _factory.CreateConnection())
@@ -99,7 +109,7 @@ namespace DHCPServer.Dapper.Repositories
 							(SELECT id FROM ActiveDevices where reportId = @reportid);";
 
 
-			string query = "SELECT *FROM Reports Where id=@id order by id desc  LIMIT 1";
+			string query = "SELECT *FROM Reports Where id=@id;";
 
 			using (var connection = _factory.CreateConnection())
 			{

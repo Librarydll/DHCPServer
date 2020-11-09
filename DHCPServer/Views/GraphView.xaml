@@ -43,11 +43,11 @@
         </Grid.ColumnDefinitions>
         <TextBlock Style="{StaticResource CurrentTextBlock}">
             <Run>Устройство: </Run>
-            <Run Text="{Binding GraphInfo.ActiveDevice.Device.IPAddress}"></Run>
+            <Run Text="{Binding GraphInfo.ActiveDevice.IPAddress}"></Run>
         </TextBlock>
         <TextBlock  Grid.Row="1" Style="{StaticResource CurrentTextBlock}">
             <Run>Псевдоним: </Run>
-            <Run Text="{Binding GraphInfo.ActiveDevice.Device.Nick}"></Run>
+            <Run Text="{Binding GraphInfo.ActiveDevice.Nick}"></Run>
         </TextBlock>
         <CheckBox Margin="0 0 50 0" IsChecked="{Binding GraphInfo.TemperatureLineVisibility,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Left" Content="Температура">
 

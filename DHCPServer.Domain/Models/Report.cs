@@ -20,6 +20,7 @@ namespace DHCPServer.Domain.Models
 			Id = report.Id;
 			FromTime = report.FromTime;
 			LastUpdated = report.LastUpdated;
+			IsClosed = report.IsClosed;
 			Title = report.Title;
 		}
 		private string _title;
@@ -40,7 +41,7 @@ namespace DHCPServer.Domain.Models
 		public int Days
 		{
 			get { return _days; }
-			set { SetProperty(ref _days, value); }
+			set { SetProperty(ref _days, value); RaisePropertyChangedEvent("ToTime"); }
 		}
 
 		private bool _isClosed;

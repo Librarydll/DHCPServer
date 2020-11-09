@@ -24,5 +24,7 @@ namespace DHCPServer.Domain.Interfaces
 		Task<bool> TryCloseReport(ActiveDevice device);
 
 		Task<Report> CreateReport(Report report,IEnumerable<ActiveDevice> activeDevices);
+
+		Task<IEnumerable<Report>> GetActiveReports();
 	}
 }

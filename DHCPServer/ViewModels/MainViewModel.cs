@@ -3,6 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Threading.Tasks;
 
 namespace DHCPServer.ViewModels
 {
@@ -32,7 +33,8 @@ namespace DHCPServer.ViewModels
 			OpenDeviceViewCommand = new DelegateCommand(OpenDeviceView);
 			OpenReportViewCommand = new DelegateCommand(OpenReportView);
 			_regionManager = regionManager;
-
+			var vm = _deviceInformationView.DataContext as DeviceInformationViewModel;
+			Task.Run(async () => await vm.InitializeAsync());
 		}
 
 		private void OpenReportView()

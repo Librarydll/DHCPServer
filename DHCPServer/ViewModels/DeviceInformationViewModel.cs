@@ -30,11 +30,11 @@ namespace DHCPServer.ViewModels
 		private readonly IDialogService _dialogService;
 		private readonly IRoomRepository _roomRepository;
 		private readonly IActiveDeviceRepository _activeDeviceRepository;
-        private readonly IReportRepository _reportRepository;
-        private readonly ILogger _logger;
+		private readonly IReportRepository _reportRepository;
+		private readonly ILogger _logger;
 		private readonly IEventAggregator _eventAggregator;
 		private readonly DispatcherTimer _timer;
-		private bool _isActive =false;
+		private bool _isActive = false;
 		#endregion
 
 		#region Commands
@@ -68,8 +68,8 @@ namespace DHCPServer.ViewModels
 			_dialogService = dialogService;
 			_roomRepository = roomRepository;
 			_activeDeviceRepository = activeDeviceRepository;
-            _reportRepository = reportRepository;
-            _logger = logger;
+			_reportRepository = reportRepository;
+			_logger = logger;
 			_eventAggregator = eventAggregator;
 
 			_timer = new DispatcherTimer
@@ -78,200 +78,206 @@ namespace DHCPServer.ViewModels
 			};
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
+			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
+		}
 
+		public async Task InitializeAsync()
+		{
+			try
+			{
+				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
+				var rooms = devices.Select(x => new RoomLineGraphInfo(x));
+				RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
+				_isActive = true && RoomsCollection.Count > 0;
+				var  tasks = new Task[RoomsCollection.Count];
+				for (int i = 0; i < RoomsCollection.Count; i++)
+				{
+					tasks[i] = RoomsCollection[i].InitializeDeviceAsync();
+				}
+				await Task.WhenAll(tasks);
+			}
+			catch (Exception ex)
+			{
+
+				_logger.Error("Не удлаось получить данные");
+				_logger.Error("Ошибка {0}", ex?.Message);
+				_logger.Error("Ошибка {0}", ex?.InnerException);
+			}
+		}
+
+	private void DeviceUpdateEventHandler(DeviceEventModel device)
+	{
+		var d = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.OldValue.IPAddress);
+		if (d != null)
+		{
+			d.ActiveDevice.Set(device.NewValue);
+		}
+	}
+
+	private void DeleteRoom(RoomLineGraphInfo roomInfo)
+	{
+		RoomsCollection.Remove(roomInfo);
+		roomInfo.ActiveDevice.IsAdded = false;
+		_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
+		roomInfo.CancelToken();
+		roomInfo.Dispose();
+		
+	}
+
+	private void _timer_Tick(object sender, EventArgs e)
+	{
+		if (!_isActive) return;
+		foreach (var room in RoomsCollection.Where(x => !x.IsAddedToGraph))
+		{
+			room.AddToCollection();
+		}
+		if (RoomsCollection.Any(x => !x.IsAddedToGraph))
+		{
+			_timer.Interval = new TimeSpan(0, 0, 5);
+		}
+		else
+		{
 
 
 			Task.Run(async () =>
 			{
-				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
-				var rooms = devices.Select(x => new RoomLineGraphInfo(x));
-				await Task.WhenAll(rooms.Select(x => x.Initialization));
-				RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
-				_isActive = true && RoomsCollection.Count > 0;
 
-			}).ContinueWith(t=> {
-				_logger.Error("Не удлаось получить данные");
+
+				await _roomRepository.SaveAsync(RoomsCollection.Where(x => x.IsAddedToGraph));
+				_logger.Information("Данные успешно добавились в бд");
+
+				foreach (var room in RoomsCollection)
+				{
+					room.IsAddedToGraph = false;
+				}
+
+				_timer.Interval = new TimeSpan(0, 10, 0);
+				var first = RoomsCollection.FirstOrDefault();
+				if (await _reportRepository.TryCloseReport(first.ActiveDevice))
+				{
+					RoomsCollection.DisposeRange();
+					_isActive = false;
+					Application.Current.Dispatcher.Invoke(() => RoomsCollection.Clear());
+					RoomsCollection.Clear();
+				}
+
+
+			}).ContinueWith(t =>
+			{
+
+				_logger.Error("Не удлаось добавить данные");
 				_logger.Error("Ошибка {0}", t.Exception?.Message);
 				_logger.Error("Ошибка {0}", t.Exception?.InnerException);
-			}
-			,TaskContinuationOptions.OnlyOnFaulted);
 
-
-			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
+			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 
+	}
 
-		private void DeviceUpdateEventHandler(DeviceEventModel device)
+
+	private void OpenNewDevcieView()
+	{
+		ObservableCollection<ActiveDevice> devices = null;
+		ICollection<ActiveDevice> inactiveDevices = new List<ActiveDevice>();
+		ICollection<ActiveDevice> activeDevices = new List<ActiveDevice>();
+		ICollection<RoomLineGraphInfo> rooms = new List<RoomLineGraphInfo>();
+
+		_dialogService.ShowModal("SelectionDeviceView", x =>
 		{
-			var d = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.OldValue.IPAddress);
-			if (d != null)
+			if (x.Result == ButtonResult.OK)
 			{
-				d.ActiveDevice.Set(device.NewValue);
+				devices = x.Parameters.GetValue<ObservableCollection<ActiveDevice>>("model");
 			}
-		}
+		});
 
-		private void DeleteRoom(RoomLineGraphInfo roomInfo)
+		if (devices != null)
 		{
-			RoomsCollection.Remove(roomInfo);
-			roomInfo.ActiveDevice.IsAdded = false;
-			_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
-			roomInfo.Dispose();
-		}
-
-		private void _timer_Tick(object sender, EventArgs e)
-		{
-			if (!_isActive) return;
-			foreach (var room in RoomsCollection.Where(x => !x.IsAddedToGraph))
+			foreach (var device in devices)
 			{
-				room.AddToCollection();
-			}
-			if (RoomsCollection.Any(x => !x.IsAddedToGraph))
-			{
-				_timer.Interval = new TimeSpan(0, 0, 5);
-			}
-			else
-			{
-
-
-				Task.Run(async () =>
+				var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.Id == device.Id);
+				if (room != null)
 				{
-					
-
-					await _roomRepository.SaveAsync(RoomsCollection.Where(x => x.IsAddedToGraph));
-					_logger.Information("Данные успешно добавились в бд");
-
-					foreach (var room in RoomsCollection)
+					if (!device.IsAdded)
 					{
-						room.IsAddedToGraph = false;
+						RoomsCollection.Remove(room);
+						inactiveDevices.Add(device);
 					}
+				}
 
-					_timer.Interval = new TimeSpan(0, 10, 0);
-					var first = RoomsCollection.FirstOrDefault();
-					if (await _reportRepository.TryCloseReport(first.ActiveDevice))
+				else
+				{
+					if (device.IsAdded)
 					{
-						RoomsCollection.DisposeRange();
-						_isActive = false;
-						Application.Current.Dispatcher.Invoke(() => RoomsCollection.Clear());
-						RoomsCollection.Clear();
+						var newRomm = new RoomLineGraphInfo(new RoomData(), device);
+						activeDevices.Add(device);
+						rooms.Add(newRomm);
 					}
-
-
-				}).ContinueWith(t =>
-				{
-
-					_logger.Error("Не удлаось добавить данные");
-					_logger.Error("Ошибка {0}", t.Exception?.Message);
-					_logger.Error("Ошибка {0}", t.Exception?.InnerException);
-
-				}, TaskContinuationOptions.OnlyOnFaulted);
-			}
-
-		}
-
-
-		private void OpenNewDevcieView()
-		{
-			ObservableCollection<ActiveDevice> devices = null;
-			ICollection<ActiveDevice> inactiveDevices = new List<ActiveDevice>();
-			ICollection<ActiveDevice> activeDevices = new List<ActiveDevice>();
-			ICollection<RoomLineGraphInfo> rooms = new List<RoomLineGraphInfo>();
-
-			_dialogService.ShowModal("SelectionDeviceView", x =>
-			{
-				if (x.Result == ButtonResult.OK)
-				{
-					devices = x.Parameters.GetValue<ObservableCollection<ActiveDevice>>("model");
 				}
-			});
 
-			if (devices != null)
+
+
+			}
+			Task.Run(async () =>
 			{
-				foreach (var device in devices)
-				{
-					var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.IPAddress);
-					if (room != null) {					
-						if (!device.IsAdded)
-						{
-							RoomsCollection.Remove(room);
-							inactiveDevices.Add(device);
-						}
-					}
+				await _activeDeviceRepository.DeatachDevices(inactiveDevices);
+				var actives = await _activeDeviceRepository.CheckDevices(activeDevices);
 
-					else
+				if (rooms.Count > 0)
+				{
+					Application.Current.Dispatcher.Invoke(() =>
 					{
-						if (device.IsAdded)
-						{
-							var newRomm = new RoomLineGraphInfo(new RoomData(), device);
-							activeDevices.Add(device);
-							rooms.Add(newRomm);
-						}
-					}
-
-					
-
+						RoomsCollection.AddRange(rooms);
+						_isActive = true;
+					});
 				}
-				Task.Run(async () =>
-				{
-					await _activeDeviceRepository.DeatachDevices(inactiveDevices);
-					var actives = await _activeDeviceRepository.CheckDevices(activeDevices);
 
-                    if (rooms.Count > 0)
-                    {
-						Application.Current.Dispatcher.Invoke(() =>
-						{
-							RoomsCollection.AddRange(rooms);
-							_isActive = true;
-						});
-					}
-					
 
-				}).ContinueWith(t =>
-				{
-
-					_logger.Error(t.Exception.Message);
-					_logger.Error(t.Exception?.InnerException?.Message);
-				}, TaskContinuationOptions.OnlyOnFaulted);
-
-			}
-
-			
-		}
-
-		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
-		{
-			var dialogParametr = new DialogParameters
+			}).ContinueWith(t =>
 			{
-				{ "model", roomLineGraphInfo }
-			};
 
-			_dialogService.Show("GraphView", dialogParametr, x =>
-			{
-			});
-		}
+				_logger.Error(t.Exception.Message);
+				_logger.Error(t.Exception?.InnerException?.Message);
+			}, TaskContinuationOptions.OnlyOnFaulted);
 
-		private void OpenCalibration(RoomLineGraphInfo roomLineGraphInfo)
-		{
-			var dialogParametr = new DialogParameters
-			{
-				{ "model", roomLineGraphInfo }
-			};
-			RoomLineGraphInfoSetting setting = null;
-
-			_dialogService.ShowModal("CalibrationView", dialogParametr, x =>
-			{
-				if (x.Result == ButtonResult.OK)
-				{
-					setting = x.Parameters.GetValue<RoomLineGraphInfoSetting>("model");
-				}
-			});
-			if (setting != null)
-			{
-				roomLineGraphInfo.Setting.TemperatureRange = setting.TemperatureRange;
-				roomLineGraphInfo.Setting.HumidityRange = setting.HumidityRange;
-			}
 		}
 
 
 	}
+
+	private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
+	{
+		var dialogParametr = new DialogParameters
+			{
+				{ "model", roomLineGraphInfo }
+			};
+
+		_dialogService.Show("GraphView", dialogParametr, x =>
+		{
+		});
+	}
+
+	private void OpenCalibration(RoomLineGraphInfo roomLineGraphInfo)
+	{
+		var dialogParametr = new DialogParameters
+			{
+				{ "model", roomLineGraphInfo }
+			};
+		RoomLineGraphInfoSetting setting = null;
+
+		_dialogService.ShowModal("CalibrationView", dialogParametr, x =>
+		{
+			if (x.Result == ButtonResult.OK)
+			{
+				setting = x.Parameters.GetValue<RoomLineGraphInfoSetting>("model");
+			}
+		});
+		if (setting != null)
+		{
+			roomLineGraphInfo.SetSetting(setting.TemperatureRange, setting.HumidityRange);
+		}
+	}
+
+
+}
 
 }

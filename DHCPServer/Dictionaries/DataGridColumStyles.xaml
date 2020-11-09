@@ -69,21 +69,26 @@
     <Style x:Key="LVItemStyleX" TargetType="{x:Type ListViewItem}">
         <Setter Property="Template">
             <Setter.Value>
-                <!--B211377A-->
+                
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                    <Border Padding="0" BorderBrush="#B211377A" BorderThickness="0,0,0,1" Margin="5,0,0,0" Background="{TemplateBinding Background}" VerticalAlignment="Stretch">
+                    <Border x:Name="b" Padding="0" BorderBrush="#B211377A" BorderThickness="2" Margin="2,3,0,3" Background="{TemplateBinding Background}" VerticalAlignment="Stretch">
                         <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="-5,0,0,0" Content="{TemplateBinding Content}"/>
                     </Border>
+
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsInvalid,UpdateSourceTrigger=PropertyChanged}" Value="true">
+                            <Setter TargetName="b" Property="BorderBrush" Value="#FFAB0000" />
+                            <Setter TargetName="b" Property="BorderThickness" Value="5" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                    
                 </ControlTemplate>
+                
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInvalid}"
-                      Value="true">
-                    <Setter Property="Background"
-                  Value="#FFAB0000" />
-                </DataTrigger>
-        </Style.Triggers>
+
     </Style>
+    
+    
     
 </ResourceDictionary>

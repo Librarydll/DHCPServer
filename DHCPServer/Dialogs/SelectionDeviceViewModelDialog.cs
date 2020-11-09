@@ -2,6 +2,7 @@
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure;
+using Prism.Commands;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,28 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _dateTimeSpan, value); }
 		}
 
+		private ObservableCollection<Report> _reportsCollection;
+		public ObservableCollection<Report> ReportsCollection
+		{
+			get { return _reportsCollection; }
+			set { SetProperty(ref _reportsCollection, value); }
+		}
+
+		private Report _selectedReport;
+		public Report SelectedReport
+		{
+			get { return _selectedReport; }
+			set 
+			{
+				if(SetProperty(ref _selectedReport, value))
+				{
+					SelectedReportChanged(value);
+				}
+			}
+		}
+
+	
+
 		private Report _report;
 		public Report Report
 		{
@@ -41,6 +64,7 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _report, value); }
 		}
 
+		public DelegateCommand CreateNewReportCommand { get; set; }
 
 		public SelectionDeviceViewModelDialog(
 			IDeviceRepository deviceRepository,
@@ -50,25 +74,41 @@ namespace DHCPServer.Dialogs
 			_deviceRepository = deviceRepository;
 			_reportRepository = reportRepository;
 			_activeDeviceRepository = activeDeviceRepository;
-			Title = "Добавление";
+			Title = "Создание архива";
+			CreateNewReportCommand = new DelegateCommand(CreateNewReportHandler);
+		}
+
+		private void CreateNewReportHandler()
+		{
+			Report = new Report
+			{
+				FromTime = DateTime.Now,
+				Days = 1
+			};
+			Task.Run(async () => await FillCollection(0));
 		}
 
 		public override void OnDialogOpened(IDialogParameters parameters)
 		{
 			Task.Run(async () =>
 			{
-				Report = await _reportRepository.GetLastReport();
-				if (Report == null)
+				var rs = await _reportRepository.GetActiveReports();
+				ReportsCollection = new ObservableCollection<Report>(rs);
+
+				Report = ReportsCollection.FirstOrDefault();
+				if (Report != null)
 				{
-					Report = new Report();
-					Report.FromTime = DateTime.Now;
-					Report.Days = 1;
+					await FillCollection(Report.Id);
+				}
+				else
+				{
+					Report = new Report
+					{
+						FromTime = DateTime.Now,
+						Days = 1
+					};
 				}
 
-				var devices = await _deviceRepository.GetAllAsync();
-				var activeDevices = await _activeDeviceRepository.GetActiveDevicesByReportId(Report.Id);
-
-				DevicesColleciton = new ObservableCollection<ActiveDevice>(devices.CreateActiveDevices(activeDevices));
 
 				_unChangedReport = new Report(Report);
 			});
@@ -92,6 +132,12 @@ namespace DHCPServer.Dialogs
 			CloseDialog(parameters);
 		}
 
+		private void SelectedReportChanged(Report report)
+		{
+			Report = report;
+			Task.Run( async()=> await FillCollection(report.Id));
+		}
+
 		private void HandleReport()
 		{
 			if (Report.Id == 0)
@@ -104,6 +150,18 @@ namespace DHCPServer.Dialogs
 				Report.LastUpdated = DateTime.Now;
 				_reportRepository.UpdateAsync(Report).Wait();
 			}
+			foreach (var device in DevicesColleciton)
+			{
+				device.ReportId = Report.Id;
+				device.Report = Report;
+			}
+		}
+
+		private async Task FillCollection(int id)
+		{
+			var devices = await _deviceRepository.GetAllAsync();
+			var activeDevices = await _activeDeviceRepository.GetActiveDevicesByReportId(id);
+			DevicesColleciton = new ObservableCollection<ActiveDevice>(devices.CreateActiveDevices(activeDevices));
 		}
 	}
 }

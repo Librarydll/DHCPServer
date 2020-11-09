@@ -21,60 +21,49 @@
             <Setter Property="Height" Value="170"/>-->
         </Style>
     </prism:Dialog.WindowStyle>
-    
+
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </Grid.Resources>
-        <!--<Grid Margin="25">
-            <Grid.RowDefinitions> 
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Margin="5" Grid.Row="0" Text="Servers"/>
-            <ComboBox ItemsSource="{Binding ServerAddressCollection}"
-                      DisplayMemberPath="IPAddress"
-                      SelectedItem="{Binding SelectedServer}"
-                      x:Name="ServerTB" Margin="5" Grid.Row="0" Grid.Column="1" Width="150"/>
-            <TextBlock Margin="5" Grid.Row="1" Text="Alias"/>
-            <TextBox IsReadOnly="True" Text="{Binding Path=SelectedServer.Nick}" x:Name="NickTB" Margin="5" Grid.Row="1" Grid.Column="1" Width="150"/>
-            --><!--<TextBlock Margin="5" Grid.Row="1" Text="Port"/>
-        <TextBox Text="80" x:Name="PortTB" Margin="5" Grid.Row="1" Grid.Column="1" Width="150"/>--><!--
-            <Button Command="{Binding CloseDialogOkCommand}" x:Name="connectBtn" Margin="5" Padding="5" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Добавить" />
-        </Grid>-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="121*"/>
+            <ColumnDefinition Width="19*"/>
+        </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid>
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource CurrentTextBlock}">Активные архивы:</TextBlock>
+            <ComboBox SelectedIndex="0" SelectedItem="{Binding SelectedReport}" ItemsSource="{Binding ReportsCollection}" DisplayMemberPath="Title" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="200"></ComboBox>
+        </StackPanel>
+        <Grid Grid.ColumnSpan="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Style="{StaticResource CurrentTextBlock}">Название:</TextBlock>
                 <TextBox Padding="2" Text="{Binding Path=Report.Title}" Margin="5" Width="200"></TextBox>
                 <StackPanel Orientation="Horizontal">
                     <DatePicker SelectedDate="{Binding Report.FromTime}" Margin="5" VerticalAlignment="Center"/>
                     <TextBlock Margin="5" Style="{StaticResource CurrentTextBlock}" >Дней</TextBlock>
-                    <TextBox Text="{Binding Report.Days,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,TargetNullValue={x:Static sys:String.Empty}}" Margin="5" Width="50" TextAlignment="Center" Padding="2"></TextBox>
+                    <TextBox  Text="{Binding Report.Days,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,TargetNullValue={x:Static sys:String.Empty}}" Margin="5" Width="50" TextAlignment="Center" Padding="2"></TextBox>
+                    <TextBlock Style="{StaticResource CurrentTextBlock}"  Margin="5">До</TextBlock>
+                    <TextBlock Style="{StaticResource CurrentTextBlock}"  Margin="5" Text="{Binding Path=Report.ToTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"></TextBlock>
+                    <TextBlock Style="{StaticResource CurrentTextBlock}"  Margin="5">Числа</TextBlock>
                 </StackPanel>
             </StackPanel>
 
         </Grid>
-        <DataGrid x:Name="dg" Grid.Row="1" SelectionMode="Single" CanUserAddRows="False" Margin="5" ItemsSource="{Binding Path=DevicesColleciton}" AutoGenerateColumns="False">
+        <DataGrid x:Name="dg" Grid.Row="2" SelectionMode="Single" CanUserAddRows="False" Margin="5" ItemsSource="{Binding Path=DevicesColleciton}" AutoGenerateColumns="False" Grid.ColumnSpan="2">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="100" Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
                 <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding Nick}"/>
                 <DataGridCheckBoxColumn Width="50" Header="Флаг" Binding="{Binding IsAdded}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right">Сохранить</Button>
+        <Button Style="{StaticResource DefaultButton}" Command="{Binding CloseDialogOkCommand}" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Margin="0,5,5,5">Сохранить</Button>
+        <Button Style="{StaticResource DefaultButton}" Command="{Binding CreateNewReportCommand}" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="0" Margin="5,5,0,5">Создать новый</Button>
     </Grid>
 </UserControl>
