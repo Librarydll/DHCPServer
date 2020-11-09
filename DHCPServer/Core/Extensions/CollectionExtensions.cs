@@ -1,6 +1,7 @@
 ﻿using DHCPServer.Domain.Models;
 using DHCPServer.Models;
 using DHCPServer.Models.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,11 +26,11 @@ namespace DHCPServer.Core.Extensions
 			}
 		}
 
-		public static void DisposeRange(this IEnumerable<DeviceClient> deviceClients)
+		public static void DisposeRange<T>(this IEnumerable<T> collection)where T:IDisposable
         {
-            foreach (var device in deviceClients)
+            foreach (var item in collection)
             {
-				device?.Dispose();
+				item?.Dispose();
             }
         }
 

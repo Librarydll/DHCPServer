@@ -1,15 +1,22 @@
 ﻿using DHCPServer.Domain.Models;
+using DHCPServer.Models.Enums;
 using OxyPlot;
 using OxyPlot.Axes;
 using Serilog;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DHCPServer.Models.Infrastructure
 {
-	public class RoomLineGraphInfo : RoomInfo
+	public class RoomLineGraphInfo : RoomInfo,IDisposable
 	{
 		public RoomLineGraphInfoSetting Setting { get; set; }
+        public DeviceClient DeviceClient { get; set; }
+		public Task Initialization { get; private set; }
 
+		private CancellationTokenSource tokenSource = null;
+		private bool _disposed = false;
 		//Колличество обращений 
 		//сколько раз пытались записать данные
 		//обращение происходят каждые 5 секунд так как изменяются два свойства проверка будет до 24
@@ -47,51 +54,55 @@ namespace DHCPServer.Models.Infrastructure
 		public RoomLineGraphInfo(RoomData roomData, ActiveDevice device) : base(roomData, device)
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
-			TemperatureChangeEvent += TemperateChangedEventHandler;
-			HumidityChangeEvent += HumidityChangedEventHandler;
 			Setting = new RoomLineGraphInfoSetting();
+			Initialization = InitializeDeviceAsync();
 		}
 
-		public RoomLineGraphInfo(ActiveDevice device):this(new RoomData(),device)
+		public RoomLineGraphInfo(ActiveDevice device) :this(new RoomData(),device)
 		{}
+
+		public async Task InitializeDeviceAsync()
+        {
+			tokenSource = new CancellationTokenSource();
+			DeviceClient = new DeviceClient(ActiveDevice);
+			DeviceClient.ReciveMessageEvent += ReciveMessageEventHandler;
+			DeviceClient.ReciveMessageErrorEvent += ReciveMessageOnErrorEventHandler;
+			DeviceClient.EnableDeviceEvent += ReciveMessageOnValidEventHandler;
+			
+			await DeviceClient.ListenAsync(tokenSource.Token);
+
+		}
+
+        private void ReciveMessageEventHandler(RoomInfo roomInfo, DeviceResponseStatus status)
+        {
+			if (status == DeviceResponseStatus.Success)
+			{
+				Calculate(roomInfo.Temperature, roomInfo.Humidity);
+			}
+		}
+
+        private void ReciveMessageOnErrorEventHandler(ActiveDevice device)
+		{
+			SetInvalid(true);
+		}
+
+		private void ReciveMessageOnValidEventHandler(ActiveDevice device)
+		{
+			SetInvalid(false);
+		}
+
 
 		public void SetInvalid(bool value)
 		{
 			if (value != IsInvalid)
 			{
 				IsInvalid = value;
+				Temperature = 0;
+				Humidity = 0;
 				RaisePropertyChangedEvent("IsInvalid");
 			}
 		}
-
-		private void TemperateChangedEventHandler(double value)
-		{
-			if (value < 0) return;
-
-			//if (value != OldPositiveTemperatureValue)
-			//{
-			//	Date = DateTime.Now;
-			//	Log.Logger.Information("ADDED To Graph DEVICE : {0} TEMPERATURE {1}", IPAddress, value);
-			//	GraphLineModel.GetFirst().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), value));
-			//	OldPositiveTemperatureValue = value;
-
-			//}
-
-		}
-		private void HumidityChangedEventHandler(double value)
-		{
-			if (value < 0) return;
-
-			//if (value != OldPositiveHumidityValue)
-			//{
-			//	Date = DateTime.Now;
-			//	Log.Logger.Information("ADDED To Graph DEVICE : {0} HUMIDITY {1}", IPAddress, value);
-			//	GraphLineModel.GetLast().Points.Add(new DataPoint(DateTimeAxis.ToDouble(Date), value));
-			//	OldPositiveHumidityValue = value;
-			//}
-
-		}
-
+	
 		private void LineSeriesVisibilityChange(string property, bool value)
 		{
 			if (GraphLineModel.Series != null)
@@ -151,6 +162,19 @@ namespace DHCPServer.Models.Infrastructure
 			Humidity = hum;
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposed && disposing)
+			{
+				DeviceClient?.Dispose();
+			}
+		}
 	}
 
 }

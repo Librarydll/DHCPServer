@@ -34,8 +34,6 @@ namespace DHCPServer.ViewModels
         private readonly ILogger _logger;
 		private readonly IEventAggregator _eventAggregator;
 		private readonly DispatcherTimer _timer;
-		private CancellationTokenSource tokenSource = null;
-		private ICollection<DeviceClient> _deviceClients = new List<DeviceClient>();
 		private bool _isActive =false;
 		#endregion
 
@@ -73,7 +71,6 @@ namespace DHCPServer.ViewModels
             _reportRepository = reportRepository;
             _logger = logger;
 			_eventAggregator = eventAggregator;
-			tokenSource = new CancellationTokenSource();
 
 			_timer = new DispatcherTimer
 			{
@@ -86,15 +83,11 @@ namespace DHCPServer.ViewModels
 
 			Task.Run(async () =>
 			{
-				//await	transfer.TransferData();
-
 				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
 				var rooms = devices.Select(x => new RoomLineGraphInfo(x));
+				await Task.WhenAll(rooms.Select(x => x.Initialization));
 				RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
-				var activeDevices = RoomsCollection.Select(x => x.ActiveDevice);
-				_deviceClients = new List<DeviceClient>(activeDevices.ToDeviceClient());
-				_isActive = true ? RoomsCollection.Count > 0 : false;
-				await StartListenAsync();
+				_isActive = true && RoomsCollection.Count > 0;
 
 			}).ContinueWith(t=> {
 				_logger.Error("Не удлаось получить данные");
@@ -110,13 +103,6 @@ namespace DHCPServer.ViewModels
 
 		private void DeviceUpdateEventHandler(DeviceEventModel device)
 		{
-			var dc = _deviceClients.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.OldValue.IPAddress);
-
-			if (dc != null)
-			{
-				dc.ActiveDevice.Set(device.NewValue);
-			}
-
 			var d = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.OldValue.IPAddress);
 			if (d != null)
 			{
@@ -124,53 +110,12 @@ namespace DHCPServer.ViewModels
 			}
 		}
 
-		private async Task StartListenAsync()
-		{
-			var tasks = new List<Task>();
-			foreach (var device in _deviceClients)
-			{
-				tasks.Add(SubscribeDeviceAsync(device));
-			}
-
-			await Task.WhenAll(tasks);
-		}
-
 		private void DeleteRoom(RoomLineGraphInfo roomInfo)
 		{
-			var d = _deviceClients.FirstOrDefault(x => x.ActiveDevice.IPAddress == roomInfo.ActiveDevice.IPAddress);
-			d?.Dispose();
 			RoomsCollection.Remove(roomInfo);
 			roomInfo.ActiveDevice.IsAdded = false;
-
 			_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
-		}
-
-		private void ClientService_ReciveMessageErrorEvent(ActiveDevice device)
-		{
-			var invalidDevide = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.IPAddress);
-
-			if (invalidDevide != null)
-				Application.Current.Dispatcher.Invoke(new Action(() =>
-				{
-					invalidDevide.SetInvalid(true);
-
-				}));
-
-		}
-		private void _clientService_ReciveMessageEvent(RoomInfo roomInfo, DeviceResponseStatus status)
-		{
-			if (status == DeviceResponseStatus.Success)
-			{
-				var old = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == roomInfo.ActiveDevice.IPAddress);
-				Application.Current.Dispatcher.Invoke(() =>
-				{
-					if (old != null)
-					{
-						old.Calculate(roomInfo.Temperature, roomInfo.Humidity);
-					}
-				});
-
-			}
+			roomInfo.Dispose();
 		}
 
 		private void _timer_Tick(object sender, EventArgs e)
@@ -190,13 +135,7 @@ namespace DHCPServer.ViewModels
 
 				Task.Run(async () =>
 				{
-					var first = RoomsCollection.FirstOrDefault();
-					if(await _reportRepository.TryCloseReport(first.ActiveDevice))
-                    {
-						_deviceClients.DisposeRange();
-						_isActive = false;
-					}
-
+					
 
 					await _roomRepository.SaveAsync(RoomsCollection.Where(x => x.IsAddedToGraph));
 					_logger.Information("Данные успешно добавились в бд");
@@ -207,6 +146,15 @@ namespace DHCPServer.ViewModels
 					}
 
 					_timer.Interval = new TimeSpan(0, 10, 0);
+					var first = RoomsCollection.FirstOrDefault();
+					if (await _reportRepository.TryCloseReport(first.ActiveDevice))
+					{
+						RoomsCollection.DisposeRange();
+						_isActive = false;
+						Application.Current.Dispatcher.Invoke(() => RoomsCollection.Clear());
+						RoomsCollection.Clear();
+					}
+
 
 				}).ContinueWith(t =>
 				{
@@ -220,19 +168,6 @@ namespace DHCPServer.ViewModels
 
 		}
 
-
-		private async Task SubscribeDeviceAsync(DeviceClient device)
-		{
-			device.ReciveMessageEvent += _clientService_ReciveMessageEvent;
-			device.ReciveMessageErrorEvent += ClientService_ReciveMessageErrorEvent;
-			device.EnableDeviceEvent += d =>
-			{
-				var invalidDevide = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == d.IPAddress);
-				if (invalidDevide != null)
-					Application.Current.Dispatcher.Invoke(new Action(() => { invalidDevide.SetInvalid(false); }));
-			};
-			await device.ListenAsync(tokenSource.Token);
-		}
 
 		private void OpenNewDevcieView()
 		{
@@ -264,15 +199,11 @@ namespace DHCPServer.ViewModels
 
 					else
 					{
-
 						if (device.IsAdded)
 						{
 							var newRomm = new RoomLineGraphInfo(new RoomData(), device);
-							var deviceClient = new DeviceClient(device);
-							_deviceClients.Add(deviceClient);
 							activeDevices.Add(device);
 							rooms.Add(newRomm);
-
 						}
 					}
 
