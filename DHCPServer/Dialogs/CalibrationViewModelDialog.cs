@@ -10,26 +10,27 @@ namespace DHCPServer.Dialogs
 {
 	public class CalibrationViewModelDialog :DialogViewModelBase
 	{
-		private RoomLineGraphInfoSetting _roomInfo;
-		public RoomLineGraphInfoSetting RoomInfo
+		private string _temperature;
+		public string Temperature
 		{
-			get { return _roomInfo; }
-			set { SetProperty(ref _roomInfo, value); }
+			get { return _temperature; }
+			set { SetProperty(ref _temperature, value); }
 		}
 
-		public CalibrationViewModelDialog()
+		private string _humidity;
+		public string Humidity
 		{
-			RoomInfo = new RoomLineGraphInfoSetting();
+			get { return _humidity; }
+			set { SetProperty(ref _humidity, value); }
 		}
-
-
 		public override void OnDialogOpened(IDialogParameters parameters)
 		{
 			if (parameters != null)
 			{
 				var room = parameters.GetValue<RoomLineGraphInfo>("model");
-				RoomInfo.TemperatureRange = room.Setting.TemperatureRange;
-				RoomInfo.HumidityRange = room.Setting.HumidityRange;
+				if (room.Setting == null) room.Setting = new RoomLineGraphInfoSetting();
+				Temperature = room.Setting.TemperatureRange.ToString();
+				Humidity = room.Setting.HumidityRange.ToString();
 				var title = $"{room?.ActiveDevice?.Nick} {room?.ActiveDevice?.IPAddress}";
 				Title = title;
 			}
@@ -37,12 +38,19 @@ namespace DHCPServer.Dialogs
 
 		protected override void CloseDialogOnOk(IDialogParameters parameters)
 		{
+			var room = new RoomLineGraphInfoSetting();
+			if(double.TryParse(Temperature.Replace(".",","),out double t))
+            {}
+			if (double.TryParse(Humidity.Replace(".", ","), out double h))
+			{}
+			room.SetSetting(t, h);
 			Result = ButtonResult.OK;
 			parameters = new DialogParameters();
-			parameters.Add("model", RoomInfo);
+			parameters.Add("model", room);
 			CloseDialog(parameters);
 
 		}
 
+	
 	}
 }

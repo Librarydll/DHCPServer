@@ -33,8 +33,6 @@ namespace DHCPServer.ViewModels
 			OpenDeviceViewCommand = new DelegateCommand(OpenDeviceView);
 			OpenReportViewCommand = new DelegateCommand(OpenReportView);
 			_regionManager = regionManager;
-			var vm = _deviceInformationView.DataContext as DeviceInformationViewModel;
-			Task.Run(async () => await vm.InitializeAsync());
 		}
 
 		private void OpenReportView()

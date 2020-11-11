@@ -79,6 +79,7 @@ namespace DHCPServer.ViewModels
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
 			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
+			Task.Run(async () => await InitializeAsync());
 		}
 
 		public async Task InitializeAsync()
@@ -92,9 +93,9 @@ namespace DHCPServer.ViewModels
 				var  tasks = new Task[RoomsCollection.Count];
 				for (int i = 0; i < RoomsCollection.Count; i++)
 				{
-					tasks[i] = RoomsCollection[i].InitializeDeviceAsync();
+					tasks[i] =  RoomsCollection[i].InitializeDeviceAsync();
 				}
-				await Task.WhenAll(tasks);
+				 await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{
@@ -221,16 +222,22 @@ namespace DHCPServer.ViewModels
 			{
 				await _activeDeviceRepository.DeatachDevices(inactiveDevices);
 				var actives = await _activeDeviceRepository.CheckDevices(activeDevices);
-
 				if (rooms.Count > 0)
 				{
+
+					var tasks = new Task[rooms.Count];
+					for (int i = 0; i < rooms.Count; i++)
+					{
+						tasks[i] = rooms.ElementAt(i).InitializeDeviceAsync();
+					}
+
 					Application.Current.Dispatcher.Invoke(() =>
 					{
 						RoomsCollection.AddRange(rooms);
 						_isActive = true;
 					});
+					await Task.WhenAll(tasks).ConfigureAwait(false);
 				}
-
 
 			}).ContinueWith(t =>
 			{
@@ -256,28 +263,27 @@ namespace DHCPServer.ViewModels
 		});
 	}
 
-	private void OpenCalibration(RoomLineGraphInfo roomLineGraphInfo)
-	{
-		var dialogParametr = new DialogParameters
+		private void OpenCalibration(RoomLineGraphInfo roomLineGraphInfo)
+		{
+			var dialogParametr = new DialogParameters
 			{
 				{ "model", roomLineGraphInfo }
 			};
-		RoomLineGraphInfoSetting setting = null;
+			RoomLineGraphInfoSetting setting = null;
 
-		_dialogService.ShowModal("CalibrationView", dialogParametr, x =>
-		{
-			if (x.Result == ButtonResult.OK)
+			_dialogService.ShowModal("CalibrationView", dialogParametr, x =>
 			{
-				setting = x.Parameters.GetValue<RoomLineGraphInfoSetting>("model");
+				if (x.Result == ButtonResult.OK)
+				{
+					setting = x.Parameters.GetValue<RoomLineGraphInfoSetting>("model");
+				}
+			});
+			if (setting != null)
+			{
+				roomLineGraphInfo.SetSetting(setting.TemperatureRange, setting.HumidityRange);
 			}
-		});
-		if (setting != null)
-		{
-			roomLineGraphInfo.SetSetting(setting.TemperatureRange, setting.HumidityRange);
 		}
+
 	}
-
-
-}
 
 }

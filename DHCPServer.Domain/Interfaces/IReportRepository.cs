@@ -26,5 +26,6 @@ namespace DHCPServer.Domain.Interfaces
 		Task<Report> CreateReport(Report report,IEnumerable<ActiveDevice> activeDevices);
 
 		Task<IEnumerable<Report>> GetActiveReports();
+		Task<IEnumerable<Report>> GetActiveReportsWithDevices();
 	}
 }

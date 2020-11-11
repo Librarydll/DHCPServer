@@ -55,5 +55,16 @@ namespace DHCPServer.Domain.Models
 			IPAddress = device?.IPAddress;
 			Nick = device?.Nick;
         }
-	}
+
+		public bool SameDevice(ActiveDevice activeDevice)
+        {
+			if (activeDevice == null) return false;
+
+			if (activeDevice.IPAddress == IPAddress && activeDevice.Nick == Nick &&
+			   activeDevice.IsActive == IsActive && activeDevice.IsAdded == IsAdded)
+				return true;
+			return false;
+        }
+ 
+    }
 }

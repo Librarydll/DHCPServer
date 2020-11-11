@@ -39,12 +39,12 @@
             Влажность
         </TextBlock>
 
-        <TextBox Text="{Binding RoomInfo.TemperatureRange}" Margin="10" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
+        <TextBox Text="{Binding Temperature}" Margin="10" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
                  Width="100">
             
         </TextBox>
 
-        <TextBox  Text="{Binding RoomInfo.HumidityRange}" Margin="10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
+        <TextBox  Text="{Binding Humidity}" Margin="10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
                  Width="100">
 
         </TextBox>

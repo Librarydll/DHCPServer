@@ -51,6 +51,34 @@ namespace DHCPServer.Core.Extensions
             }
         }
 
+		public static Report DistinctActiveDevice(this Report report
+			,IEnumerable<Report> reports,IEnumerable<Device> devices)
+        {
+            foreach (var d in devices)
+            {
+                var ad = report.ActiveDevices.FirstOrDefault(x => x.IPAddress == d.IPAddress);
+                if(ad==null)
+                    report.ActiveDevices.Add(new ActiveDevice(d));
+            }
+            foreach (var r in reports)
+            {
+                if (r.Id == report.Id) continue;
 
+                foreach (var activeDevice in r.ActiveDevices)
+                {
+                    var dev = r.ActiveDevices.FirstOrDefault(x => x.IPAddress == activeDevice.IPAddress);
+                    if (dev != null)
+                    {
+                        if (dev.IsAdded)
+                        {
+                            var reps = report.ActiveDevices.FirstOrDefault(x => x.IPAddress == activeDevice.IPAddress);
+                            report.ActiveDevices.Remove(reps);
+                        }
+                    }                  
+                }
+            }
+       
+            return report;
+        }
 	}
 }

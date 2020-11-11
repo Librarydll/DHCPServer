@@ -14,6 +14,7 @@ namespace DHCPServer.Dialogs
 {
 	public class SelectionDeviceViewModelDialog : DialogViewModelBase
 	{
+		private IEnumerable<Device> _devices;
 		private readonly IDeviceRepository _deviceRepository;
 		private readonly IReportRepository _reportRepository;
 		private readonly IActiveDeviceRepository _activeDeviceRepository;
@@ -55,7 +56,16 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
-	
+		private int _selectedReportIndex=0;
+		public int SelectedReportIndex
+		{
+			get { return _selectedReportIndex; }
+			set { SetProperty(ref _selectedReportIndex, value); }
+		}
+
+		
+
+
 
 		private Report _report;
 		public Report Report
@@ -85,29 +95,31 @@ namespace DHCPServer.Dialogs
 				FromTime = DateTime.Now,
 				Days = 1
 			};
-			Task.Run(async () => await FillCollection(0));
+			FillCollection();
+			//	Task.Run(async () => await FillCollection(0));
 		}
 
 		public override void OnDialogOpened(IDialogParameters parameters)
 		{
 			Task.Run(async () =>
 			{
-				var rs = await _reportRepository.GetActiveReports();
-				ReportsCollection = new ObservableCollection<Report>(rs);
-
+				var reports = await _reportRepository.GetActiveReportsWithDevices();
+				ReportsCollection = new ObservableCollection<Report>(reports);
+				_devices = await _deviceRepository.GetAllAsync(); 
 				Report = ReportsCollection.FirstOrDefault();
-				if (Report != null)
-				{
-					await FillCollection(Report.Id);
-				}
-				else
-				{
-					Report = new Report
-					{
-						FromTime = DateTime.Now,
-						Days = 1
-					};
-				}
+				//if (Report != null)
+				//{
+				//	//await FillCollection(Report.Id);
+				//	FillCollection();
+				//}
+				//else
+				//{
+				//	Report = new Report
+				//	{
+				//		FromTime = DateTime.Now,
+				//		Days = 1
+				//	};
+				//}
 
 
 				_unChangedReport = new Report(Report);
@@ -135,7 +147,8 @@ namespace DHCPServer.Dialogs
 		private void SelectedReportChanged(Report report)
 		{
 			Report = report;
-			Task.Run( async()=> await FillCollection(report.Id));
+			FillCollection();
+		//	Task.Run( async()=> await FillCollection(report.Id));
 		}
 
 		private void HandleReport()
@@ -163,5 +176,13 @@ namespace DHCPServer.Dialogs
 			var activeDevices = await _activeDeviceRepository.GetActiveDevicesByReportId(id);
 			DevicesColleciton = new ObservableCollection<ActiveDevice>(devices.CreateActiveDevices(activeDevices));
 		}
+
+		private void FillCollection()
+        {
+			var activeDevices = Report.DistinctActiveDevice(ReportsCollection,_devices).ActiveDevices;
+			DevicesColleciton = new ObservableCollection<ActiveDevice>(activeDevices);
+
+		}
+
 	}
 }

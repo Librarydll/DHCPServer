@@ -27,7 +27,7 @@ namespace DHCPServer.Models.Infrastructure
 		private int _countRequest = -1;//значение -1 так как при создании объекиа оно обращается 1 раз
 		public bool CanAdd => _countRequest >= 24;
 		private bool isInvalid;
-		public bool IsInvalid { get => isInvalid; private set { isInvalid = value; } }
+		public bool IsInvalid { get => isInvalid; private set { isInvalid = value; RaisePropertyChangedEvent(); } }
 
 		public bool IsAddedToGraph { get; set; }
 
@@ -45,8 +45,6 @@ namespace DHCPServer.Models.Infrastructure
 			get { return _temperatureLineVisibility; }
 			set { _temperatureLineVisibility = value; RaisePropertyChangedEvent(); LineSeriesVisibilityChange(nameof(TemperatureLineVisibility), value); }
 		}
-
-
 
 		private bool _humidityLineVisibility = true;
 		public bool HumidityLineVisibility
@@ -107,10 +105,9 @@ namespace DHCPServer.Models.Infrastructure
 			if (value != IsInvalid)
 			{
 				IsInvalid = value;
-				Temperature = 0;
-				Humidity = 0;
-				RaisePropertyChangedEvent("IsInvalid");
-			}
+                Temperature = 0;
+                Humidity = 0;
+            }
 		}
 	
 		private void LineSeriesVisibilityChange(string property, bool value)
