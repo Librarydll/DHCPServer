@@ -121,6 +121,7 @@ namespace DHCPServer.Dialogs
 				//	};
 				//}
 
+				if (Report == null) CreateNewReportHandler();
 
 				_unChangedReport = new Report(Report);
 			});

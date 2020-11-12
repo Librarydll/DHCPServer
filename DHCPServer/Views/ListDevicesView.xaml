@@ -17,11 +17,70 @@
             <Button Style="{StaticResource DefaultButton}" Command="{Binding EditDeviceCommand}" CommandParameter="{Binding ElementName=dg,Path=SelectedItem}">Изменить</Button>
             <Button Style="{StaticResource DefaultButton}" Command="{Binding DeleteDeviceCommand}" CommandParameter="{Binding ElementName=dg,Path=SelectedItem}">Удалить</Button>
         </StackPanel>
-        <DataGrid x:Name="dg" SelectionMode="Single" IsReadOnly="True" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=DevicesColleciton}" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="100" Header="IPAddress" CellTemplate="{StaticResource  DataGridIp}"/>
-                <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding Nick}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
+            <Grid Grid.Column="0" x:Name="col1"/>
+            <Grid Grid.Column="1" x:Name="col2"/>
+
+        </Grid>
+
+
+        <ListView  x:Name="dg" SelectionMode="Single"  
+                   FontSize="18"
+                   Margin="5" Grid.Row="1" ItemsSource="{Binding Path=DevicesColleciton}"                  
+                      ItemContainerStyle="{StaticResource LVItemStyleX}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                      HorizontalContentAlignment="Stretch" Foreground="#DDF9F9F9" 
+                      Background="{x:Null}" BorderBrush="{x:Null}">
+            <ListView.Resources>
+
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn Width="{Binding ElementName=col1,Path=ActualWidth}"                              
+                                    Header="Псевдоним"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nick}" 
+                                               FontWeight="Medium" FontSize="18" 
+                                               Padding="5" Margin="0" 
+                                               Foreground="#FF0B245B" 
+                                                HorizontalAlignment="Center"
+                                               VerticalAlignment="Center">
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
+                                    Header="IPAddress"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=IPAddress}" 
+                                               FontWeight="Medium" FontSize="18" 
+                                               Padding="5" Margin="0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+
     </Grid>
 </UserControl>

@@ -22,6 +22,7 @@ namespace DHCPServer.Domain.Interfaces
 		Task<IEnumerable<Report>> GetReportsByString(string searchingString,Specification specification);
 
 		Task<bool> TryCloseReport(ActiveDevice device);
+		Task<IEnumerable<Report>> TryCloseExpiredReports();
 
 		Task<Report> CreateReport(Report report,IEnumerable<ActiveDevice> activeDevices);
 

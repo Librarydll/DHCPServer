@@ -30,14 +30,129 @@
                 Фильтр
             </Button>
         </StackPanel>
-        <DataGrid IsReadOnly="True" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=RoomInfoColleciton}" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="IPAddress" CellTemplate="{StaticResource  DataGridIp2}"/>
-                <DataGridTextColumn Width="100" Header="Псевдоним" Binding="{Binding ActiveDevice.Nick}"/>
-                <DataGridTemplateColumn Header="Температура" CellTemplate="{StaticResource  DataGridTemperature}"/>
-                <DataGridTemplateColumn Header="Влажность" CellTemplate="{StaticResource  DataGridHumidity}"/>
-                <DataGridTemplateColumn Header="Время" CellTemplate="{StaticResource  DataGridTemplate}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+
+        <Grid Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
+            <Grid Grid.Column="0" x:Name="col1"/>
+            <Grid Grid.Column="1" x:Name="col2"/>
+            <Grid Grid.Column="2" x:Name="col3"/>
+            <Grid Grid.Column="3" x:Name="col4"/>
+            <Grid Grid.Column="4" x:Name="col5"/>
+        </Grid>
+
+
+        <ListView  ItemsSource="{Binding Path=RoomInfoColleciton}"
+                      x:Name="AppDetailslistView" Grid.Row="1" Margin="10,0"
+                      ItemContainerStyle="{StaticResource LVItemStyleX}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                      HorizontalContentAlignment="Stretch" Foreground="#DDF9F9F9" 
+                      Background="{x:Null}" BorderBrush="{x:Null}">
+            <ListView.Resources>
+
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn Width="{Binding ElementName=col1,Path=ActualWidth}"                              
+                                    Header="Псевдоним"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ActiveDevice.Nick}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0" 
+                                               Foreground="#FF0B245B" 
+                                               VerticalAlignment="Center">
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
+                                    Header="IPAddress"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=ActiveDevice.IPAddress}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                    <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
+                                        Header="Температура  C"
+                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Width="{Binding ElementName=col3,Path=ActualWidth}">
+                                    <TextBlock Text="{Binding Temperature}"
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="5,2" Margin="0,0,15,0" 
+                                               HorizontalAlignment="Center" 
+                                               Foreground="Red" 
+                                               VerticalAlignment="Center">
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn   Width="{Binding ElementName=col4,Path=ActualWidth}"
+                                        Header="%  Влажность"
+                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Width="{Binding ElementName=col4,Path=ActualWidth}">
+                                    <TextBlock Text="{Binding Humidity}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="5,4" Margin="0,0,15,0" 
+                                               HorizontalAlignment="Center" 
+                                               Foreground="Blue" 
+                                               VerticalAlignment="Center">
+                                    </TextBlock>
+
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                    <GridViewColumn Width="{Binding ElementName=col5,Path=ActualWidth}"
+                                    Header="Дата"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=Date,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+
     </Grid>
 </UserControl>

@@ -33,8 +33,19 @@ namespace DHCPServer.Core.Extensions
 				item?.Dispose();
             }
         }
+        public static IEnumerable<T> DisposeRange<T>(this IEnumerable<T> collection,Func<T,bool> action) where T : IDisposable
+        {
+            foreach (var item in collection)
+            {
+                if (action(item))
+                {
+                    item?.Dispose();
+                    yield return item;
+                }
+            }
+        }
 
-		public static IEnumerable<ActiveDevice> CreateActiveDevices(this IEnumerable<Device> devices,IEnumerable<ActiveDevice> activeDevices)
+        public static IEnumerable<ActiveDevice> CreateActiveDevices(this IEnumerable<Device> devices,IEnumerable<ActiveDevice> activeDevices)
         {
 
             foreach (var device in devices)
