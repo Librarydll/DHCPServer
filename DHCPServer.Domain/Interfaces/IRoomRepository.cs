@@ -13,6 +13,7 @@ namespace DHCPServer.Domain.Interfaces
 		Task SaveAsync(IEnumerable<RoomInfo> roomInfos);
 
 		Task<IEnumerable<RoomInfo>> FilterRooms(DateTime from, DateTime to);
+		Task<IEnumerable<RoomInfo>> FilterRooms(string ipAddress, DateTime from, DateTime to);
 		Task<IEnumerable<RoomInfo>> FilterRooms(DateTime fromDate, DateTime toDate,TimeSpan fromTime,TimeSpan toTime);
 		Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date, TimeSpan fromTime, TimeSpan toTime);
 		Task<IEnumerable<RoomInfo>> FilterRooms(int deviceid, DateTime date);

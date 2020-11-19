@@ -31,8 +31,6 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _dateTimeSpan, value); }
 		}
 
-
-
 		private RoomLineGraphInfo _graphInfo;
 
 		public RoomLineGraphInfo GraphInfo
@@ -121,11 +119,11 @@ namespace DHCPServer.Dialogs
 
 				var title = $"{_current?.ActiveDevice?.Nick} {_current?.ActiveDevice?.IPAddress}";
 				Title = title;
-				if(parameters.TryGetValue("id",out int id))
+				if(parameters.TryGetValue("date",out DateTimeSpanFilter date))
 				{
 					Task.Run(async () =>
 					{
-						var collection = await _roomRepository.FilterRooms(id, GraphInfo.DeviceId);
+						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress,date.FromDate, date.ToDate);
 						GraphInfo = FillModel(collection);
 				
 					});

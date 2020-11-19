@@ -170,6 +170,7 @@
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UICore\Converters\NumberConverter.cs" />
+    <Compile Include="ViewModels\DeviceArchiveViewModel.cs" />
     <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
@@ -178,6 +179,9 @@
     <Compile Include="Dialogs\SelectionDeviceViewOldModelDialog.cs" />
     <Compile Include="Views\CalibrationView.xaml.cs">
       <DependentUpon>CalibrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DeviceArchiveView.xaml.cs">
+      <DependentUpon>DeviceArchiveView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DeviceInformationView.xaml.cs">
       <DependentUpon>DeviceInformationView.xaml</DependentUpon>
@@ -214,6 +218,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dictionaries\ComboBoxStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dictionaries\DataGridColumStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -227,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CalibrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeviceArchiveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

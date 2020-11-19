@@ -46,5 +46,7 @@ namespace DHCPServer.Domain.Interfaces
 
 
 		Task<IEnumerable<ActiveDevice>> GetActiveDevicesByReportId(int reportId);
+		Task<IEnumerable<ActiveDevice>> GetActiveDevicesByDate(DateTime from, DateTime to);
+		
 	}
 }

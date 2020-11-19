@@ -138,5 +138,25 @@ namespace DHCPServer.Dapper.Repositories
 				return result;
 			}
 		}
+
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(string ipAddress, DateTime from, DateTime to)
+		{
+			string query = @"SELECT *FROM RoomInfos as r 
+							Left join ActiveDevices as d on 
+							r.deviceid=d.id where date>=@from and date<=@to and d.ipaddress=@ipAddress";
+			using (var connection = _factory.CreateConnection())
+			{
+				var result = await connection.QueryAsync<RoomInfo, ActiveDevice, RoomInfo>(query,
+					(r, d)
+					=>
+					{
+						r.ActiveDevice = d;
+						return r;
+					},
+					new
+					{ from = from.Date.ToString("yyyy-MM-dd"), to = to.Date.ToString("yyyy-MM-dd") ,ipAddress });
+				return result;
+			}
+		}
 	}
 }

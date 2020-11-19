@@ -148,5 +148,31 @@ namespace DHCPServer.Dapper.Repositories
                 return entities;
             }
         }
+ 
+        public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesByDate(DateTime from, DateTime to)
+		{
+            string query = @"SELECT *FROM ActiveDevices as ad 
+							Left join RoomInfos as r  on
+							r.deviceid=ad.id where r.date>=@from and r.date<=@to";
+            var lookup = new Dictionary<int, ActiveDevice>();
+
+            using (var connection = _factory.CreateConnection())
+            {
+                var result = await connection.QueryAsync<ActiveDevice, RoomInfo, ActiveDevice>(query,
+                    (activeDevice, r)
+                    =>
+                    {
+                        if (!lookup.TryGetValue(activeDevice.Id, out ActiveDevice ad))
+                        {
+                            lookup.Add(activeDevice.Id, ad = activeDevice);
+                        }
+                        activeDevice.RoomInfos.Add(r);
+                        return activeDevice;
+                    },
+                    new
+                    { from = from.Date.ToString("yyyy-MM-dd"), to = to.Date.ToString("yyyy-MM-dd") });
+                return lookup.Values;
+            }
+        }
 	}
 }
