@@ -25,7 +25,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <!--<ColumnDefinition Width="*"/>-->
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -33,7 +33,7 @@
             <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
             <Grid Grid.Column="0" x:Name="col1"/>
             <Grid Grid.Column="1" x:Name="col2"/>
-            <Grid Grid.Column="2" x:Name="col3"/>
+            <!--<Grid Grid.Column="2" x:Name="col3"/>-->
             <Grid Grid.Column="3" x:Name="col4"/>
             <Grid Grid.Column="4" x:Name="col5"/>
             <Grid Grid.Column="5" x:Name="col6"/>
@@ -85,7 +85,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
+                    <!--<GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
                                     Header="Название архива"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -100,7 +100,7 @@
                                                VerticalAlignment="Center"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    </GridViewColumn>-->
 
 
                     <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
@@ -108,7 +108,7 @@
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Border Width="{Binding ElementName=col3,Path=ActualWidth}">
+                                <Border Width="{Binding ElementName=col4,Path=ActualWidth}">
                                     <TextBlock Text="{Binding Temperature}"
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="5,2" Margin="0,0,15,0" 

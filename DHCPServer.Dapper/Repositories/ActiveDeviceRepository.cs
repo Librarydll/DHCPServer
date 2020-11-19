@@ -19,7 +19,7 @@ namespace DHCPServer.Dapper.Repositories
         {
             _factory = factory;
         }
-        public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists()
+        public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesListsWithReports()
         {
             string query = @"SELECT *FROM ActiveDevices as ad
                             Left join Reports as r on ad.reportid=r.id
@@ -52,7 +52,7 @@ namespace DHCPServer.Dapper.Repositories
                 }
                 else
                 {
-                    activeDevice.Id = await connection.InsertAsync(device);
+                    activeDevice.Id = await connection.InsertAsync(activeDevice);
                 }
                 return activeDevice;
 
@@ -136,5 +136,17 @@ namespace DHCPServer.Dapper.Repositories
                 return b;
             }
         }
-    }
+
+		public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists()
+		{
+            string query = @"SELECT *FROM ActiveDevices as ad
+							where ad.isAdded = 1 and ad.isActive=1";
+            using (var connection = _factory.CreateConnection())
+            {
+                var entities = await connection.QueryAsync<ActiveDevice>(query);
+  
+                return entities;
+            }
+        }
+	}
 }

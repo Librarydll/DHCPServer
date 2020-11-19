@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="DHCPServer.Views.SelectionDeviceViewOld"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+
+    <!--<prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" 
+                    Value="CenterScreen" />
+            <Setter Property="WindowStyle" Value="ToolWindow"/>
+            --><!--<Setter Property="Width" Value="400"/>
+            <Setter Property="Height" Value="170"/>--><!--
+        </Style>
+    </prism:Dialog.WindowStyle>-->
+    <Grid>
+        <Grid Margin="25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Margin="5" Grid.Row="0" Text="Servers"/>
+            <ComboBox ItemsSource="{Binding ServerAddressCollection}"
+                      DisplayMemberPath="IPAddress"
+                      SelectedItem="{Binding SelectedServer}"
+                      x:Name="ServerTB" Margin="5" Grid.Row="0" Grid.Column="1" Width="150"/>
+            <TextBlock Margin="5" Grid.Row="1" Text="Alias"/>
+            <TextBox IsReadOnly="True" Text="{Binding Path=SelectedServer.Nick}" x:Name="NickTB" Margin="5" Grid.Row="1" Grid.Column="1" Width="150"/>
+            <!--<TextBlock Margin="5" Grid.Row="1" Text="Port"/>
+        <TextBox Text="80" x:Name="PortTB" Margin="5" Grid.Row="1" Grid.Column="1" Width="150"/>-->
+            <Button Command="{Binding CloseDialogOkCommand}" x:Name="connectBtn" Margin="5" Padding="5" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Добавить" />
+        </Grid>
+
+    </Grid>
+</UserControl>

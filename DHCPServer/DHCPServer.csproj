@@ -170,12 +170,12 @@
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UICore\Converters\NumberConverter.cs" />
-    <Compile Include="UICore\Behaviors\ActiveButton.cs" />
     <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="Dialogs\SelectionDeviceViewOldModelDialog.cs" />
     <Compile Include="Views\CalibrationView.xaml.cs">
       <DependentUpon>CalibrationView.xaml</DependentUpon>
     </Compile>
@@ -206,6 +206,9 @@
     </Compile>
     <Compile Include="Views\SelectionDeviceView.xaml.cs">
       <DependentUpon>SelectionDeviceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectionDeviceViewOld.xaml.cs">
+      <DependentUpon>SelectionDeviceViewOld.xaml</DependentUpon>
     </Compile>
     <Page Include="Dictionaries\ButtonStyle.xaml">
       <SubType>Designer</SubType>
@@ -255,6 +258,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SelectionDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelectionDeviceViewOld.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

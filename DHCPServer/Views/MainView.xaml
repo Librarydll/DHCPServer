@@ -6,7 +6,6 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"      
         xmlns:local="clr-namespace:DHCPServer.Views"
-        xmlns:b="clr-namespace:DHCPServer.UICore.Behaviors"
         WindowState="Maximized"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -20,27 +19,20 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid >
+
             <ToolBar >
                 <StackPanel Orientation="Horizontal">
                     <Button Margin="5"  Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">График
-                        <i:Interaction.Behaviors>
-                            <b:ActiveButton/>
-                        </i:Interaction.Behaviors>
+
                     </Button>
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица
-                        <i:Interaction.Behaviors>
-                            <b:ActiveButton/>
-                        </i:Interaction.Behaviors>
+
                     </Button>
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceViewCommand}">Устройства
-                        <i:Interaction.Behaviors>
-                            <b:ActiveButton/>
-                        </i:Interaction.Behaviors>
+
                     </Button>
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenReportViewCommand}">Архив
-                        <i:Interaction.Behaviors>
-                            <b:ActiveButton/>
-                        </i:Interaction.Behaviors>
+           
                     </Button>
                 </StackPanel>
             </ToolBar>

@@ -11,7 +11,11 @@ namespace DHCPServer.Domain.Interfaces
 	{
 
 		Task<bool> UpdateAsync(ActiveDevice activeDevice);
+
+
 		Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists();
+
+		Task<IEnumerable<ActiveDevice>> GetActiveDevicesListsWithReports();
 
 		/// <summary>
 		/// Check if activedevice is already exist,it will set active as true
