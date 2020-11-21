@@ -5,7 +5,6 @@ using DHCPServer.Dialogs.Extenstions;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models;
-using DHCPServer.Models.Enums;
 using DHCPServer.Models.Infrastructure;
 using Prism.Commands;
 using Prism.Events;
@@ -138,7 +137,7 @@ namespace DHCPServer.ViewModels
 			  {
 
 
-				  await _roomRepository.SaveAsync(RoomsCollection);
+				  await _roomRepository.SaveAsync(RoomsCollection.Select(x=>x.RoomInfo));
 				  _logger.Information("Данные успешно добавились в бд");
 
 
@@ -262,7 +261,7 @@ namespace DHCPServer.ViewModels
 				var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == newDevice.IPAddress);
 				if (room == null)
 				{
-					var newRomm = new RoomLineGraphInfo(new RoomData(), newDevice);
+					var newRomm = new RoomLineGraphInfo(newDevice);
 					RoomsCollection.Add(newRomm);
 
 					Task.Run(async () =>

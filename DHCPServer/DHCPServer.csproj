@@ -59,6 +59,9 @@
     <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.2.0.0\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
@@ -147,7 +150,9 @@
     </ApplicationDefinition>
     <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
     <Compile Include="Models\DTO\ReportDTO.cs" />
+    <Compile Include="Models\Infrastructure\Common\RoomLineBase.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfoSetting.cs" />
+    <Compile Include="Services\JsonHelper.cs" />
     <Compile Include="UICore\Converters\BooleanReverseVisibilityConverter.cs" />
     <Compile Include="Core\Events\ApplicationEvents.cs" />
     <Compile Include="Core\Events\Model\DeviceEventModel.cs" />
@@ -159,7 +164,6 @@
     <Compile Include="Dialogs\NewDeviceViewModelDialog.cs" />
     <Compile Include="Dialogs\SelectionDeviceViewModelDialog.cs" />
     <Compile Include="Models\DeviceClient.cs" />
-    <Compile Include="Models\Enums\DeviceResponseStatus.cs" />
     <Compile Include="Models\Infrastructure\DateTimeSpanFilter.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfo.cs" />
     <Compile Include="Models\Infrastructure\ViewResolvingPlotModel.cs" />

@@ -14,11 +14,10 @@ namespace DHCPServer.Domain.Models
 		{
 			RoomInfos = new List<RoomInfo>();
 		}
-        public ActiveDevice(Device device):this()
+        public ActiveDevice(Device device):base(device)
         {
-			IPAddress = device?.IPAddress;
-			Nick = device?.Nick;
-        }
+			RoomInfos = new List<RoomInfo>();
+		}
 		private bool _isActive;
 		public bool IsActive
 		{

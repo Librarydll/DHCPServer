@@ -1,5 +1,4 @@
 ﻿using DHCPServer.Domain.Models;
-using DHCPServer.Models.Enums;
 using DHCPServer.Services;
 using Serilog;
 using Serilog.Core;
@@ -13,19 +12,21 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Models
 {
-	public class DeviceClient:IDisposable
+	public class DeviceClient<TDevice,TRoom> : IDisposable 
+		where TDevice : Device
+		where TRoom   :	RoomInfo , new()
 	{
-		public event Action<RoomInfo, DeviceResponseStatus> ReciveMessageEvent;
-		public event Action<ActiveDevice> ReciveMessageErrorEvent;
-		public event Action<ActiveDevice> EnableDeviceEvent;
-		public ActiveDevice ActiveDevice { get; set; }
+		public event Action<TRoom> ReciveMessageOnSuccessEvent;
+		public event Action<TDevice> ReciveMessageOnErrorEvent;
+		public event Action<TDevice> EnableDeviceEvent;
+		public TDevice ActiveDevice { get; set; }
 		private readonly HttpClient client = null;
 		private readonly string _url = null;
-		public bool IsInvalid => _countRequestForDisableInvaid!=0;
+		public bool IsInvalid => _countRequestForDisableInvaid != 0;
 		private int _countRequestForDisableInvaid = 0;
 		private bool loop = true;
 		private bool _disposed = false;
-		public DeviceClient(ActiveDevice device)
+		public DeviceClient(TDevice device)
 		{
 			if (device == null) throw new ArgumentNullException("device should not be null");
 			if (device?.IPAddress == null) throw new ArgumentNullException("device IPAddress should not be null");
@@ -37,7 +38,7 @@ namespace DHCPServer.Models
 			_url = "http://" + device.IPAddress;
 		}
 
-	
+
 
 		public async Task ListenAsync(CancellationToken token)
 		{
@@ -55,7 +56,7 @@ namespace DHCPServer.Models
 						if (response.IsSuccessStatusCode)
 						{
 							string responseBody = await response.Content.ReadAsStringAsync();
-							ReciveMessageRaise(responseBody, ActiveDevice);
+							RaiseOnSuccess(responseBody);
 						}
 						if (token.IsCancellationRequested)
 						{
@@ -83,42 +84,34 @@ namespace DHCPServer.Models
 				}
 				catch (HttpRequestException)
 				{
-				//	Log.Logger.Error("HttpRequestException message {0}", e.Message);
-				//	Log.Logger.Error("HttpRequestException inner message {0}", e?.InnerException.Message);
 					_countRequestForDisableInvaid = 2;
-					ReciveMessageErroRaise(ActiveDevice);
+					RaiseOnError();
 				}
 				catch (Exception e)
 				{
 					Log.Logger.Error("Exception message {0}", e.Message);
 					Log.Logger.Error("Exception inner message {0}", e?.InnerException?.Message);
 					_countRequestForDisableInvaid = 2;
-					ReciveMessageErroRaise(ActiveDevice);
+					RaiseOnError();
 				}
 				finally
 				{
 					if (response != null) response.Dispose();
-				} 
+				}
 			}
 		}
 
-		private void ReciveMessageRaise(string responseBody, ActiveDevice device, DeviceResponseStatus status = DeviceResponseStatus.Success)
+		private void RaiseOnSuccess(string responseBody)
 		{
-			if (status == DeviceResponseStatus.Success)
-			{
-				var room = HtmlHelper.Parse(responseBody);
-				var result = new RoomInfo(room, device);
-				ReciveMessageEvent?.Invoke(result, status);
-			}
-			else
-			{
-				ReciveMessageEvent?.Invoke(null, status);
-			}
+			var room = HtmlHelper.Parse(responseBody);
+			var result = new TRoom() { Humidity = room.Humidity, Temperature = room.Temperature };
+			ReciveMessageOnSuccessEvent?.Invoke(result);
+
 		}
 
-		private void ReciveMessageErroRaise(ActiveDevice invalidDevice)
+		private void RaiseOnError()
 		{
-			ReciveMessageErrorEvent?.Invoke(invalidDevice);
+			ReciveMessageOnErrorEvent?.Invoke(ActiveDevice);
 		}
 
 		public void Dispose()
@@ -130,7 +123,7 @@ namespace DHCPServer.Models
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!_disposed&& disposing)
+			if (!_disposed && disposing)
 			{
 				client?.Dispose();
 				loop = false;
