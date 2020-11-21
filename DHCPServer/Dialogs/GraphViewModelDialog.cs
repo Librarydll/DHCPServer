@@ -74,11 +74,11 @@ namespace DHCPServer.Dialogs
 			IEnumerable<RoomInfo> collection;
 			if (DateTimeSpan.IsTimeInclude)
 			{
-				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate);
+				collection = await _roomRepository.FilterRooms(GraphInfo.ActiveDevice.Id, DateTimeSpan.FromDate);
 			}
 			else
 			{
-				collection = await _roomRepository.FilterRooms(GraphInfo.DeviceId, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
+				collection = await _roomRepository.FilterRooms(GraphInfo.ActiveDevice.Id, DateTimeSpan.FromDate, DateTimeSpan.FromTime, DateTimeSpan.ToTime);
 			}
 
 			if (collection.Count() > 0)
@@ -91,7 +91,7 @@ namespace DHCPServer.Dialogs
 
 		public RoomLineGraphInfo FillModel(IEnumerable<RoomInfo> collection)
 		{
-			var result = new RoomLineGraphInfo(new RoomData(), GraphInfo.ActiveDevice);
+			var result = new RoomLineGraphInfo(GraphInfo.ActiveDevice);
 
 			var humidityLineSerie = result.GraphLineModel.GetLast();
 			var temperatureLineSerie = result.GraphLineModel.GetFirst();
@@ -104,7 +104,7 @@ namespace DHCPServer.Dialogs
 			result.GraphLineModel.SetLastNHours(6);
 			temperatureLineSerie.Points.AddRange(temperaturePoints);
 			humidityLineSerie.Points.AddRange(humidityPoints);
-			result.GraphLineModel.AddAnnotations(4);
+			result.GraphLineModel.AddAnnotations(24);
 			GraphInfo.GraphLineModel.InvalidatePlot(true);
 			return result;
 		}
@@ -194,8 +194,8 @@ namespace DHCPServer.Dialogs
 
 			GraphInfo.GraphLineModel.Axes[0].Reset();
 			GraphInfo.GraphLineModel.Axes[1].Reset();
-			GraphInfo.GraphLineModel.SetLastNHours(6);
-			GraphInfo.GraphLineModel.AddAnnotations(6);
+			//GraphInfo.GraphLineModel.SetLastNHours(6);
+			//GraphInfo.GraphLineModel.AddAnnotations(24);
 
 			//	GraphInfo.GraphLineModel.InvalidatePlot(true);
 		}

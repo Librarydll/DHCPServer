@@ -151,8 +151,11 @@
     <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
     <Compile Include="Models\DTO\ReportDTO.cs" />
     <Compile Include="Models\Infrastructure\Common\RoomLineBase.cs" />
+    <Compile Include="Models\Infrastructure\MultiRoomLineGraphInfo.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfoSetting.cs" />
+    <Compile Include="Services\IParser.cs" />
     <Compile Include="Services\JsonHelper.cs" />
+    <Compile Include="Services\Parser.cs" />
     <Compile Include="UICore\Converters\BooleanReverseVisibilityConverter.cs" />
     <Compile Include="Core\Events\ApplicationEvents.cs" />
     <Compile Include="Core\Events\Model\DeviceEventModel.cs" />
@@ -179,6 +182,7 @@
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MiltyDeviceViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="Dialogs\SelectionDeviceViewOldModelDialog.cs" />
     <Compile Include="Views\CalibrationView.xaml.cs">
@@ -205,6 +209,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\MiltyDeviceView.xaml.cs">
+      <DependentUpon>MiltyDeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NewDeviceView.xaml.cs">
       <DependentUpon>NewDeviceView.xaml</DependentUpon>
@@ -263,6 +270,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MiltyDeviceView.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\NewDeviceView.xaml">

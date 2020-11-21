@@ -28,7 +28,6 @@ namespace DHCPServer.Dialogs
 			if (parameters != null)
 			{
 				var room = parameters.GetValue<RoomLineGraphInfo>("model");
-				if (room.Setting == null) room.Setting = new RoomLineGraphInfoSetting();
 				Temperature = room.Setting.TemperatureRange.ToString();
 				Humidity = room.Setting.HumidityRange.ToString();
 				var title = $"{room?.ActiveDevice?.Nick} {room?.ActiveDevice?.IPAddress}";

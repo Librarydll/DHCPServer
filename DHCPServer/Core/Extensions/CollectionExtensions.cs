@@ -10,18 +10,7 @@ namespace DHCPServer.Core.Extensions
 	public static class CollectionextEnsioncs
 	{
 
-		public static IEnumerable<RoomLineGraphInfo> ToRoomLineGraphInfo(this IEnumerable<RoomInfo> collection)
-		{
-			foreach (var room in collection)
-			{
-				yield return new RoomLineGraphInfo(new RoomData {
-					Temperature = room.Temperature,
-					Humidity = room.Humidity
-				},
-					room.ActiveDevice);
-			}
-		}
-
+		
 		public static void DisposeRange<T>(this IEnumerable<T> collection)where T:IDisposable
         {
             foreach (var item in collection)

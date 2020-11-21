@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Domain.Models
 {
-	public class MultiDevice:RoomInfo
+	public class MultiRoomInfo:RoomInfo
 	{
-		public MultiDevice()
+		public MultiRoomInfo()
 		{
 
 		}
-		public MultiDevice(ActiveDevice device):base(device)
+		public MultiRoomInfo(ActiveDevice device):base(device)
 		{}
 
 		private double _temperatureMiddle;

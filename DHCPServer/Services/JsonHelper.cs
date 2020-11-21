@@ -1,19 +1,27 @@
-﻿using Newtonsoft.Json;
+﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DHCPServer.Services
 {
 	public static class JsonHelper
 	{
-		public static T Parse<T>(string obj) where T: class
+		public static T ParseJson<T>(this string html) where T: class
 		{
+
+			HtmlDocument htmlDoc = new HtmlDocument();
+			htmlDoc.LoadHtml(html);
+			var body = htmlDoc.DocumentNode.Descendants("body")
+				.FirstOrDefault();
 			try
 			{
-				return (T)JsonConvert.DeserializeObject(obj);
+				var text = body.InnerText;
+				return (T)JsonConvert.DeserializeObject<T>(text);
 			}
 			catch (Exception e)
 			{

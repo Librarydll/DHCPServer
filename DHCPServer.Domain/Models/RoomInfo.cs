@@ -32,16 +32,12 @@ namespace DHCPServer.Domain.Models
 
         public ActiveDevice ActiveDevice { get => device; set { device = value; RaisePropertyChangedEvent(); } }
 
-        public RoomInfo(RoomData roomData, ActiveDevice device)
+        public RoomInfo(ActiveDevice device)
         {
-            Temperature = roomData.Temperature;
-            Humidity = roomData.Humidity;
             ActiveDevice = device;
             Date = DateTime.Now;
             DeviceId = device.Id;
         }
-        public RoomInfo(ActiveDevice device):this(new RoomData(),device)
-        {  }
         public RoomInfo()
         { }
 

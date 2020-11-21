@@ -16,7 +16,7 @@ namespace DHCPServer.Services
 		public static readonly string TemperatureId = "tid";
 		public static readonly string HumidityId = "hid";
 
-		public static RoomData Parse(this string html)
+		public static RoomInfo ParseHtml(this string html)
 		{
 			Regex regex = new Regex(pattern);
 
@@ -39,7 +39,7 @@ namespace DHCPServer.Services
 			if (double.TryParse(temp.Replace(".",","), out double tem)) t = tem;
 			if (double.TryParse(humidity.Replace(".", ","), out double hum)) h = hum;
 
-			return new RoomData
+			return new RoomInfo
 			{
 				Humidity = h,
 				Temperature = t

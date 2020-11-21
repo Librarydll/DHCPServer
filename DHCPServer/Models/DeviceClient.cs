@@ -4,6 +4,7 @@ using Serilog;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -22,6 +23,7 @@ namespace DHCPServer.Models
 		public TDevice ActiveDevice { get; set; }
 		private readonly HttpClient client = null;
 		private readonly string _url = null;
+		private readonly IParser<TRoom> _parser =null;
 		public bool IsInvalid => _countRequestForDisableInvaid != 0;
 		private int _countRequestForDisableInvaid = 0;
 		private bool loop = true;
@@ -31,6 +33,7 @@ namespace DHCPServer.Models
 			if (device == null) throw new ArgumentNullException("device should not be null");
 			if (device?.IPAddress == null) throw new ArgumentNullException("device IPAddress should not be null");
 			ActiveDevice = device;
+			_parser = new Parser<TRoom>();
 			client = new HttpClient
 			{
 				Timeout = new TimeSpan(0, 0, 5)
@@ -102,10 +105,9 @@ namespace DHCPServer.Models
 		}
 
 		private void RaiseOnSuccess(string responseBody)
-		{
-			var room = HtmlHelper.Parse(responseBody);
-			var result = new TRoom() { Humidity = room.Humidity, Temperature = room.Temperature };
-			ReciveMessageOnSuccessEvent?.Invoke(result);
+		{			
+			var room = _parser.Parse(responseBody);
+			ReciveMessageOnSuccessEvent?.Invoke(room);
 
 		}
 
