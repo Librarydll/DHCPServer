@@ -16,6 +16,7 @@ namespace DHCPServer.ViewModels
 		private readonly ListDevicesView _listDevicesView = new ListDevicesView();
 		//	private readonly ReportView _reportView = new ReportView();
 		private readonly DeviceArchiveView _deviceArchiveView = new DeviceArchiveView();
+		private readonly MultiDeviceView _multiDeviceView = new MultiDeviceView();
 		#endregion
 
 		#region Commands
@@ -23,6 +24,7 @@ namespace DHCPServer.ViewModels
 		public DelegateCommand OpenDeviceInformationViewCommand { get; set; }
 		public DelegateCommand OpenDeviceViewCommand { get; set; }
 		public DelegateCommand OpenReportViewCommand { get; set; }
+		public DelegateCommand OpenMultiDeviceViewCommand { get; set; }
 		#endregion
 		#region BindingProperties
 
@@ -33,9 +35,14 @@ namespace DHCPServer.ViewModels
 			OpenDeviceInformationViewCommand = new DelegateCommand(OpenDeviceInformationView);
 			OpenDeviceViewCommand = new DelegateCommand(OpenDeviceView);
 			OpenReportViewCommand = new DelegateCommand(OpenReportView);
+			OpenMultiDeviceViewCommand = new DelegateCommand(OpenMultiDeviceView);
 			_regionManager = regionManager;
 		}
 
+		private void OpenMultiDeviceView()
+		{
+			OpenViewBase(_multiDeviceView, nameof(MultiDeviceView));
+		}
 		private void OpenReportView()
 		{
 			OpenViewBase(_deviceArchiveView, nameof(DeviceArchiveView));

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DHCPServer.Domain.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Domain.Models
 {
-	public class MultiRoomInfo:RoomInfo
+	public class MultiRoomInfo:RoomInfo, IRoom
 	{
 		public MultiRoomInfo()
 		{

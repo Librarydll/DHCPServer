@@ -6,6 +6,7 @@ using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models;
 using DHCPServer.Models.Infrastructure;
+using DHCPServer.ViewModels.Common;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -23,33 +24,20 @@ using System.Windows.Threading;
 
 namespace DHCPServer.ViewModels
 {
-	public class DeviceInformationViewModel : BindableBase
+	public class DeviceInformationViewModel : DeviceViewModelBase<RoomLineGraphInfo,RoomInfo> 
 	{
 		#region Fields
-		private readonly IDialogService _dialogService;
 		private readonly IRoomRepository _roomRepository;
-		private readonly IActiveDeviceRepository _activeDeviceRepository;
 		private readonly IReportRepository _reportRepository;
-		private readonly ILogger _logger;
 		private readonly IEventAggregator _eventAggregator;
 		private readonly DispatcherTimer _timer;
 		private bool _isActive = false;
 		#endregion
 
 		#region Commands
-		public DelegateCommand OpenNewDevcieViewCommand { get; set; }
 		public DelegateCommand<RoomLineGraphInfo> DeleteRoomCommand { get; set; }
 		public DelegateCommand<RoomLineGraphInfo> OpenGraphCommand { get; set; }
 		public DelegateCommand<RoomLineGraphInfo> OpenCalibrationCommand { get; set; }
-		#endregion
-		#region BindingProperties
-		private ObservableCollection<RoomLineGraphInfo> _roomsCollection;
-		public ObservableCollection<RoomLineGraphInfo> RoomsCollection
-		{
-			get { return _roomsCollection; }
-			set { SetProperty(ref _roomsCollection, value); }
-		}
-
 		#endregion
 
 		public DeviceInformationViewModel(IDialogService dialogService,
@@ -57,18 +45,15 @@ namespace DHCPServer.ViewModels
 			IActiveDeviceRepository activeDeviceRepository,
 			IReportRepository reportRepository,
 			ILogger logger,
-			IEventAggregator eventAggregator)
+			IEventAggregator eventAggregator):base(dialogService,activeDeviceRepository,logger)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
 			OpenGraphCommand = new DelegateCommand<RoomLineGraphInfo>(OpenGraph);
 			OpenCalibrationCommand = new DelegateCommand<RoomLineGraphInfo>(OpenCalibration);
 
-			_dialogService = dialogService;
 			_roomRepository = roomRepository;
-			_activeDeviceRepository = activeDeviceRepository;
 			_reportRepository = reportRepository;
-			_logger = logger;
 			_eventAggregator = eventAggregator;
 
 			_timer = new DispatcherTimer
@@ -244,44 +229,6 @@ namespace DHCPServer.ViewModels
 
 		//}
 
-		private void OpenNewDevcieView()
-		{
-			ActiveDevice newDevice = null;
-
-			_dialogService.ShowModal("SelectionDeviceViewOld", x =>
-			{
-				if (x.Result == ButtonResult.OK)
-				{
-					newDevice = x.Parameters.GetValue<ActiveDevice>("model");
-				}
-			});
-
-			if (newDevice != null)
-			{
-				var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == newDevice.IPAddress);
-				if (room == null)
-				{
-					var newRomm = new RoomLineGraphInfo(newDevice);
-					RoomsCollection.Add(newRomm);
-
-					Task.Run(async () =>
-					{
-						await _activeDeviceRepository.CheckDevice(newDevice);
-						_logger.Information("Added new device to listen {0}",newDevice.IPAddress);
-						await newRomm.InitializeDeviceAsync();
-
-					}).ContinueWith(t =>
-					{
-					_logger.Error(t.Exception.Message);
-					_logger.Error(t.Exception?.InnerException?.Message);
-					}, TaskContinuationOptions.OnlyOnFaulted);
-
-				}
-
-			}
-
-
-		}
 		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
 		{
 			var dialogParametr = new DialogParameters

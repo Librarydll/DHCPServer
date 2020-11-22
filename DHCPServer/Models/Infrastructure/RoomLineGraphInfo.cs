@@ -45,7 +45,6 @@ namespace DHCPServer.Models.Infrastructure
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
 			Setting = new RoomLineGraphInfoSetting();
-
 		}
 
 

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DHCPServer.Views.MiltyDeviceView"
+﻿<UserControl x:Class="DHCPServer.Views.MultiDeviceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"             
@@ -17,9 +17,7 @@
         <Grid Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -81,11 +79,11 @@
                     </GridViewColumn>
 
                     <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
-                                        Header="Температура  C"
+                                        Header="Температура"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Border Width="{Binding ElementName=col4,Path=ActualWidth}">
+                                <Border Width="{Binding ElementName=col3,Path=ActualWidth}">
                                     <TextBlock Text="{Binding RoomInfo.Temperature}"
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="5,2" Margin="0,0,15,0" 
@@ -100,16 +98,16 @@
 
 
                     <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
-                                        Header="Температура  C"
+                                        Header="Влажность"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Border Width="{Binding ElementName=col4,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding RoomInfo.Temperature}"
+                                    <TextBlock Text="{Binding RoomInfo.Humidity}"
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="5,2" Margin="0,0,15,0" 
                                                HorizontalAlignment="Center" 
-                                               Foreground="Red" 
+                                               Foreground="Blue" 
                                                VerticalAlignment="Center">
                                     </TextBlock>
                                 </Border>
@@ -118,12 +116,66 @@
                     </GridViewColumn>
 
                     <GridViewColumn   Width="{Binding ElementName=col5,Path=ActualWidth}"
-                                        Header="%  Влажность"
+                                        Header="Температура мид"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Border Width="{Binding ElementName=col4,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding Path=RoomInfo.Humidity}" 
+                                <Border Width="{Binding ElementName=col5,Path=ActualWidth}">
+                                    <TextBlock Text="{Binding Path=RoomInfo.TemperatureMiddle}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="5,4" Margin="0,0,15,0" 
+                                               HorizontalAlignment="Center" 
+                                               Foreground="Red" 
+                                               VerticalAlignment="Center">
+                                    </TextBlock>
+
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn   Width="{Binding ElementName=col6,Path=ActualWidth}"
+                                        Header="Влажность мид"
+                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Width="{Binding ElementName=col6,Path=ActualWidth}">
+                                    <TextBlock Text="{Binding Path=RoomInfo.HumidityMiddle}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="5,4" Margin="0,0,15,0" 
+                                               HorizontalAlignment="Center" 
+                                               Foreground="Blue" 
+                                               VerticalAlignment="Center">
+                                    </TextBlock>
+
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn   Width="{Binding ElementName=col7,Path=ActualWidth}"
+                                        Header="Температура процесс"
+                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Width="{Binding ElementName=col7,Path=ActualWidth}">
+                                    <TextBlock Text="{Binding Path=RoomInfo.TemperatureProcess}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="5,4" Margin="0,0,15,0" 
+                                               HorizontalAlignment="Center" 
+                                               Foreground="Red" 
+                                               VerticalAlignment="Center">
+                                    </TextBlock>
+
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn   Width="{Binding ElementName=col8,Path=ActualWidth}"
+                                        Header="Влажность процесс"
+                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Width="{Binding ElementName=col8,Path=ActualWidth}">
+                                    <TextBlock Text="{Binding Path=RoomInfo.HumidityProcess}" 
                                                FontWeight="Medium" FontSize="13" 
                                                Padding="5,4" Margin="0,0,15,0" 
                                                HorizontalAlignment="Center" 
@@ -136,7 +188,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn  Width="{Binding ElementName=col6,Path=ActualWidth}"
+                    <!--<GridViewColumn  Width="{Binding ElementName=col6,Path=ActualWidth}"
                                         Header="Действия"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -197,7 +249,7 @@
                                 </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    </GridViewColumn>-->
 
                 </GridView>
             </ListView.View>

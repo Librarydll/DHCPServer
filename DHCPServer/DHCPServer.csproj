@@ -177,12 +177,13 @@
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UICore\Converters\NumberConverter.cs" />
+    <Compile Include="ViewModels\Common\DeviceViewModelBase.cs" />
     <Compile Include="ViewModels\DeviceArchiveViewModel.cs" />
     <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MiltyDeviceViewModel.cs" />
+    <Compile Include="ViewModels\MultiDeviceViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="Dialogs\SelectionDeviceViewOldModelDialog.cs" />
     <Compile Include="Views\CalibrationView.xaml.cs">
@@ -210,8 +211,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\MiltyDeviceView.xaml.cs">
-      <DependentUpon>MiltyDeviceView.xaml</DependentUpon>
+    <Compile Include="Views\MultiDeviceView.xaml.cs">
+      <DependentUpon>MultiDeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NewDeviceView.xaml.cs">
       <DependentUpon>NewDeviceView.xaml</DependentUpon>
@@ -272,7 +273,7 @@
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MiltyDeviceView.xaml">
+    <Page Include="Views\MultiDeviceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

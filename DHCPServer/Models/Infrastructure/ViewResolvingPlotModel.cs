@@ -174,7 +174,7 @@ namespace DHCPServer.Models.Infrastructure
 			{
 				LineAnnotation Line = new LineAnnotation()
 				{
-					StrokeThickness = 3,
+					StrokeThickness = 2,
 					Color = OxyColors.Green,
 					Type = LineAnnotationType.Vertical,
 					Text = Y.ToString(),

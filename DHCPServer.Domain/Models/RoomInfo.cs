@@ -1,11 +1,12 @@
 ﻿using Dapper.Contrib.Extensions;
+using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models.Common;
 using Newtonsoft.Json;
 using System;
 
 namespace DHCPServer.Domain.Models
 {
-    public class RoomInfo : BaseEntity
+    public class RoomInfo : BaseEntity, IRoom
     {
         private double temperature;
         private double humidity;

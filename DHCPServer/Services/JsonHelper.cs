@@ -1,5 +1,7 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +23,12 @@ namespace DHCPServer.Services
 			try
 			{
 				var text = body.InnerText;
-				return (T)JsonConvert.DeserializeObject<T>(text);
+				return JsonConvert.DeserializeObject<T>(text);
 			}
 			catch (Exception e)
 			{
+				Log.Logger.Error("while parse exception {0}", e.Message);
+				Log.Logger.Error("while parse exception {0}", e?.InnerException?.Message);
 				return null;
 			}
 		}

@@ -3,6 +3,7 @@ using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure;
 using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using Prism.Commands;
 using Prism.Services.Dialogs;
@@ -146,20 +147,36 @@ namespace DHCPServer.Dialogs
 
 			var leftAxis = GraphInfo.GraphLineModel.Axes[1];
 			var rightAxis = GraphInfo.GraphLineModel.Axes[0];
-
+			var annotation = GraphInfo.GraphLineModel.Annotations[0] as LineAnnotation;
 			if (_wheelCount == 0)
 			{
 				rightAxis.MajorStep = 1.0 / 24;
 			}
 
-			if(_wheelCount== -4)
+			if(_wheelCount== -6)
 			{
 				rightAxis.MajorStep = 1.0 / 12;
 			}
 
-			if (_wheelCount == -6)
+			if (_wheelCount == -8)
 			{
 				rightAxis.MajorStep = 1.0 / 6;
+				annotation.StrokeThickness = 2;
+			}
+
+			if(_wheelCount == -15)
+			{
+				annotation.StrokeThickness = 1;
+				rightAxis.MajorStep = 1.0 / 2;
+				rightAxis.StringFormat = "HH:mm";
+				((DateTimeAxis)rightAxis).IntervalType = DateTimeIntervalType.Hours;
+			}
+			if (_wheelCount == -21)
+			{
+				rightAxis.MajorStep = 1.0;
+				rightAxis.StringFormat = "dd/MM/yyy";
+				((DateTimeAxis)rightAxis).IntervalType = DateTimeIntervalType.Days;
+
 			}
 
 			if (_wheelCount == 8)

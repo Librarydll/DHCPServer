@@ -34,6 +34,9 @@
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenReportViewCommand}">Архив
            
                     </Button>
+                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenMultiDeviceViewCommand}">Мульти график
+
+                    </Button>
                 </StackPanel>
             </ToolBar>
         </Grid>

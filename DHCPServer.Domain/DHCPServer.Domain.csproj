@@ -59,6 +59,7 @@
     <Compile Include="Interfaces\IActiveDeviceRepository.cs" />
     <Compile Include="Interfaces\IDeviceRepository.cs" />
     <Compile Include="Interfaces\IReportRepository.cs" />
+    <Compile Include="Interfaces\IRoom.cs" />
     <Compile Include="Interfaces\IRoomRepository.cs" />
     <Compile Include="Models\Common\BaseEntity.cs" />
     <Compile Include="Models\Device.cs" />

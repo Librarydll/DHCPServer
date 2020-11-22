@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Models.Infrastructure.Common
 {
-	public abstract class RoomLineBase<TDevice, TRoom> : BaseEntity ,IDisposable
+	public class RoomLineBase<TDevice, TRoom> : BaseEntity ,IDisposable
 		where TDevice : Device
 		where TRoom : RoomInfo,new()
 	{
@@ -38,6 +38,7 @@ namespace DHCPServer.Models.Infrastructure.Common
 			DeviceClient.EnableDeviceEvent += ReciveMessageOnValidEventHandler;
 		}
 
+
 		public virtual async Task InitializeDeviceAsync()
 		{
 			await DeviceClient.ListenAsync(_tokenSource.Token);
@@ -58,7 +59,10 @@ namespace DHCPServer.Models.Infrastructure.Common
 			
 		}
 
-		public abstract void SetInvalid(bool value);
+		public virtual void SetInvalid(bool value)
+		{
+			IsInvalid = value;
+		}
 
 		public void Dispose()
 		{
