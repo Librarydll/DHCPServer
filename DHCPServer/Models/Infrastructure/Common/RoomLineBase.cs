@@ -44,12 +44,12 @@ namespace DHCPServer.Models.Infrastructure.Common
 			await DeviceClient.ListenAsync(_tokenSource.Token);
 		}
 
-		protected virtual void ReciveMessageOnValidEventHandler(TDevice device)
+		protected virtual void ReciveMessageOnValidEventHandler()
 		{
 			SetInvalid(false);
 		}
 
-		protected virtual void ReciveMessageOnErrorEventHandler(TDevice device)
+		protected virtual void ReciveMessageOnErrorEventHandler()
 		{
 			SetInvalid(true);
 		}
@@ -76,6 +76,7 @@ namespace DHCPServer.Models.Infrastructure.Common
 			{
 				DeviceClient?.Dispose();
 			}
+			_disposed = true;
 		}
 	}
 }

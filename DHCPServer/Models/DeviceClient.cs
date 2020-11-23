@@ -18,8 +18,8 @@ namespace DHCPServer.Models
 		where TRoom   :	RoomInfo , new()
 	{
 		public event Action<TRoom> ReciveMessageOnSuccessEvent;
-		public event Action<TDevice> ReciveMessageOnErrorEvent;
-		public event Action<TDevice> EnableDeviceEvent;
+		public event Action ReciveMessageOnErrorEvent;
+		public event Action EnableDeviceEvent;
 		public TDevice ActiveDevice { get; set; }
 		private readonly HttpClient client = null;
 		private readonly string _url = null;
@@ -70,7 +70,7 @@ namespace DHCPServer.Models
 					{
 						_countRequestForDisableInvaid--;
 						if (!IsInvalid)
-							EnableDeviceEvent?.Invoke(ActiveDevice);
+							EnableDeviceEvent?.Invoke();
 
 					}
 
@@ -113,7 +113,7 @@ namespace DHCPServer.Models
 
 		private void RaiseOnError()
 		{
-			ReciveMessageOnErrorEvent?.Invoke(ActiveDevice);
+			ReciveMessageOnErrorEvent?.Invoke();
 		}
 
 		public void Dispose()
@@ -130,6 +130,7 @@ namespace DHCPServer.Models
 				client?.Dispose();
 				loop = false;
 			}
+			_disposed = true;
 		}
 	}
 }
