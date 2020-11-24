@@ -20,7 +20,7 @@ namespace DHCPServer
 			return Container.Resolve<MainView>();
 		}
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
-		{
+	{
 			Log.Logger = new LoggerConfiguration()
 				.WriteTo.File("logs\\log.log")
 				.CreateLogger();
@@ -36,6 +36,7 @@ namespace DHCPServer
 			containerRegistry.RegisterDialog<SelectionDeviceView, SelectionDeviceViewModelDialog>();
 			containerRegistry.RegisterDialog<CalibrationView, CalibrationViewModelDialog>();
 			containerRegistry.RegisterDialog<SelectionDeviceViewOld, SelectionDeviceViewOldModelDialog>();
+			containerRegistry.RegisterDialog<FilterView, FilterViewModelDialog>();
 		}
 	}
 }

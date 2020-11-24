@@ -18,13 +18,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
+            <!--<DatePicker SelectedDate="{Binding DateTimeSpan.FromDate}" Margin="5" VerticalAlignment="Center"/>
             <TextBlock  Margin="5" VerticalAlignment="Center" Text="До"/>
-            <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>
-            <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding FilterCommand}" Background="{x:Null}" Margin="5 0 5 0" VerticalAlignment="Center">
+            <DatePicker SelectedDate="{Binding DateTimeSpan.ToDate}" Margin="5" VerticalAlignment="Center"/>-->
+            <Button Padding="2" FontSize="15" FontWeight="Bold" Command="{Binding FilterCommand}" Background="{x:Null}" Margin="15 5 0 5" VerticalAlignment="Center">
                 Фильтр
             </Button>
-            <ComboBox ItemsSource="{Binding DevicesCollection}"
+            <!--<ComboBox ItemsSource="{Binding DevicesCollection}"
                       SelectedItem="{Binding SelectedDevice}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -40,7 +40,7 @@
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
-            </ComboBox>
+            </ComboBox>-->
         </StackPanel>
 
         <Grid Visibility="Hidden">

@@ -28,10 +28,7 @@ namespace DHCPServer.ViewModels
 	{
 		#region Fields
 		private readonly IRoomRepository _roomRepository;
-		private readonly IReportRepository _reportRepository;
 		private readonly IEventAggregator _eventAggregator;
-		private readonly DispatcherTimer _timer;
-		private bool _isActive = false;
 		#endregion
 
 		#region Commands
@@ -53,15 +50,9 @@ namespace DHCPServer.ViewModels
 			OpenCalibrationCommand = new DelegateCommand<RoomLineGraphInfo>(OpenCalibration);
 
 			_roomRepository = roomRepository;
-			_reportRepository = reportRepository;
 			_eventAggregator = eventAggregator;
 
-			_timer = new DispatcherTimer
-			{
-				Interval = new TimeSpan(0, 1, 0)
-			};
-			_timer.Tick += _timer_Tick;
-			_timer.Start();
+		
 			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
 			Task.Run(async () => await InitializeAsync());
 		}
@@ -73,10 +64,10 @@ namespace DHCPServer.ViewModels
 				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
 				var rooms = devices.Select(x => new RoomLineGraphInfo(x));
 				RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
-				_isActive = true && RoomsCollection.Count > 0;
 				var tasks = new Task[RoomsCollection.Count];
 				for (int i = 0; i < RoomsCollection.Count; i++)
 				{
+					RoomsCollection[i].AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
 					tasks[i] = RoomsCollection[i].InitializeDeviceAsync();
 				}
 				await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -90,6 +81,7 @@ namespace DHCPServer.ViewModels
 			}
 		}
 
+		
 		private void DeviceUpdateEventHandler(DeviceEventModel device)
 		{
 			var d = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.OldValue.IPAddress);
@@ -106,128 +98,23 @@ namespace DHCPServer.ViewModels
 			_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
 			roomInfo.CancelToken();
 			roomInfo.Dispose();
-			_isActive = RoomsCollection.Count > 0;
 
 		}
-
-		private void _timer_Tick(object sender, EventArgs e)
+		public override void DeviceInformationViewModel_AddToCollectionEvent(ActiveDevice active, RoomInfo room)
 		{
-			if (!_isActive) return;
-
-			foreach (var room in RoomsCollection)
+			Task.Run(async() =>
 			{
-				room.AddToCollection();
-			}
-			Task.Run(async () =>
-			  {
+				await _roomRepository.SaveAsync(room);
 
+			}).ContinueWith(t =>
+			{
 
-				  await _roomRepository.SaveAsync(RoomsCollection.Select(x=>x.RoomInfo));
-				  _logger.Information("Данные успешно добавились в бд");
+				_logger.Error("Не удлаось добавить данные в {0}",active?.IPAddress);
+				_logger.Error("Ошибка {0}", t.Exception?.Message);
+				_logger.Error("Ошибка {0}", t.Exception?.InnerException);
 
-
-				  //var reports = await _reportRepository.TryCloseExpiredReports();
-
-				  //if (reports.Count() > 0)
-				  //{
-					 // var rooms = RoomsCollection.DisposeRange(x => reports.Any(z => z.Id == x.ActiveDevice.ReportId));
-					 // Application.Current.Dispatcher.Invoke(() =>
-					 // {
-						//  for (int i = 0; i < rooms.Count(); i++)
-						//  {
-						//	  RoomsCollection.RemoveAt(i);
-						//  }
-						//  _isActive = RoomsCollection.Count > 0;
-					 // });
-				  //}
-
-
-			  }).ContinueWith(t =>
-			  {
-
-				  _logger.Error("Не удлаось добавить данные");
-				  _logger.Error("Ошибка {0}", t.Exception?.Message);
-				  _logger.Error("Ошибка {0}", t.Exception?.InnerException);
-
-			  }, TaskContinuationOptions.OnlyOnFaulted);
-
+			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
-
-
-		//private void OpenNewDevcieView()
-		//{
-		//    ObservableCollection<ActiveDevice> devices = null;
-		//    ICollection<ActiveDevice> inactiveDevices = new List<ActiveDevice>();
-		//    ICollection<ActiveDevice> activeDevices = new List<ActiveDevice>();
-		//    ICollection<RoomLineGraphInfo> rooms = new List<RoomLineGraphInfo>();
-
-		//    _dialogService.ShowModal("SelectionDeviceView", x =>
-		//    {
-		//        if (x.Result == ButtonResult.OK)
-		//        {
-		//            devices = x.Parameters.GetValue<ObservableCollection<ActiveDevice>>("model");
-		//        }
-		//    });
-
-		//    if (devices != null)
-		//    {
-		//        foreach (var device in devices)
-		//        {
-		//            var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.Id == device.Id);
-		//            if (room != null)
-		//            {
-		//                if (!device.IsAdded)
-		//                {
-		//                    RoomsCollection.Remove(room);
-		//                    inactiveDevices.Add(device);
-		//                }
-		//            }
-
-		//            else
-		//            {
-		//                if (device.IsAdded)
-		//                {
-		//                    var newRomm = new RoomLineGraphInfo(new RoomData(), device);
-		//                    activeDevices.Add(device);
-		//                    rooms.Add(newRomm);
-		//                }
-		//            }
-
-
-
-		//        }
-		//        Task.Run(async () =>
-		//        {
-		//            await _activeDeviceRepository.DeatachDevices(inactiveDevices);
-		//            var actives = await _activeDeviceRepository.CheckDevices(activeDevices);
-		//            if (rooms.Count > 0)
-		//            {
-
-		//                var tasks = new Task[rooms.Count];
-		//                for (int i = 0; i < rooms.Count; i++)
-		//                {
-		//                    tasks[i] = rooms.ElementAt(i).InitializeDeviceAsync();
-		//                }
-
-		//                Application.Current.Dispatcher.Invoke(() =>
-		//                {
-		//                    RoomsCollection.AddRange(rooms);
-		//                    _isActive = true;
-		//                });
-		//                await Task.WhenAll(tasks).ConfigureAwait(false);
-		//            }
-
-		//        }).ContinueWith(t =>
-		//        {
-
-		//            _logger.Error(t.Exception.Message);
-		//            _logger.Error(t.Exception?.InnerException?.Message);
-		//        }, TaskContinuationOptions.OnlyOnFaulted);
-
-		//    }
-
-
-		//}
 
 		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
 		{

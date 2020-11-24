@@ -7,10 +7,8 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DHCPServer.ViewModels.Common
@@ -58,13 +56,14 @@ namespace DHCPServer.ViewModels.Common
 				if (room == null)
 				{
 					TRoomLine roomLine = Activator.CreateInstance(typeof(TRoomLine), newDevice) as TRoomLine;
-
+					roomLine.AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
 					RoomsCollection.Add(roomLine);
 
 					Task.Run(async () =>
 					{
 						await _activeDeviceRepository.CheckDevice(newDevice);
 						_logger.Information("Added new device to listen {0}", newDevice.IPAddress);
+						
 						await roomLine.InitializeDeviceAsync();
 
 					}).ContinueWith(t =>
@@ -79,5 +78,11 @@ namespace DHCPServer.ViewModels.Common
 
 
 		}
+
+		public virtual void DeviceInformationViewModel_AddToCollectionEvent(ActiveDevice active, TRoom room)
+		{
+
+		}
+
 	}
 }

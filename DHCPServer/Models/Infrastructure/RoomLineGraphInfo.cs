@@ -6,12 +6,12 @@ using Serilog;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace DHCPServer.Models.Infrastructure
 {
 	public class RoomLineGraphInfo : RoomLineBase<ActiveDevice,RoomInfo>
 	{
-
 		private RoomLineGraphInfoSetting _setting;
 		public RoomLineGraphInfoSetting Setting
 		{
@@ -45,9 +45,30 @@ namespace DHCPServer.Models.Infrastructure
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
 			Setting = new RoomLineGraphInfoSetting();
+			_timer = new DispatcherTimer
+			{
+				Interval = new TimeSpan(0, 10, 0)
+			};
+			_timer.Tick += _timer_Tick;
+			_timer.Start();
 		}
 
+		private void _timer_Tick(object sender, EventArgs e)
+		{
+			if (AddToCollection())
+			{
+				OnCollectionAdded();
+				_timer.Interval = new TimeSpan(0, 10, 0);
 
+			}
+			else
+			{
+				_timer.Interval = new TimeSpan(0, 1, 0);
+			}
+
+		}
+
+	
 		public void CancelToken()
 		{
 			_tokenSource.Cancel();
@@ -96,15 +117,16 @@ namespace DHCPServer.Models.Infrastructure
 		}
 
 
-		public void AddToCollection()
+		public bool AddToCollection()
 		{
-			//if (RoomInfo.Temperature < 0 || RoomInfo.Humidity < 0) 
-			//{
-			//	return;		
-			//}
-			RoomInfo.Date = DateTime.Now;
-			AddToHumidity();
-			AddToTemperature();
+			if (!IsInvalid)
+			{
+				RoomInfo.Date = DateTime.Now;
+				AddToHumidity();
+				AddToTemperature();
+				return true;
+			}
+			return false;
 		}
 
 		public void AddToHumidity()

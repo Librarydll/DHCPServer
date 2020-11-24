@@ -19,6 +19,7 @@ namespace DHCPServer.Dialogs
 {
 	public class GraphViewModelDialog : DialogViewModelBase
 	{
+		private IEnumerable<LineAnnotation> _annotations = null;
 		private int _wheelCount = 0;
 		private readonly IRoomRepository _roomRepository;
 
@@ -85,6 +86,7 @@ namespace DHCPServer.Dialogs
 			if (collection.Count() > 0)
 			{
 				GraphInfo = FillModel(collection);
+				_annotations = GraphInfo.GraphLineModel.Annotations.Where(x => x.Tag?.ToString() == "period").Cast<LineAnnotation>();
 			}
 			
 			LabelResult = $"Найдено данных {collection.Count()} шт на {DateTimeSpan.FromDate:yyyy/MM/dd}";
@@ -103,8 +105,11 @@ namespace DHCPServer.Dialogs
 			result.GraphLineModel.Axes[0].Maximum = DateTimeAxis.ToDouble(min.AddHours(6));
 
 			result.GraphLineModel.SetLastNHours(6);
-			temperatureLineSerie.Points.AddRange(temperaturePoints);
-			humidityLineSerie.Points.AddRange(humidityPoints);
+			//	temperatureLineSerie.Points.AddRange(temperaturePoints);
+			//	humidityLineSerie.Points.AddRange(humidityPoints);
+			result.GraphLineModel.FillCollection(temperatureLineSerie, temperaturePoints);
+			result.GraphLineModel.FillCollection(humidityLineSerie, humidityPoints);
+
 			result.GraphLineModel.AddAnnotations(24);
 			GraphInfo.GraphLineModel.InvalidatePlot(true);
 			return result;
@@ -126,7 +131,8 @@ namespace DHCPServer.Dialogs
 					{
 						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress,date.FromDate, date.ToDate);
 						GraphInfo = FillModel(collection);
-				
+						_annotations = GraphInfo.GraphLineModel.Annotations.Where(x => x.Tag?.ToString() == "period").Cast<LineAnnotation>();
+
 					});
 				} 
 				SetSettings();
@@ -147,7 +153,6 @@ namespace DHCPServer.Dialogs
 
 			var leftAxis = GraphInfo.GraphLineModel.Axes[1];
 			var rightAxis = GraphInfo.GraphLineModel.Axes[0];
-			var annotation = GraphInfo.GraphLineModel.Annotations[0] as LineAnnotation;
 			if (_wheelCount == 0)
 			{
 				rightAxis.MajorStep = 1.0 / 24;
@@ -161,12 +166,12 @@ namespace DHCPServer.Dialogs
 			if (_wheelCount == -8)
 			{
 				rightAxis.MajorStep = 1.0 / 6;
-				annotation.StrokeThickness = 2;
+				_annotations.Select(x => { x.StrokeThickness = 2; return x; }); 
 			}
 
 			if(_wheelCount == -15)
 			{
-				annotation.StrokeThickness = 1;
+				_annotations.Select(x => { x.StrokeThickness = 1; return x; });
 				rightAxis.MajorStep = 1.0 / 2;
 				rightAxis.StringFormat = "HH:mm";
 				((DateTimeAxis)rightAxis).IntervalType = DateTimeIntervalType.Hours;

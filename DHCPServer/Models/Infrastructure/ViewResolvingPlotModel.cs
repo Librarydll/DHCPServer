@@ -155,6 +155,34 @@ namespace DHCPServer.Models.Infrastructure
 			return true;
 		}
 
+		public void FillCollection(LineSeries line,IEnumerable<DataPoint> dataPoints)
+		{
+			double previousY = 20;
+			foreach (var point in dataPoints)
+			{
+				if (point.Y != 0)
+				{
+					previousY = point.Y;
+				}
+				if (point.Y == 0)
+				{
+					var dot = new PointAnnotation 
+					{ 
+						X =point.X,
+						Y=previousY,
+						ToolTip="0",
+						Fill = OxyColors.DarkOrange,
+						Shape= MarkerType.Circle
+					};
+
+					Annotations.Add(dot);
+				}
+				else
+				{
+					line.Points.Add(point);
+				}
+			}
+		}
 
         public void AddAnnotations(int n)
 		{
@@ -174,13 +202,13 @@ namespace DHCPServer.Models.Infrastructure
 			{
 				LineAnnotation Line = new LineAnnotation()
 				{
+					Tag="period",
 					StrokeThickness = 2,
 					Color = OxyColors.Green,
 					Type = LineAnnotationType.Vertical,
 					Text = Y.ToString(),
 					TextColor = OxyColors.White,
 					X = X,
-					Y = Y,
 					LineStyle = LineStyle.Dash,
 
 				};

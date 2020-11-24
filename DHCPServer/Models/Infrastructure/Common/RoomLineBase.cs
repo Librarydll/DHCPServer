@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace DHCPServer.Models.Infrastructure.Common
 {
@@ -13,7 +14,10 @@ namespace DHCPServer.Models.Infrastructure.Common
 		where TDevice : Device
 		where TRoom : RoomInfo,new()
 	{
+		public event Action<TDevice, TRoom> AddToCollectionEvent;
+
 		protected CancellationTokenSource _tokenSource = null;
+		protected  DispatcherTimer _timer;
 
 		protected bool _disposed = false;
 		private bool _isInvalid;
@@ -38,6 +42,10 @@ namespace DHCPServer.Models.Infrastructure.Common
 			DeviceClient.EnableDeviceEvent += ReciveMessageOnValidEventHandler;
 		}
 
+		public virtual void OnCollectionAdded()
+		{
+			AddToCollectionEvent?.Invoke(ActiveDevice, RoomInfo);
+		}
 
 		public virtual async Task InitializeDeviceAsync()
 		{
@@ -75,6 +83,8 @@ namespace DHCPServer.Models.Infrastructure.Common
 			if (!_disposed && disposing)
 			{
 				DeviceClient?.Dispose();
+				_timer?.Stop();
+				_timer = null;
 			}
 			_disposed = true;
 		}

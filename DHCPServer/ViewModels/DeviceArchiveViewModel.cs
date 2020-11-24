@@ -1,4 +1,5 @@
-﻿using DHCPServer.Domain.Interfaces;
+﻿using DHCPServer.Dialogs.Extenstions;
+using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure;
 using Prism.Commands;
@@ -57,13 +58,42 @@ namespace DHCPServer.ViewModels
 		#endregion
 		public DeviceArchiveViewModel(IActiveDeviceRepository activeDeviceRepository, IDialogService dialogService)
 		{
-			FilterCommand = new DelegateCommand(async () => await Filter());
+			FilterCommand = new DelegateCommand(OpenFilterView);
 			DevicesForViewCollection = new ObservableCollection<ActiveDevice>();
 			DevicesCollection = new ObservableCollection<ActiveDevice>();
 			_activeDeviceRepository = activeDeviceRepository;
 			_dialogService = dialogService;
 			OpenGraphCommand = new DelegateCommand<ActiveDevice>(OpenGraph);
 
+		}
+
+		private void OpenFilterView()
+		{
+			ObservableCollection<ActiveDevice> devices = null;
+			_dialogService.ShowModal("FilterView", x =>
+			{
+				if(x.Result == ButtonResult.OK)
+				{
+					devices = x.Parameters.GetValue<ObservableCollection<ActiveDevice>>("model");
+					DateTimeSpan = x.Parameters.GetValue<DateTimeSpanFilter>("date");
+				}
+			});
+
+
+			if (devices != null)
+			{
+				Task.Run(async () =>
+				{
+					_devices = await _activeDeviceRepository.GetActiveDevicesByDate(DateTimeSpan.FromDate, DateTimeSpan.ToDate);
+					var allDevices = _devices.GroupBy(x => x.IPAddress)
+						.Select(x => x.First());
+
+					var d = devices.Where(x => allDevices.Any(z => z.IPAddress == x.IPAddress)&& x.IsAdded);
+					DevicesForViewCollection = new ObservableCollection<ActiveDevice>(d);
+
+				});
+				
+			}
 		}
 
 		private async Task Filter()
