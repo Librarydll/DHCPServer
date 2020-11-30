@@ -59,14 +59,14 @@
         <Grid Grid.Row="2">
             <TextBlock Width="150" Foreground="Red" Style="{StaticResource CurrentTextBlock}">
               <Run>Температура </Run>
-              <Run Text="{Binding GraphInfo.Temperature}"></Run>
+              <Run Text="{Binding GraphInfo.RoomInfo.Temperature}"></Run>
               <Run> C</Run>
             </TextBlock>
         </Grid>
         <Grid Grid.Row="3" >
             <TextBlock Width="150"  Foreground="DarkBlue" Style="{StaticResource CurrentTextBlock}">
              <Run>Влажность</Run>
-             <Run Text="{Binding GraphInfo.Humidity}"></Run>
+             <Run Text="{Binding GraphInfo.RoomInfo.Humidity}"></Run>
              <Run>%</Run>
             </TextBlock>
         </Grid>

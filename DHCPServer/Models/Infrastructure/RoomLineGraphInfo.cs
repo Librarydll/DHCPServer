@@ -41,29 +41,35 @@ namespace DHCPServer.Models.Infrastructure
 			set { _humidityLineVisibility = value; RaisePropertyChangedEvent(); LineSeriesVisibilityChange(nameof(HumidityLineVisibility), value); }
 		}
 
-		public RoomLineGraphInfo(ActiveDevice device) : base(device)
+		public RoomLineGraphInfo(ActiveDevice device,bool startTimer=true) : base(device)
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
 			Setting = new RoomLineGraphInfoSetting();
-			_timer = new DispatcherTimer
-			{
-				Interval = new TimeSpan(0, 10, 0)
-			};
-			_timer.Tick += _timer_Tick;
-			_timer.Start();
+			if(startTimer)
+				_timer = new Timer(_timer_Tick,null,new TimeSpan(0,10,0),new TimeSpan(0,10,0));
+		//	_timer.
+			//_timer.Tick += _timer_Tick;
+			//_timer.Start();
 		}
 
-		private void _timer_Tick(object sender, EventArgs e)
+
+		private void _timer_Tick(object state)
 		{
+
 			if (AddToCollection())
 			{
 				OnCollectionAdded();
-				_timer.Interval = new TimeSpan(0, 10, 0);
+				if (_timerIntervalChanged)
+				{
+					_timer.Change(new TimeSpan(0, 10, 0), new TimeSpan(0, 10, 0));
+					_timerIntervalChanged = false;
+				}
 
 			}
 			else
 			{
-				_timer.Interval = new TimeSpan(0, 1, 0);
+				_timer.Change(new TimeSpan(0, 1, 0), new TimeSpan(0, 1, 0));
+				_timerIntervalChanged = true;
 			}
 
 		}
@@ -74,7 +80,7 @@ namespace DHCPServer.Models.Infrastructure
 			_tokenSource.Cancel();
 		}
 
-        protected override void ReciveMessageEventHandler(RoomInfo roomInfo)
+        protected override void ReciveMessageOnSuccessEventHandler(RoomInfo roomInfo)
         {
 			Calculate(roomInfo.Temperature, roomInfo.Humidity);
 		}

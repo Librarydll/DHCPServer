@@ -2,8 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"             
+             xmlns:converter="clr-namespace:DHCPServer.UICore.Converters"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
+
+        <Grid.Resources>
+            <converter:BorderColorConverter x:Key="BorderConverter"/>
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -14,246 +20,187 @@
                 <Button Command="{Binding OpenNewDevcieViewCommand}">Добавить</Button>
             </ToolBar>
         </Grid>
-        <Grid Visibility="Hidden">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" x:Name="col1"/>
-            <Grid Grid.Column="1" x:Name="col2"/>
-            <Grid Grid.Column="2" x:Name="col3"/>
-            <Grid Grid.Column="3" x:Name="col4"/>
-            <Grid Grid.Column="4" x:Name="col5"/>
-            <Grid Grid.Column="5" x:Name="col6"/>
-            <Grid Grid.Column="6" x:Name="col7"/>
-            <Grid Grid.Column="7" x:Name="col8"/>
-        </Grid>
 
+        <ItemsControl Grid.Row="1" x:Name="ListViewProducts" ItemsSource="{Binding RoomsCollection,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="5" Margin="3" BorderBrush="{Binding Converter={StaticResource BorderConverter},Path=IsInvalid}" BorderThickness="2" >
+                        <Border.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="FontSize" Value="18"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Padding" Value="5,5"/>
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                            </Style>
+                        </Border.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
 
-        <ListView ItemsSource="{Binding RoomsCollection,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
-                      x:Name="AppDetailslistView" Grid.Row="1" Margin="10,0"
-                      ItemContainerStyle="{StaticResource LVItemStyleX}" 
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                      ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                      HorizontalContentAlignment="Stretch" Foreground="#DDF9F9F9" 
-                      Background="{x:Null}" BorderBrush="{x:Null}">
-            <ListView.View>
-                <GridView>
-
-                    <GridViewColumn Width="{Binding ElementName=col1,Path=ActualWidth}"                              
-                                    Header="Псевдоним"
-                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ActiveDevice.Nick}" 
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="10,2,0,2" Margin="0" 
-                                               Foreground="#FF0B245B" 
-                                               VerticalAlignment="Center">
+                                <TextBlock Foreground="Red">
+                                            <Run>Температура </Run>
+                                            <Run Text="{Binding RoomInfo.Temperature}"></Run>
+                                            <Run> C</Run>
                                 </TextBlock>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
 
-                    <GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
-                                    Header="IPAddress"
-                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-
-                                <TextBlock Text="{Binding Path=ActiveDevice.IPAddress}" 
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="10,2,0,2" Margin="0,0,15,0" 
-                                               Foreground="#FF0B245B"
-                                               TextWrapping="Wrap"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Center"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-
-                    <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
-                                        Header="Температура"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Width="{Binding ElementName=col3,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding RoomInfo.Temperature}"
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="5,2" Margin="0,0,15,0" 
-                                               HorizontalAlignment="Center" 
-                                               Foreground="Red" 
-                                               VerticalAlignment="Center">
-                                    </TextBlock>
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-
-
-                    <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
-                                        Header="Влажность"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Width="{Binding ElementName=col4,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding RoomInfo.Humidity}"
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="5,2" Margin="0,0,15,0" 
-                                               HorizontalAlignment="Center" 
-                                               Foreground="Blue" 
-                                               VerticalAlignment="Center">
-                                    </TextBlock>
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-
-                    <GridViewColumn   Width="{Binding ElementName=col5,Path=ActualWidth}"
-                                        Header="Температура мид"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Width="{Binding ElementName=col5,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding Path=RoomInfo.TemperatureMiddle}" 
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="5,4" Margin="0,0,15,0" 
-                                               HorizontalAlignment="Center" 
-                                               Foreground="Red" 
-                                               VerticalAlignment="Center">
-                                    </TextBlock>
-
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn   Width="{Binding ElementName=col6,Path=ActualWidth}"
-                                        Header="Влажность мид"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Width="{Binding ElementName=col6,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding Path=RoomInfo.HumidityMiddle}" 
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="5,4" Margin="0,0,15,0" 
-                                               HorizontalAlignment="Center" 
-                                               Foreground="Blue" 
-                                               VerticalAlignment="Center">
-                                    </TextBlock>
-
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn   Width="{Binding ElementName=col7,Path=ActualWidth}"
-                                        Header="Температура процесс"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Width="{Binding ElementName=col7,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding Path=RoomInfo.TemperatureProcess}" 
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="5,4" Margin="0,0,15,0" 
-                                               HorizontalAlignment="Center" 
-                                               Foreground="Red" 
-                                               VerticalAlignment="Center">
-                                    </TextBlock>
-
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn   Width="{Binding ElementName=col8,Path=ActualWidth}"
-                                        Header="Влажность процесс"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Width="{Binding ElementName=col8,Path=ActualWidth}">
-                                    <TextBlock Text="{Binding Path=RoomInfo.HumidityProcess}" 
-                                               FontWeight="Medium" FontSize="13" 
-                                               Padding="5,4" Margin="0,0,15,0" 
-                                               HorizontalAlignment="Center" 
-                                               Foreground="Blue" 
-                                               VerticalAlignment="Center">
-                                    </TextBlock>
-
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-
-                    <!--<GridViewColumn  Width="{Binding ElementName=col6,Path=ActualWidth}"
-                                        Header="Действия"
-                                        HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border>
-                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" Margin="2,5,-5,5">
-                                        <Button Margin="0 0 5 0" CommandParameter="{Binding}" 
-                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.OpenGraphCommand}"
+                                <TextBlock     Grid.Row="1"                                              
+                                               Foreground="Blue">
+                                    
+                                            <Run>Влажность</Run>
+                                            <Run Text="{Binding RoomInfo.Humidity}"></Run>
+                                            <Run>%</Run>
+                                </TextBlock>
+                                <Button Margin="10"  CommandParameter="{Binding}" 
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenFirstGraphCommand}"
                                                 Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" Height="28" 
-                                                VerticalAlignment="Center" Width="40">
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="/Resources/IconChartBlue.png" Stretch="Uniform"/>
-                                            </Button.Background>
-                                            <Button.ToolTip>
-                                                <StackPanel>
-                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                Height="28" 
+                                                Grid.Row="2"
+                                                Width="40">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="/Resources/IconChartBlue.png" Stretch="Uniform"/>
+                                    </Button.Background>
+                                    <Button.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock FontWeight="DemiBold" Foreground="Blue">
                                                         График устройства
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Button.ToolTip>
-                                        </Button>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
 
-                                        <Button CommandParameter="{Binding}" 
-                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.OpenCalibrationCommand}"
-                                                Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" Height="28" 
-                                                VerticalAlignment="Center" Width="40">
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="/Resources/IconEdit.png" Stretch="Uniform"/>
-                                            </Button.Background>
-                                            <Button.ToolTip>
-                                                <StackPanel>
-                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
-                                                        Калибровка устройства
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Button.ToolTip>
-                                        </Button>
 
-                                        <Button  Margin="5 0 0 0" CommandParameter="{Binding}" 
-                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.DeleteRoomCommand}"
+                                <TextBlock Foreground="Red">
+                                            <Run>Температура Мид</Run>
+                                            <Run Text="{Binding RoomInfo.TemperatureMiddle}"></Run>
+                                            <Run> C</Run>
+                                </TextBlock>
+
+                                <TextBlock     Grid.Row="1"                                              
+                                               Foreground="Blue">
+                                    
+                                            <Run>Влажность Мид</Run>
+                                            <Run Text="{Binding RoomInfo.HumidityMiddle}"></Run>
+                                            <Run>%</Run>
+                                </TextBlock>
+                                <Button Margin="10" CommandParameter="{Binding}" 
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenSecondGraphCommand}"
                                                 Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" Height="28" 
-                                                VerticalAlignment="Center" Width="40">
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="/Resources/IconClose.png" Stretch="Uniform"/>
-                                            </Button.Background>
-                                            <Button.ToolTip>
-                                                <StackPanel>
-                                                    <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                Height="28" 
+                                                Grid.Row="2"
+                                                Width="40">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="/Resources/IconChartBlue.png" Stretch="Uniform"/>
+                                    </Button.Background>
+                                    <Button.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                        График устройства
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                </Button>
+                            </Grid>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+
+
+                                <TextBlock Foreground="Red">
+                                            <Run>Температура Процесс</Run>
+                                            <Run Text="{Binding RoomInfo.TemperatureProcess}"></Run>
+                                            <Run> C</Run>
+                                </TextBlock>
+
+                                <TextBlock     Grid.Row="1"                                              
+                                               Foreground="Blue">
+                                    
+                                            <Run>Влажность Процесс</Run>
+                                            <Run Text="{Binding RoomInfo.HumidityProcess}"></Run>
+                                            <Run>%</Run>
+                                </TextBlock>
+
+                                <Button Margin="10"  CommandParameter="{Binding}" 
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenThirdGraphCommand}"
+                                                Style="{DynamicResource LightBlueBtnStyle}" 
+                                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                Height="28" 
+                                                Grid.Row="2"
+                                                Width="40">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="/Resources/IconChartBlue.png" Stretch="Uniform"/>
+                                    </Button.Background>
+                                    <Button.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock FontWeight="DemiBold" Foreground="Blue">
+                                                        График устройства
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                </Button>
+                            </Grid>
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+
+
+                                <Button  Margin="5" CommandParameter="{Binding}" 
+                                                 Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.DeleteRoomCommand}"
+                                                Style="{DynamicResource LightBlueBtnStyle}" 
+                                                HorizontalAlignment="Right" VerticalAlignment="Top" Height="28" 
+                                                 Width="40">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="/Resources/IconClose.png" Stretch="Uniform"/>
+                                    </Button.Background>
+                                    <Button.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock FontWeight="DemiBold" Foreground="Blue">
                                                         Удалить устройство
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Button.ToolTip>
-                                        </Button>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>-->
-
-                </GridView>
-            </ListView.View>
-        </ListView>
-
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                </Button>
+                                   
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </UserControl>

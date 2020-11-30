@@ -102,6 +102,7 @@ namespace DHCPServer.ViewModels
 		}
 		public override void DeviceInformationViewModel_AddToCollectionEvent(ActiveDevice active, RoomInfo room)
 		{
+			room.DeviceId = active.Id;
 			Task.Run(async() =>
 			{
 				await _roomRepository.SaveAsync(room);

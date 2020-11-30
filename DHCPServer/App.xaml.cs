@@ -20,15 +20,18 @@ namespace DHCPServer
 			return Container.Resolve<MainView>();
 		}
 		protected override void RegisterTypes(IContainerRegistry containerRegistry)
-	{
-			Log.Logger = new LoggerConfiguration()
-				.WriteTo.File("logs\\log.log")
-				.CreateLogger();
+		{
+			 Log.Logger = new LoggerConfiguration()
+			.MinimumLevel.Debug()
+			.WriteTo.File(@"logs\\log.log", rollingInterval: RollingInterval.Month)
+			.CreateLogger();
+
 			containerRegistry.RegisterInstance(Log.Logger);
 			containerRegistry.RegisterSingleton<IRoomRepository, RoomRepository>();
 			containerRegistry.RegisterSingleton<IDeviceRepository, DeviceRepository>();
 			containerRegistry.RegisterSingleton<IReportRepository, ReportRepository>();
 			containerRegistry.RegisterSingleton<IActiveDeviceRepository, ActiveDeviceRepository>();
+			containerRegistry.RegisterSingleton<IMultiRoomRepository, MultiRoomRepository>();
 			containerRegistry.RegisterSingleton<Transfer>();
 
 			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();

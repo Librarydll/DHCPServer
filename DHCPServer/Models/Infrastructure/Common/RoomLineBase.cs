@@ -14,10 +14,12 @@ namespace DHCPServer.Models.Infrastructure.Common
 		where TDevice : Device
 		where TRoom : RoomInfo,new()
 	{
+		protected bool _timerIntervalChanged = false;
+
 		public event Action<TDevice, TRoom> AddToCollectionEvent;
 
 		protected CancellationTokenSource _tokenSource = null;
-		protected  DispatcherTimer _timer;
+		protected  Timer _timer;
 
 		protected bool _disposed = false;
 		private bool _isInvalid;
@@ -26,7 +28,12 @@ namespace DHCPServer.Models.Infrastructure.Common
 			get { return _isInvalid; }
 			set { SetProperty(ref _isInvalid, value); }
 		}
-		public TRoom RoomInfo { get; set; }
+		private TRoom _roomInfo;
+		public TRoom RoomInfo
+		{
+			get { return _roomInfo; }
+			set { SetProperty(ref _roomInfo, value); }
+		}
 		public TDevice ActiveDevice { get; set; }
 		public DeviceClient<TDevice,TRoom> DeviceClient { get; set; }
 
@@ -37,7 +44,7 @@ namespace DHCPServer.Models.Infrastructure.Common
 			_tokenSource = new CancellationTokenSource();
 			DeviceClient = new DeviceClient<TDevice,TRoom>(ActiveDevice);
 			RoomInfo = new TRoom();
-			DeviceClient.ReciveMessageOnSuccessEvent += ReciveMessageEventHandler;
+			DeviceClient.ReciveMessageOnSuccessEvent += ReciveMessageOnSuccessEventHandler;
 			DeviceClient.ReciveMessageOnErrorEvent += ReciveMessageOnErrorEventHandler;
 			DeviceClient.EnableDeviceEvent += ReciveMessageOnValidEventHandler;
 		}
@@ -62,7 +69,7 @@ namespace DHCPServer.Models.Infrastructure.Common
 			SetInvalid(true);
 		}
 
-		protected virtual void ReciveMessageEventHandler(TRoom room)
+		protected virtual void ReciveMessageOnSuccessEventHandler(TRoom room)
 		{
 			
 		}
@@ -83,8 +90,8 @@ namespace DHCPServer.Models.Infrastructure.Common
 			if (!_disposed && disposing)
 			{
 				DeviceClient?.Dispose();
-				_timer?.Stop();
-				_timer = null;
+				_tokenSource?.Dispose();
+				_timer?.Dispose();
 			}
 			_disposed = true;
 		}

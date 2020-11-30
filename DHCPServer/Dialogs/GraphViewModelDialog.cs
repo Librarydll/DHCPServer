@@ -19,7 +19,7 @@ namespace DHCPServer.Dialogs
 {
 	public class GraphViewModelDialog : DialogViewModelBase
 	{
-		private IEnumerable<LineAnnotation> _annotations = null;
+		private IEnumerable<LineAnnotation> _annotations = new List<LineAnnotation>();
 		private int _wheelCount = 0;
 		private readonly IRoomRepository _roomRepository;
 
@@ -103,14 +103,13 @@ namespace DHCPServer.Dialogs
 			var min = collection.Min(x => x.Date);
 			result.GraphLineModel.Axes[0].Minimum = DateTimeAxis.ToDouble(min);
 			result.GraphLineModel.Axes[0].Maximum = DateTimeAxis.ToDouble(min.AddHours(6));
-
 			result.GraphLineModel.SetLastNHours(6);
 			//	temperatureLineSerie.Points.AddRange(temperaturePoints);
 			//	humidityLineSerie.Points.AddRange(humidityPoints);
 			result.GraphLineModel.FillCollection(temperatureLineSerie, temperaturePoints);
 			result.GraphLineModel.FillCollection(humidityLineSerie, humidityPoints);
-
 			result.GraphLineModel.AddAnnotations(24);
+
 			GraphInfo.GraphLineModel.InvalidatePlot(true);
 			return result;
 		}
@@ -129,7 +128,7 @@ namespace DHCPServer.Dialogs
 				{
 					Task.Run(async () =>
 					{
-						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress,date.FromDate, date.ToDate);
+						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress, date.FromDate, date.ToDate);
 						GraphInfo = FillModel(collection);
 						_annotations = GraphInfo.GraphLineModel.Annotations.Where(x => x.Tag?.ToString() == "period").Cast<LineAnnotation>();
 
@@ -216,6 +215,9 @@ namespace DHCPServer.Dialogs
 
 			GraphInfo.GraphLineModel.Axes[0].Reset();
 			GraphInfo.GraphLineModel.Axes[1].Reset();
+			GraphInfo.GraphLineModel.SetLastNHours(6);
+			GraphInfo.GraphLineModel.AddAnnotations(24);
+
 			//GraphInfo.GraphLineModel.SetLastNHours(6);
 			//GraphInfo.GraphLineModel.AddAnnotations(24);
 

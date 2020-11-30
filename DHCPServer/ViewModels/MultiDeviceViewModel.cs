@@ -18,27 +18,68 @@ namespace DHCPServer.ViewModels
 {
 	public class MultiDeviceViewModel : DeviceViewModelBase<MultiRoomLineGraphInfo,MultiRoomInfo>
 	{
+		private readonly IMultiRoomRepository _multiRoomRepository;
+
+		public DelegateCommand<MultiRoomLineGraphInfo> OpenFirstGraphCommand { get; set; }
+		public DelegateCommand<MultiRoomLineGraphInfo> OpenSecondGraphCommand { get; set; }
+		public DelegateCommand<MultiRoomLineGraphInfo> OpenThirdGraphCommand { get; set; }
+		public DelegateCommand<MultiRoomLineGraphInfo> DeleteRoomCommand { get; set; }
+
 
 		public MultiDeviceViewModel(IDialogService dialogService,
 			IActiveDeviceRepository activeDeviceRepository,
+			IMultiRoomRepository multiRoomRepository,
 			ILogger logger,
 			IEventAggregator eventAggregator) : base(dialogService, activeDeviceRepository, logger)
 		{
 			RoomsCollection = new ObservableCollection<MultiRoomLineGraphInfo>();
+			OpenFirstGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenFirstGraph);
+			OpenSecondGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenSecondGraph);
+			OpenThirdGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenThirdGraph);
+			DeleteRoomCommand = new DelegateCommand<MultiRoomLineGraphInfo>(DeleteRoom);
+
+			_multiRoomRepository = multiRoomRepository;
 		}
 
-		public async Task InitializeAsync()
+		private void OpenFirstGraph(MultiRoomLineGraphInfo roomInfo)
 		{
-			RoomsCollection = new ObservableCollection<MultiRoomLineGraphInfo>();
-
-			//RoomsCollection = new ObservableCollection<MultiRoomLineGraphInfo>();
-			//var m = new MultiRoomLineGraphInfo(new ActiveDevice(new Device("192.168.1.50", "uuu")));
-			//m.RoomInfo = new MultiRoomInfo
-			//{
-			//	Humidity = 1, Temperature = 2, HumidityMiddle = 3, TemperatureMiddle = 4, HumidityNord = 5, TemperatureNord = 6, HumidityProcess = 7, TemperatureProcess = 8
-			//};
-			//RoomsCollection.Add(m);
+			var r = new RoomLineGraphInfo(roomInfo.ActiveDevice, false)
+			{
+				GraphLineModel = roomInfo.GraphLineModelForDefault
+			};
+			OpenGraph(r);
+			r?.Dispose();
 		}
+		private void OpenSecondGraph(MultiRoomLineGraphInfo roomInfo)
+		{
+			var r = new RoomLineGraphInfo(roomInfo.ActiveDevice, false)
+			{
+				GraphLineModel = roomInfo.GraphLineModelForMiddle
+			}; 
+			OpenGraph(r);
+			r?.Dispose();
+		}
+
+		private void OpenThirdGraph(MultiRoomLineGraphInfo roomInfo)
+		{
+			var r = new RoomLineGraphInfo(roomInfo.ActiveDevice, false)
+			{
+				GraphLineModel = roomInfo.GraphLineModelForProcess
+			}; 
+			OpenGraph(r);
+			r?.Dispose();
+		}
+
+
+		private void DeleteRoom(MultiRoomLineGraphInfo roomInfo)
+		{
+			RoomsCollection.Remove(roomInfo);
+			roomInfo.ActiveDevice.IsAdded = false;
+			_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
+			roomInfo?.Dispose();
+
+		}
+
 
 		public override void OpenNewDevcieView()
 		{
@@ -58,11 +99,11 @@ namespace DHCPServer.ViewModels
 				if (room == null)
 				{
 					MultiRoomLineGraphInfo roomLine = new MultiRoomLineGraphInfo(newDevice);
-
 					RoomsCollection.Add(roomLine);
-
+					roomLine.AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
 					Task.Run(async () =>
 					{
+						_logger.Information("multidevice added ip {0}", newDevice.IPAddress);
 						await roomLine.InitializeDeviceAsync();
 
 					}).ContinueWith(t =>
@@ -74,6 +115,35 @@ namespace DHCPServer.ViewModels
 				}
 
 			}
+		}
+
+		public override void DeviceInformationViewModel_AddToCollectionEvent(ActiveDevice active, MultiRoomInfo room)
+		{
+			room.DeviceId = active.Id;
+			Task.Run(async () =>
+			{
+				await _multiRoomRepository.SaveAsync(room);
+
+			}).ContinueWith(t =>
+			{
+
+				_logger.Error("Не удлаось добавить данные в {0}", active?.IPAddress);
+				_logger.Error("Ошибка {0}", t.Exception?.Message);
+				_logger.Error("Ошибка {0}", t.Exception?.InnerException);
+
+			}, TaskContinuationOptions.OnlyOnFaulted);
+		}
+
+		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
+		{
+			var dialogParametr = new DialogParameters
+			{
+				{ "model", roomLineGraphInfo }
+			};
+
+			_dialogService.Show("GraphView", dialogParametr, x =>
+			{
+			});
 		}
 	}
 }

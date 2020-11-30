@@ -24,11 +24,11 @@ namespace DHCPServer.Console.Script
 			{
 				try
 				{
-					connection.Execute(Query.alterDeviceQuery);				
-					connection.Execute(Query.createActiveDeviceTable);					
-					connection.Execute(Query.alterRoomInfos);
-					connection.Execute(Query.dropReportTable);
-					connection.Execute(Query.createReportTable);
+					connection.Execute(Query.createMultiRoom);				
+					//connection.Execute(Query.createActiveDeviceTable);					
+					//connection.Execute(Query.alterRoomInfos);
+					//connection.Execute(Query.dropReportTable);
+					//connection.Execute(Query.createReportTable);
 
 					System.Console.WriteLine("Success");
 				}

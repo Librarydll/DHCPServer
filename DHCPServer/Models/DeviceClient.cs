@@ -24,8 +24,8 @@ namespace DHCPServer.Models
 		private readonly HttpClient client = null;
 		private readonly string _url = null;
 		private readonly IParser<TRoom> _parser =null;
-		public bool IsInvalid => _countRequestForDisableInvaid != 0;
-		private int _countRequestForDisableInvaid = 0;
+		public bool IsInvalid => _countRequestForDisableInvalid != 0;
+		private int _countRequestForDisableInvalid = 0;
 		private bool loop = true;
 		private bool _disposed = false;
 		public DeviceClient(TDevice device)
@@ -68,7 +68,7 @@ namespace DHCPServer.Models
 					}
 					else
 					{
-						_countRequestForDisableInvaid--;
+						_countRequestForDisableInvalid--;
 						if (!IsInvalid)
 							EnableDeviceEvent?.Invoke();
 
@@ -87,14 +87,14 @@ namespace DHCPServer.Models
 				}
 				catch (HttpRequestException)
 				{
-					_countRequestForDisableInvaid = 2;
+					_countRequestForDisableInvalid = 2;
 					RaiseOnError();
 				}
 				catch (Exception e)
 				{
 					Log.Logger.Error("Exception message {0}", e.Message);
 					Log.Logger.Error("Exception inner message {0}", e?.InnerException?.Message);
-					_countRequestForDisableInvaid = 2;
+					_countRequestForDisableInvalid = 2;
 					RaiseOnError();
 				}
 				finally

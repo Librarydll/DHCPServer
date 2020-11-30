@@ -60,6 +60,20 @@ namespace DHCPServer.Console.Script
 		public static string dropReportTable = "Drop Table IF EXISTS Reports";
 
 
+		public static string createMultiRoom = "CREATE TABLE `MultiRoomInfos` ("
+							+ "`Id`	INTEGER UNIQUE,"
+							+ "`Temperature`	REAL NOT NULL,"
+							+ "`Humidity`	REAL NOT NULL,"
+							+ "`TemperatureMiddle`	REAL NOT NULL,"
+							+ "`HumidityMiddle`	REAL NOT NULL,"
+							+ "`TemperatureNord`	REAL NOT NULL,"
+							+ "`HumidityNord`	REAL NOT NULL,"
+							+ "`TemperatureProcess`	REAL NOT NULL,"
+							+ "`HumidityProcess`	REAL NOT NULL,"
+							+ "`Date`	TEXT NOT NULL,"
+							+ "`DeviceId`	INTEGER NOT NULL,"
+							+ "FOREIGN KEY(`DeviceId`) REFERENCES `ActiveDevices`(`id`),"
+							+ "PRIMARY KEY(`Id` AUTOINCREMENT));";
 
 	}
 }
