@@ -158,8 +158,15 @@ namespace DHCPServer.Models.Infrastructure
 		public void FillCollection(LineSeries line,IEnumerable<DataPoint> dataPoints)
 		{
 			double previousY = 20;
+			int i = 1;
 			foreach (var point in dataPoints)
 			{
+				bool twoPointIsFarAway = false;
+				if (i != dataPoints.Count())
+				{
+					twoPointIsFarAway = AreTwoPointsFarAway(point.X, dataPoints.ElementAt(i).X);
+					i++;
+				}
 				if (point.Y != 0)
 				{
 					previousY = point.Y;
@@ -179,9 +186,18 @@ namespace DHCPServer.Models.Infrastructure
 				}
 				else
 				{
-					line.Points.Add(point);
+					if (twoPointIsFarAway)
+					{
+						line.Points.Add(DataPoint.Undefined);
+					}
+					else
+					{
+						line.Points.Add(point);
+					}
+
 				}
 			}
+
 		}
 
         public void AddAnnotations(int n)
@@ -219,6 +235,59 @@ namespace DHCPServer.Models.Infrastructure
 
 
 			
+		}
+		public void AddAnnotationEveryDay()
+		{
+			var points = GetFirst().Points;
+			if (points.Count == 0) return;
+			var lastPoint = points.Where(x=>!x.Equals(DataPoint.Undefined)).Max(x => x.X );
+			var firstPoint = points.Where(x => !x.Equals(DataPoint.Undefined)).Min(x => x.X );
+
+			var beginingDate = DateTimeAxis.ToDateTime(firstPoint);
+
+			var lastDate = DateTimeAxis.ToDateTime(lastPoint);
+
+
+			double Y = 70;
+			var date = new DateTime(beginingDate.Date.Year, beginingDate.Date.Month, beginingDate.Date.Day);
+			var date2 = new DateTime(lastDate.Date.Year, lastDate.Date.Month, lastDate.Date.Day);
+			var days = (int)(date2 - date).TotalDays;
+
+			double X = DateTimeAxis.ToDouble(date);
+
+			for (int i = 0; i <= days+1 ; i++)
+			{
+				LineAnnotation Line = new LineAnnotation()
+				{
+					Tag = "period",
+					StrokeThickness = 2,
+					Color = OxyColors.Green,
+					Type = LineAnnotationType.Vertical,
+					Text = Y.ToString(),
+					TextColor = OxyColors.White,
+					X = X,
+					LineStyle = LineStyle.Dash,
+
+				};
+				Annotations.Add(Line);
+				date = date.AddDays(1);
+				X = DateTimeAxis.ToDouble(date);
+			}
+
+		}
+
+		public bool AreTwoPointsFarAway(double previous, double next)
+		{
+			var prev = DateTimeAxis.ToDateTime(previous);
+			var n = DateTimeAxis.ToDateTime(next);
+
+			var difference = n - prev;
+			if (difference.Minutes > 11)
+			{
+				return true;
+			}
+
+			return false;
 		}
 	}
 }

@@ -101,14 +101,13 @@ namespace DHCPServer.Dialogs
 			var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Humidity)).ToList();
 			var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Temperature)).ToList();
 			var min = collection.Min(x => x.Date);
-			result.GraphLineModel.Axes[0].Minimum = DateTimeAxis.ToDouble(min);
-			result.GraphLineModel.Axes[0].Maximum = DateTimeAxis.ToDouble(min.AddHours(6));
-			result.GraphLineModel.SetLastNHours(6);
-			//	temperatureLineSerie.Points.AddRange(temperaturePoints);
-			//	humidityLineSerie.Points.AddRange(humidityPoints);
+		//	result.GraphLineModel.Axes[0].Minimum = DateTimeAxis.ToDouble(min);
+		//	result.GraphLineModel.Axes[0].Maximum = DateTimeAxis.ToDouble(min.AddHours(6));
 			result.GraphLineModel.FillCollection(temperatureLineSerie, temperaturePoints);
 			result.GraphLineModel.FillCollection(humidityLineSerie, humidityPoints);
-			result.GraphLineModel.AddAnnotations(24);
+
+			result.GraphLineModel.SetLastNHours(6);
+			result.GraphLineModel.AddAnnotationEveryDay();
 
 			GraphInfo.GraphLineModel.InvalidatePlot(true);
 			return result;
@@ -119,6 +118,7 @@ namespace DHCPServer.Dialogs
 		{
 			if (parameters != null)
 			{
+				bool setSetting = true;
 				_current = parameters.GetValue<RoomLineGraphInfo>("model");
 				GraphInfo = _current;
 
@@ -126,6 +126,7 @@ namespace DHCPServer.Dialogs
 				Title = title;
 				if(parameters.TryGetValue("date",out DateTimeSpanFilter date))
 				{
+					setSetting = false;
 					Task.Run(async () =>
 					{
 						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress, date.FromDate, date.ToDate);
@@ -134,9 +135,20 @@ namespace DHCPServer.Dialogs
 
 					});
 				} 
-				SetSettings();
+				if(setSetting)
+					SetSettings();
 
 			}
+		}
+
+		private void SetSettings()
+		{
+			if (GraphInfo?.GraphLineModel == null) return;
+
+			GraphInfo.GraphLineModel.Axes[0].Reset();
+			GraphInfo.GraphLineModel.Axes[1].Reset();
+			GraphInfo.GraphLineModel.SetLastNHours(6);
+			GraphInfo.GraphLineModel.AddAnnotationEveryDay();
 		}
 
 		public void LineMouseWheelEventHandler(MouseWheelEventArgs e)
@@ -152,8 +164,9 @@ namespace DHCPServer.Dialogs
 
 			var leftAxis = GraphInfo.GraphLineModel.Axes[1];
 			var rightAxis = GraphInfo.GraphLineModel.Axes[0];
-			if (_wheelCount == 0)
+			if (_wheelCount == -2)
 			{
+				GraphInfo.GraphLineModel.ResetAllAxes();
 				rightAxis.MajorStep = 1.0 / 24;
 			}
 
@@ -183,6 +196,15 @@ namespace DHCPServer.Dialogs
 
 			}
 
+			if (_wheelCount == -25)
+			{
+				rightAxis.MajorStep = 1.5;
+				rightAxis.StringFormat = "dd/MM/yyy";
+				((DateTimeAxis)rightAxis).IntervalType = DateTimeIntervalType.Days;
+
+			}
+
+
 			if (_wheelCount == 8)
 			{
 				leftAxis.MinimumMajorStep = 3;
@@ -209,19 +231,6 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
-		private void SetSettings()
-		{
-			if (GraphInfo?.GraphLineModel == null) return;
-
-			GraphInfo.GraphLineModel.Axes[0].Reset();
-			GraphInfo.GraphLineModel.Axes[1].Reset();
-			GraphInfo.GraphLineModel.SetLastNHours(6);
-			GraphInfo.GraphLineModel.AddAnnotations(24);
-
-			//GraphInfo.GraphLineModel.SetLastNHours(6);
-			//GraphInfo.GraphLineModel.AddAnnotations(24);
-
-			//	GraphInfo.GraphLineModel.InvalidatePlot(true);
-		}
+	
 	}
 }

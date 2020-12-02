@@ -55,7 +55,7 @@ namespace DHCPServer.ViewModels.Common
 				var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == newDevice.IPAddress);
 				if (room == null)
 				{
-					TRoomLine roomLine = Activator.CreateInstance(typeof(TRoomLine), newDevice) as TRoomLine;
+					TRoomLine roomLine = Activator.CreateInstance(typeof(TRoomLine), newDevice,true) as TRoomLine;
 					roomLine.AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
 					RoomsCollection.Add(roomLine);
 
