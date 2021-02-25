@@ -1,4 +1,5 @@
-﻿using DHCPServer.Domain.Models;
+﻿using DHCPServer.Domain.Enumerations;
+using DHCPServer.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace DHCPServer.Domain.Interfaces
 		Task<bool> UpdateAsync(ActiveDevice activeDevice);
 
 
-		Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists();
+		Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists(DeviceType deviceType= DeviceType.Default);
 
 		Task<IEnumerable<ActiveDevice>> GetActiveDevicesListsWithReports();
 

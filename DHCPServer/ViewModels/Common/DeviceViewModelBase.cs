@@ -1,4 +1,5 @@
 ﻿using DHCPServer.Dialogs.Extenstions;
+using DHCPServer.Domain.Enumerations;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure.Common;
@@ -17,6 +18,7 @@ namespace DHCPServer.ViewModels.Common
 		where TRoomLine : RoomLineBase<ActiveDevice, TRoom>
 		where TRoom : RoomInfo, new()
 	{
+		protected DeviceType _deviceType = DeviceType.Default;
 		protected readonly IDialogService _dialogService;
 		protected readonly IActiveDeviceRepository _activeDeviceRepository;
 		protected readonly ILogger _logger;
@@ -36,7 +38,36 @@ namespace DHCPServer.ViewModels.Common
 			_dialogService = dialogService;
 			_activeDeviceRepository = activeDeviceRepository;
 			_logger = logger;
+			Task.Run(async () => await InitializeAsync());
 		}
+
+		public async Task InitializeAsync()
+		{
+			try
+			{
+				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
+				var rooms = devices.Select(x =>
+				{
+					return Activator.CreateInstance(typeof(TRoomLine), x,true) as TRoomLine;
+				});
+				RoomsCollection = new ObservableCollection<TRoomLine>(rooms);
+				var tasks = new Task[RoomsCollection.Count];
+				for (int i = 0; i < RoomsCollection.Count; i++)
+				{
+					RoomsCollection[i].AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
+					tasks[i] = RoomsCollection[i].InitializeDeviceAsync();
+				}
+				await Task.WhenAll(tasks).ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+
+				_logger.Error("Не удлаось получить данные");
+				_logger.Error("Ошибка {0}", ex?.Message);
+				_logger.Error("Ошибка {0}", ex?.InnerException);
+			}
+		}
+
 
 		public virtual void OpenNewDevcieView()
 		{
@@ -61,6 +92,7 @@ namespace DHCPServer.ViewModels.Common
 
 					Task.Run(async () =>
 					{
+						newDevice.DeviceType = _deviceType;
 						await _activeDeviceRepository.CheckDevice(newDevice);
 						_logger.Information("Added new device to listen {0}", newDevice.IPAddress);
 						

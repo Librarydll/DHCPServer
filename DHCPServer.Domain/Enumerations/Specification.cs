@@ -11,4 +11,10 @@ namespace DHCPServer.Domain.Enumerations
 		IpAddress,
 		Report
 	}
+
+	public enum DeviceType
+    {
+		Default,
+		Multi
+    }
 }

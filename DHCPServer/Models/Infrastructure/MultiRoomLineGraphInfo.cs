@@ -71,13 +71,13 @@ namespace DHCPServer.Models.Infrastructure
 			set { SetProperty(ref _roomLineModelForNord, value); }
 		}
 
-		public MultiRoomLineGraphInfo(ActiveDevice device) : base(device)
+		public MultiRoomLineGraphInfo(ActiveDevice device,bool startTimer =true) : base(device)
 		{
 			GraphLineModelForDefault = ViewResolvingPlotModel.CreateDefault();
 			GraphLineModelForMiddle = ViewResolvingPlotModel.CreateDefault();
 			GraphLineModelForProcess = ViewResolvingPlotModel.CreateDefault();
-
-			_timer = new Timer(_timer_Tick, null, new TimeSpan(0, 10, 0), new TimeSpan(0, 10, 0));
+			if (startTimer)
+				_timer = new Timer(_timer_Tick, null, new TimeSpan(0, 10, 0), new TimeSpan(0, 10, 0));
 		}
 
 		private void _timer_Tick(object state)

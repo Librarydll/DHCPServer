@@ -37,9 +37,12 @@ namespace DHCPServer.ViewModels
 			OpenSecondGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenSecondGraph);
 			OpenThirdGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenThirdGraph);
 			DeleteRoomCommand = new DelegateCommand<MultiRoomLineGraphInfo>(DeleteRoom);
-
+			_deviceType = Domain.Enumerations.DeviceType.Multi;
 			_multiRoomRepository = multiRoomRepository;
+
 		}
+
+	
 
 		private void OpenFirstGraph(MultiRoomLineGraphInfo roomInfo)
 		{
@@ -78,43 +81,6 @@ namespace DHCPServer.ViewModels
 			_activeDeviceRepository.DeatachDevice(roomInfo.ActiveDevice).Wait();
 			roomInfo?.Dispose();
 
-		}
-
-
-		public override void OpenNewDevcieView()
-		{
-			ActiveDevice newDevice = null;
-
-			_dialogService.ShowModal("SelectionDeviceViewOld", x =>
-			{
-				if (x.Result == ButtonResult.OK)
-				{
-					newDevice = x.Parameters.GetValue<ActiveDevice>("model");
-				}
-			});
-
-			if (newDevice != null)
-			{
-				var room = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == newDevice.IPAddress);
-				if (room == null)
-				{
-					MultiRoomLineGraphInfo roomLine = new MultiRoomLineGraphInfo(newDevice);
-					RoomsCollection.Add(roomLine);
-					roomLine.AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
-					Task.Run(async () =>
-					{
-						_logger.Information("multidevice added ip {0}", newDevice.IPAddress);
-						await roomLine.InitializeDeviceAsync();
-
-					}).ContinueWith(t =>
-					{
-						_logger.Error(t.Exception.Message);
-						_logger.Error(t.Exception?.InnerException?.Message);
-					}, TaskContinuationOptions.OnlyOnFaulted);
-
-				}
-
-			}
 		}
 
 		public override void DeviceInformationViewModel_AddToCollectionEvent(ActiveDevice active, MultiRoomInfo room)

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using DHCPServer.Dapper.Context;
+using DHCPServer.Domain.Enumerations;
 using DHCPServer.Domain.Interfaces;
 using DHCPServer.Domain.Models;
 using System;
@@ -137,13 +138,13 @@ namespace DHCPServer.Dapper.Repositories
             }
         }
 
-		public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists()
+		public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists(DeviceType deviceType = DeviceType.Default)
 		{
             string query = @"SELECT *FROM ActiveDevices as ad
-							where ad.isAdded = 1 and ad.isActive=1";
+							where ad.isAdded = 1 and ad.isActive=1 and DeviceType =@deviceType";
             using (var connection = _factory.CreateConnection())
             {
-                var entities = await connection.QueryAsync<ActiveDevice>(query);
+                var entities = await connection.QueryAsync<ActiveDevice>(query,new {   deviceType });
   
                 return entities;
             }

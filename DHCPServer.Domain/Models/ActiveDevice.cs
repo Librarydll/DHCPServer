@@ -1,4 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
+using DHCPServer.Domain.Enumerations;
 using DHCPServer.Domain.Models.Common;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace DHCPServer.Domain.Models
 			get { return isAdded; }
 			set { SetProperty(ref isAdded, value); }
 		}
+		public DeviceType DeviceType { get; set; }
 
 		public int ReportId { get; set; }
 		[Computed]

@@ -47,9 +47,6 @@ namespace DHCPServer.Models.Infrastructure
 			Setting = new RoomLineGraphInfoSetting();
 			if(startTimer)
 				_timer = new Timer(_timer_Tick,null,new TimeSpan(0,10,0),new TimeSpan(0,10,0));
-		//	_timer.
-			//_timer.Tick += _timer_Tick;
-			//_timer.Start();
 		}
 
 

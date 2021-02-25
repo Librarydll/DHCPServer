@@ -1,17 +1,8 @@
-﻿using Dapper.Contrib.Extensions;
-using DHCPServer.Domain.Models.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using DHCPServer.Domain.Models.Common;
 
 namespace DHCPServer.Domain.Models
 {
-	public class Device : BaseEntity
+    public class Device : BaseEntity
 	{
 
 		public Device()
@@ -40,5 +31,5 @@ namespace DHCPServer.Domain.Models
 			get { return nick; }
 			set { SetProperty(ref nick, value); }
 		}
-	}
+    }
 }

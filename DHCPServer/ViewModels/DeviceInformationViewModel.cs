@@ -54,34 +54,9 @@ namespace DHCPServer.ViewModels
 
 		
 			_eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
-			Task.Run(async () => await InitializeAsync());
 		}
 
-		public async Task InitializeAsync()
-		{
-			try
-			{
-				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
-				var rooms = devices.Select(x => new RoomLineGraphInfo(x));
-				RoomsCollection = new ObservableCollection<RoomLineGraphInfo>(rooms);
-				var tasks = new Task[RoomsCollection.Count];
-				for (int i = 0; i < RoomsCollection.Count; i++)
-				{
-					RoomsCollection[i].AddToCollectionEvent += DeviceInformationViewModel_AddToCollectionEvent;
-					tasks[i] = RoomsCollection[i].InitializeDeviceAsync();
-				}
-				await Task.WhenAll(tasks).ConfigureAwait(false);
-			}
-			catch (Exception ex)
-			{
-
-				_logger.Error("Не удлаось получить данные");
-				_logger.Error("Ошибка {0}", ex?.Message);
-				_logger.Error("Ошибка {0}", ex?.InnerException);
-			}
-		}
-
-		
+			
 		private void DeviceUpdateEventHandler(DeviceEventModel device)
 		{
 			var d = RoomsCollection.FirstOrDefault(x => x.ActiveDevice.IPAddress == device.OldValue.IPAddress);
