@@ -32,20 +32,22 @@ namespace DHCPServer.ViewModels.Common
 
 		public DelegateCommand OpenNewDevcieViewCommand { get; set; }
 
-		public DeviceViewModelBase(IDialogService dialogService,IActiveDeviceRepository activeDeviceRepository,ILogger logger)
+		public DeviceViewModelBase(IDialogService dialogService,IActiveDeviceRepository activeDeviceRepository,ILogger logger, DeviceType deviceType)
 		{
+			_deviceType = deviceType;
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			_dialogService = dialogService;
 			_activeDeviceRepository = activeDeviceRepository;
 			_logger = logger;
-			Task.Run(async () => await InitializeAsync());
+			Task.Run(async () => await InitializeAsync())
+				.ConfigureAwait(false);
 		}
 
 		public async Task InitializeAsync()
 		{
 			try
 			{
-				var devices = await _activeDeviceRepository.GetActiveDevicesLists();
+				var devices = await _activeDeviceRepository.GetActiveDevicesLists(_deviceType);
 				var rooms = devices.Select(x =>
 				{
 					return Activator.CreateInstance(typeof(TRoomLine), x,true) as TRoomLine;

@@ -48,6 +48,20 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _labelResult, value); }
 		}
 
+		private string _temperature ="Температура";
+		public string Temperature
+		{
+			get { return _temperature; }
+			set { SetProperty(ref _temperature, value); }
+		}
+		private string _humidity = "Влажность";
+		public string Humidity
+		{
+			get { return _humidity; }
+			set { SetProperty(ref _humidity, value); }
+		}
+
+
 		public DelegateCommand FilterCommand { get; set; }
 		public DelegateCommand ShowRealTimeGraphComamand { get; set; }
 
@@ -135,6 +149,13 @@ namespace DHCPServer.Dialogs
 
 					});
 				} 
+				if(parameters.TryGetValue("dataType",out int dataType))
+                {
+					if(dataType==2) { Temperature += " мид";Humidity += " мид"; }
+					if(dataType==3) { Temperature += " норд";Humidity += " норд"; }
+					if(dataType==4) { Temperature += " процесс";Humidity += " процесс"; }
+
+                }
 				if(setSetting)
 					SetSettings();
 

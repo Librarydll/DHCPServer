@@ -42,7 +42,7 @@ namespace DHCPServer.ViewModels
 			IActiveDeviceRepository activeDeviceRepository,
 			IReportRepository reportRepository,
 			ILogger logger,
-			IEventAggregator eventAggregator):base(dialogService,activeDeviceRepository,logger)
+			IEventAggregator eventAggregator):base(dialogService,activeDeviceRepository,logger,Domain.Enumerations.DeviceType.Default)
 		{
 			OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
 			DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
