@@ -19,6 +19,7 @@ namespace DHCPServer.Dialogs
 {
 	public class GraphViewModelDialog : DialogViewModelBase
 	{
+		private bool _dispose = false;
 		private IEnumerable<LineAnnotation> _annotations = new List<LineAnnotation>();
 		private int _wheelCount = 0;
 		private readonly IRoomRepository _roomRepository;
@@ -76,7 +77,6 @@ namespace DHCPServer.Dialogs
 		private void ShowRealTimeGraphHandler()
 		{
 			GraphInfo = _current;
-			
 		}
 
 		private async Task FilterHandler()
@@ -108,7 +108,7 @@ namespace DHCPServer.Dialogs
 
 		public RoomLineGraphInfo FillModel(IEnumerable<RoomInfo> collection)
 		{
-			var result = new RoomLineGraphInfo(GraphInfo.ActiveDevice);
+			var result = new RoomLineGraphInfo(GraphInfo.ActiveDevice,false);
 
 			var humidityLineSerie = result.GraphLineModel.GetLast();
 			var temperatureLineSerie = result.GraphLineModel.GetFirst();
@@ -143,7 +143,8 @@ namespace DHCPServer.Dialogs
 					setSetting = false;
 					Task.Run(async () =>
 					{
-						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress, date.FromDate, date.ToDate);
+						_dispose = true;
+						   var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress, date.FromDate, date.ToDate);
 						GraphInfo = FillModel(collection);
 						_annotations = GraphInfo.GraphLineModel.Annotations.Where(x => x.Tag?.ToString() == "period").Cast<LineAnnotation>();
 
@@ -162,7 +163,9 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
-		private void SetSettings()
+        
+
+        private void SetSettings()
 		{
 			if (GraphInfo?.GraphLineModel == null) return;
 
@@ -252,6 +255,10 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
-	
+		public override void OnDialogClosed()
+		{
+			if(_dispose)
+				GraphInfo?.Dispose();
+		}
 	}
 }

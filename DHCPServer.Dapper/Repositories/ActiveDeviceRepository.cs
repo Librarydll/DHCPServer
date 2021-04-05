@@ -154,13 +154,17 @@ namespace DHCPServer.Dapper.Repositories
 		{
             string query = @"SELECT *FROM ActiveDevices as ad 
 							Left join RoomInfos as r  on
-							r.deviceid=ad.id where r.date>=@from and r.date<=@to";
+                            r.deviceid=ad.id 
+                            Left join MultiRoomInfos as mr on
+							mr.DeviceId =ad.id
+							where( r.date>=@from and r.date<=@to )
+							or( mr.date>=@from and mr.date<=@to )";
             var lookup = new Dictionary<int, ActiveDevice>();
 
             using (var connection = _factory.CreateConnection())
             {
-                var result = await connection.QueryAsync<ActiveDevice, RoomInfo, ActiveDevice>(query,
-                    (activeDevice, r)
+                var result = await connection.QueryAsync<ActiveDevice, RoomInfo ,ActiveDevice>(query,
+                    (activeDevice,r)
                     =>
                     {
                         if (!lookup.TryGetValue(activeDevice.Id, out ActiveDevice ad))

@@ -10,5 +10,7 @@ namespace DHCPServer.Domain.Interfaces
 	public interface IMultiRoomRepository
 	{
 		Task<MultiRoomInfo> SaveAsync(MultiRoomInfo roomInfo);
+
+		Task<IEnumerable<MultiRoomInfo>> FilterRooms(string ipAddress, DateTime from, DateTime to);
 	}
 }
