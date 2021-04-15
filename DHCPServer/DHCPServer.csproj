@@ -150,6 +150,7 @@
     </ApplicationDefinition>
     <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
     <Compile Include="Dialogs\FilterViewModelDialog.cs" />
+    <Compile Include="Dialogs\MultiGraphViewModelDialog.cs" />
     <Compile Include="Models\DTO\ReportDTO.cs" />
     <Compile Include="Models\Infrastructure\Common\RoomLineBase.cs" />
     <Compile Include="Models\Infrastructure\MultiRoomLineGraphInfo.cs" />
@@ -217,6 +218,9 @@
     <Compile Include="Views\MultiDeviceView.xaml.cs">
       <DependentUpon>MultiDeviceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MultiGraphView.xaml.cs">
+      <DependentUpon>MultiGraphView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NewDeviceView.xaml.cs">
       <DependentUpon>NewDeviceView.xaml</DependentUpon>
     </Compile>
@@ -281,6 +285,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MultiGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

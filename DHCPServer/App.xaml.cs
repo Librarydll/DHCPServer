@@ -51,6 +51,7 @@ namespace DHCPServer
 			containerRegistry.RegisterDialog<CalibrationView, CalibrationViewModelDialog>();
 			containerRegistry.RegisterDialog<SelectionDeviceViewOld, SelectionDeviceViewOldModelDialog>();
 			containerRegistry.RegisterDialog<FilterView, FilterViewModelDialog>();
+			containerRegistry.RegisterDialog<MultiGraphView, MultiGraphViewModelDialog>();
 		}
 	}
 }

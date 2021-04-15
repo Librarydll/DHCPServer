@@ -31,20 +31,8 @@ namespace DHCPServer.Dialogs
 
 		public DialogViewModelBase()
 		{
-			//KeyUpEventCommand = new DelegateCommand<KeyEventArgs>(KeyUpEventHandler);
 		}
-		//protected virtual void KeyUpEventHandler(KeyEventArgs key)
-		//{
-		//	if (key.Key == Key.Escape)
-		//	{
-		//		CloseDialogOnCancel(null);
-		//	}
-		//	if (key.Key == Key.Enter)
-		//	{
-		//		CloseDialogOnOk(null);
-		//	}
-		//}
-
+		
 		protected virtual void CloseDialogOnCancel(IDialogParameters parameters)
 		{
 			Result = ButtonResult.Cancel;
@@ -65,7 +53,7 @@ namespace DHCPServer.Dialogs
 			return true;
 		}
 
-		public void OnDialogClosed()
+		public virtual void OnDialogClosed()
 		{
 		}
 

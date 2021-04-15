@@ -45,36 +45,67 @@ namespace DHCPServer.Models.Infrastructure
 			get { return _graphLineModelForNord; }
 			set { _graphLineModelForNord = value; RaisePropertyChangedEvent(); }
 		}
-		private Visibility _roomLineModelForProcess =Visibility.Visible;
-		public Visibility RoomLineModelForProcess
+
+		private bool _temperatureLineVisibilityForDefault = true;
+		public bool TemperatureLineVisibilityForDefault
 		{
-			get { return _roomLineModelForProcess; }
-			set { SetProperty(ref _roomLineModelForProcess, value); }
+			get { return _temperatureLineVisibilityForDefault; }
+			set { SetProperty(ref _temperatureLineVisibilityForDefault, value); LineSeriesVisibilityChange(nameof(TemperatureLineVisibilityForDefault), value); }
 		}
-		private Visibility _roomLineModelForDefault = Visibility.Visible;
-		public Visibility RoomLineModelForDefault
+		private bool _temperatureLineVisibilityForMiddle = true;
+		public bool TemperatureLineVisibilityForMiddle
 		{
-			get { return _roomLineModelForDefault; }
-			set { SetProperty(ref _roomLineModelForDefault, value); }
+			get { return _temperatureLineVisibilityForMiddle; }
+			set { SetProperty(ref _temperatureLineVisibilityForMiddle, value); LineSeriesVisibilityChange(nameof(TemperatureLineVisibilityForMiddle), value); }
 		}
-		private Visibility _roomLineModelForMiddle = Visibility.Visible;
-		public Visibility RoomLineModelForMiddle
+		private bool _temperatureLineVisibilityForNord = true;
+		public bool TemperatureLineVisibilityForNord
 		{
-			get { return _roomLineModelForMiddle; }
-			set { SetProperty(ref _roomLineModelForMiddle, value); }
+			get { return _temperatureLineVisibilityForNord; }
+			set { SetProperty(ref _temperatureLineVisibilityForNord, value); LineSeriesVisibilityChange(nameof(TemperatureLineVisibilityForNord), value); }
 		}
 
-		private Visibility _roomLineModelForNord = Visibility.Visible;
-		public Visibility RoomLineModelForNord
+		private bool _temperatureLineVisibilityForProcess = true;
+		public bool TemperatureLineVisibilityForProcess
 		{
-			get { return _roomLineModelForNord; }
-			set { SetProperty(ref _roomLineModelForNord, value); }
+			get { return _temperatureLineVisibilityForProcess; }
+			set { SetProperty(ref _temperatureLineVisibilityForProcess, value); LineSeriesVisibilityChange(nameof(TemperatureLineVisibilityForProcess), value); }
+		}
+
+
+
+
+		private bool _HumidityLineVisibilityForDefault = true;
+		public bool HumidityLineVisibilityForDefault
+		{
+			get { return _HumidityLineVisibilityForDefault; }
+			set { SetProperty(ref _HumidityLineVisibilityForDefault, value); LineSeriesVisibilityChange(nameof(HumidityLineVisibilityForDefault), value); }
+		}
+		private bool _HumidityLineVisibilityForMiddle = true;
+		public bool HumidityLineVisibilityForMiddle
+		{
+			get { return _HumidityLineVisibilityForMiddle; }
+			set { SetProperty(ref _HumidityLineVisibilityForMiddle, value); LineSeriesVisibilityChange(nameof(HumidityLineVisibilityForMiddle), value); }
+		}
+		private bool _HumidityLineVisibilityForNord = true;
+		public bool HumidityLineVisibilityForNord
+		{
+			get { return _HumidityLineVisibilityForNord; }
+			set { SetProperty(ref _HumidityLineVisibilityForNord, value); LineSeriesVisibilityChange(nameof(HumidityLineVisibilityForNord), value); }
+		}
+
+		private bool _HumidityLineVisibilityForProcess = true;
+		public bool HumidityLineVisibilityForProcess
+		{
+			get { return _HumidityLineVisibilityForProcess; }
+			set { SetProperty(ref _HumidityLineVisibilityForProcess, value); LineSeriesVisibilityChange(nameof(HumidityLineVisibilityForProcess), value); }
 		}
 
 		public MultiRoomLineGraphInfo(ActiveDevice device,bool startTimer =true) : base(device)
 		{
 			GraphLineModelForDefault = ViewResolvingPlotModel.CreateDefault();
 			GraphLineModelForMiddle = ViewResolvingPlotModel.CreateDefault();
+			GraphLineModelForProcessForNord = ViewResolvingPlotModel.CreateDefault();
 			GraphLineModelForProcess = ViewResolvingPlotModel.CreateDefault();
 			if (startTimer)
 				_timer = new Timer(_timer_Tick, null, new TimeSpan(0, 10, 0), new TimeSpan(0, 10, 0));
@@ -143,6 +174,89 @@ namespace DHCPServer.Models.Infrastructure
 		protected override void ReciveMessageOnSuccessEventHandler(MultiRoomInfo roomInfo)
 		{
 			RoomInfo = roomInfo;
+		}
+
+		private void LineSeriesVisibilityChange(string property, bool value)
+		{
+			if (GraphLineModelForDefault.Series != null)
+			{
+				if (property == nameof(TemperatureLineVisibilityForDefault))
+				{
+					var t = GraphLineModelForDefault.GetFirst();
+					if (value != t.IsVisible)
+					{
+						t.IsVisible = value;
+					}
+				}
+				if (property == nameof(HumidityLineVisibilityForDefault))
+				{
+					var h = GraphLineModelForDefault.GetLast();
+					if (value != h.IsVisible)
+					{
+						h.IsVisible = value;
+					}
+				}
+			}
+
+			if (GraphLineModelForMiddle.Series != null)
+			{
+				if (property == nameof(TemperatureLineVisibilityForMiddle))
+				{
+					var t = GraphLineModelForMiddle.GetFirst();
+					if (value != t.IsVisible)
+					{
+						t.IsVisible = value;
+					}
+				}
+				if (property == nameof(HumidityLineVisibilityForMiddle))
+				{
+					var h = GraphLineModelForMiddle.GetLast();
+					if (value != h.IsVisible)
+					{
+						h.IsVisible = value;
+					}
+				}
+			}
+
+			if (GraphLineModelForProcessForNord.Series != null)
+			{
+				if (property == nameof(TemperatureLineVisibilityForNord))
+				{
+					var t = GraphLineModelForProcessForNord.GetFirst();
+					if (value != t.IsVisible)
+					{
+						t.IsVisible = value;
+					}
+				}
+				if (property == nameof(HumidityLineVisibilityForNord))
+				{
+					var h = GraphLineModelForProcessForNord.GetLast();
+					if (value != h.IsVisible)
+					{
+						h.IsVisible = value;
+					}
+				}
+			}
+
+			if (GraphLineModelForProcess.Series != null)
+			{
+				if (property == nameof(TemperatureLineVisibilityForProcess))
+				{
+					var t = GraphLineModelForProcess.GetFirst();
+					if (value != t.IsVisible)
+					{
+						t.IsVisible = value;
+					}
+				}
+				if (property == nameof(HumidityLineVisibilityForProcess))
+				{
+					var h = GraphLineModelForProcess.GetLast();
+					if (value != h.IsVisible)
+					{
+						h.IsVisible = value;
+					}
+				}
+			}
 		}
 	}
 }

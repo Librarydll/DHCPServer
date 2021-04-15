@@ -19,6 +19,7 @@ namespace DHCPServer.Dialogs
 {
 	public class GraphViewModelDialog : DialogViewModelBase
 	{
+		private bool _dispose = false;
 		private IEnumerable<LineAnnotation> _annotations = new List<LineAnnotation>();
 		private int _wheelCount = 0;
 		private readonly IRoomRepository _roomRepository;
@@ -48,6 +49,20 @@ namespace DHCPServer.Dialogs
 			set { SetProperty(ref _labelResult, value); }
 		}
 
+		private string _temperature ="Температура";
+		public string Temperature
+		{
+			get { return _temperature; }
+			set { SetProperty(ref _temperature, value); }
+		}
+		private string _humidity = "Влажность";
+		public string Humidity
+		{
+			get { return _humidity; }
+			set { SetProperty(ref _humidity, value); }
+		}
+
+
 		public DelegateCommand FilterCommand { get; set; }
 		public DelegateCommand ShowRealTimeGraphComamand { get; set; }
 
@@ -62,7 +77,6 @@ namespace DHCPServer.Dialogs
 		private void ShowRealTimeGraphHandler()
 		{
 			GraphInfo = _current;
-			
 		}
 
 		private async Task FilterHandler()
@@ -94,7 +108,7 @@ namespace DHCPServer.Dialogs
 
 		public RoomLineGraphInfo FillModel(IEnumerable<RoomInfo> collection)
 		{
-			var result = new RoomLineGraphInfo(GraphInfo.ActiveDevice);
+			var result = new RoomLineGraphInfo(GraphInfo.ActiveDevice,false);
 
 			var humidityLineSerie = result.GraphLineModel.GetLast();
 			var temperatureLineSerie = result.GraphLineModel.GetFirst();
@@ -129,19 +143,29 @@ namespace DHCPServer.Dialogs
 					setSetting = false;
 					Task.Run(async () =>
 					{
-						var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress, date.FromDate, date.ToDate);
+						_dispose = true;
+						   var collection = await _roomRepository.FilterRooms(_current.ActiveDevice.IPAddress, date.FromDate, date.ToDate);
 						GraphInfo = FillModel(collection);
 						_annotations = GraphInfo.GraphLineModel.Annotations.Where(x => x.Tag?.ToString() == "period").Cast<LineAnnotation>();
 
 					});
 				} 
+				if(parameters.TryGetValue("dataType",out int dataType))
+                {
+					if(dataType==2) { Temperature += " мид";Humidity += " мид"; }
+					if(dataType==3) { Temperature += " норд";Humidity += " норд"; }
+					if(dataType==4) { Temperature += " процесс";Humidity += " процесс"; }
+
+                }
 				if(setSetting)
 					SetSettings();
 
 			}
 		}
 
-		private void SetSettings()
+        
+
+        private void SetSettings()
 		{
 			if (GraphInfo?.GraphLineModel == null) return;
 
@@ -231,6 +255,10 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
-	
+		public override void OnDialogClosed()
+		{
+			if(_dispose)
+				GraphInfo?.Dispose();
+		}
 	}
 }

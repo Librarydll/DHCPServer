@@ -75,5 +75,6 @@ namespace DHCPServer.Console.Script
 							+ "FOREIGN KEY(`DeviceId`) REFERENCES `ActiveDevices`(`id`),"
 							+ "PRIMARY KEY(`Id` AUTOINCREMENT));";
 
+		public static string addDeviceType = "alter table ActiveDevices add DevciceType INT DEFAULT 0";
 	}
 }

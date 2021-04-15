@@ -30,14 +30,13 @@ namespace DHCPServer.ViewModels
 			IActiveDeviceRepository activeDeviceRepository,
 			IMultiRoomRepository multiRoomRepository,
 			ILogger logger,
-			IEventAggregator eventAggregator) : base(dialogService, activeDeviceRepository, logger)
+			IEventAggregator eventAggregator) : base(dialogService, activeDeviceRepository, logger,Domain.Enumerations.DeviceType.Multi)
 		{
 			RoomsCollection = new ObservableCollection<MultiRoomLineGraphInfo>();
 			OpenFirstGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenFirstGraph);
 			OpenSecondGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenSecondGraph);
 			OpenThirdGraphCommand = new DelegateCommand<MultiRoomLineGraphInfo>(OpenThirdGraph);
 			DeleteRoomCommand = new DelegateCommand<MultiRoomLineGraphInfo>(DeleteRoom);
-			_deviceType = Domain.Enumerations.DeviceType.Multi;
 			_multiRoomRepository = multiRoomRepository;
 
 		}
@@ -50,7 +49,7 @@ namespace DHCPServer.ViewModels
 			{
 				GraphLineModel = roomInfo.GraphLineModelForDefault
 			};
-			OpenGraph(r);
+			OpenGraph(r,1);
 			r?.Dispose();
 		}
 		private void OpenSecondGraph(MultiRoomLineGraphInfo roomInfo)
@@ -59,7 +58,7 @@ namespace DHCPServer.ViewModels
 			{
 				GraphLineModel = roomInfo.GraphLineModelForMiddle
 			}; 
-			OpenGraph(r);
+			OpenGraph(r,2);
 			r?.Dispose();
 		}
 
@@ -69,7 +68,7 @@ namespace DHCPServer.ViewModels
 			{
 				GraphLineModel = roomInfo.GraphLineModelForProcess
 			}; 
-			OpenGraph(r);
+			OpenGraph(r,4);
 			r?.Dispose();
 		}
 
@@ -100,12 +99,19 @@ namespace DHCPServer.ViewModels
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 
-		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="roomLineGraphInfo"></param>
+		/// <param name="dataType">1-обычная,2-мид,3-норд,4-процесс</param>
+		private void OpenGraph(RoomLineGraphInfo roomLineGraphInfo,int dataType)
 		{
 			var dialogParametr = new DialogParameters
 			{
-				{ "model", roomLineGraphInfo }
+				{ "model", roomLineGraphInfo },
+				{ "dataType" , dataType }				
 			};
+
 
 			_dialogService.Show("GraphView", dialogParametr, x =>
 			{
