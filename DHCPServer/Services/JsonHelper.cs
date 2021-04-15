@@ -22,7 +22,8 @@ namespace DHCPServer.Services
 				.FirstOrDefault();
 			try
 			{
-				Log.Logger.Error("try parse");
+				Log.Logger.Information("try parse");
+				Log.Logger.Information(body.InnerText);
 				var text = body.InnerText;
 				return JsonConvert.DeserializeObject<T>(text);
 			}
