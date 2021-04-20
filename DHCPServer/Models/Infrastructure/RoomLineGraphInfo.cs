@@ -146,8 +146,8 @@ namespace DHCPServer.Models.Infrastructure
 
 		public void Calculate(double t,double h)
 		{
-			var temp = t - Setting.TemperatureRange;
-			var hum = h - Setting.HumidityRange;
+			var temp = t + Setting.TemperatureRange;
+			var hum = h + Setting.HumidityRange;
 			RoomInfo.Temperature = temp;
 			RoomInfo.Humidity = hum;
 		}
