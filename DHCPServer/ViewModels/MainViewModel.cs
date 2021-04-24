@@ -14,8 +14,8 @@ namespace DHCPServer.ViewModels
 		private readonly  GraphDataView _graphDataView = new GraphDataView();
 		private readonly  DeviceInformationView _deviceInformationView = new DeviceInformationView();
 		private readonly ListDevicesView _listDevicesView = new ListDevicesView();
-		//	private readonly ReportView _reportView = new ReportView();
-		private readonly DeviceArchiveView _deviceArchiveView = new DeviceArchiveView();
+		private readonly ReportView _reportView = new ReportView();
+		//private readonly DeviceArchiveView _deviceArchiveView = new DeviceArchiveView();
 		private readonly MultiDeviceView _multiDeviceView = new MultiDeviceView();
 		#endregion
 
@@ -45,7 +45,7 @@ namespace DHCPServer.ViewModels
 		}
 		private void OpenReportView()
 		{
-			OpenViewBase(_deviceArchiveView, nameof(DeviceArchiveView));
+			OpenViewBase(_reportView, nameof(ReportView));
 		}
 
 		private void OpenDeviceView()

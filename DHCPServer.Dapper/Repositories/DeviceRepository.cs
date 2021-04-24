@@ -88,5 +88,18 @@ namespace DHCPServer.Dapper.Repositories
 				return isUpdated;
 			}
 		}
+
+        public async Task<IEnumerable<Device>> GetDistincDevices()
+        {
+            using (var connection = _factory.CreateConnection())
+            {
+				string query = @"select IPAddress,Nick from devices 
+								 EXCEPT
+								 select IPAddress,Nick from ActiveDevices where IsActive =1 and IsAdded =1";
+
+				var result = await connection.QueryAsync<Device>(query);
+				return result;
+			}
+        }
     }
 }

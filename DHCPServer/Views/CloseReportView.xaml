@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="DHCPServer.Views.CloseReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DHCPServer.Views"
+             mc:Ignorable="d" 
+               xmlns:prism="http://prismlibrary.com/"
+               prism:ViewModelLocator.AutoWireViewModel="True"
+
+             d:DesignHeight="450" d:DesignWidth="542">
+
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="prism:Dialog.WindowStartupLocation" 
+                    Value="CenterScreen" />
+            <Setter Property="Height" Value="450"/>
+            <Setter Property="Width" Value="542"/>
+            <Setter Property="WindowStyle" Value="ToolWindow"/>
+        </Style>
+    </prism:Dialog.WindowStyle>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+
+        <ListView ItemsSource="{Binding ReportsCollection,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                      Grid.Row="0"
+                      SelectedItem="{Binding SelectedReport}"
+                      x:Name="AppDetailslistView" Margin="5 10 5 10"
+                      ItemContainerStyle="{StaticResource LVItemStyleX}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                      HorizontalContentAlignment="Stretch" Foreground="#DDF9F9F9" 
+                      Background="{x:Null}" BorderBrush="{x:Null}">
+
+            <ListView.View>
+                <GridView>
+            
+
+                    <GridViewColumn Width="150"   
+                                    Header="Название архива"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=Title}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="190"   
+                                    Header="Начала записи"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock  Text="{Binding Path=FromTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="190"   
+                                    Header="Конец записи"
+                                    HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Text="{Binding Path=ToTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" 
+                                               FontWeight="Medium" FontSize="13" 
+                                               Padding="10,2,0,2" Margin="0,0,15,0" 
+                                               Foreground="#FF0B245B"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+
+                </GridView>
+            </ListView.View>
+
+
+        </ListView>
+        <Button Grid.Row="1" 
+                HorizontalAlignment="Right" VerticalAlignment="Center" 
+                Margin="10"
+                Style="{StaticResource LightBlueBtnStyle}"
+                Padding="5"
+                FontSize="15"
+                Command="{Binding Path=CloseReportCommand}"
+                >
+            Закрыть архив
+        </Button>
+    </Grid>
+</UserControl>

@@ -9,6 +9,7 @@ namespace DHCPServer.Domain.Interfaces
 {
 	public interface IDeviceRepository
 	{
+		Task<IEnumerable<Device>> GetDistincDevices();
 		Task<Device> CreateAsync(Device device);
 		Task<bool> DeleteAsync(Device device);
 

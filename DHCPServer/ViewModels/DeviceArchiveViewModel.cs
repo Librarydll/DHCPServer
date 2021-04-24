@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DHCPServer.ViewModels
 {
@@ -87,13 +88,17 @@ namespace DHCPServer.ViewModels
                     _devices = await _activeDeviceRepository.GetActiveDevicesByDate(DateTimeSpan.FromDate, DateTimeSpan.ToDate);
                     var allDevices = _devices.GroupBy(x => x.IPAddress)
                         .Select(x => x.First());
-                    DevicesForViewCollection = new ObservableCollection<ActiveDevice>();
-                    foreach (var d in devices.Where(x => x.IsAdded))
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        var active = allDevices.FirstOrDefault(x => x.IPAddress == d.IPAddress);
-                        if (active != null)
-                            DevicesForViewCollection.Add(active);
-                    }
+                        DevicesForViewCollection = new ObservableCollection<ActiveDevice>();
+                        foreach (var d in devices.Where(x => x.IsAdded))
+                        {
+                            var active = allDevices.FirstOrDefault(x => x.IPAddress == d.IPAddress);
+                            if (active != null)
+                                DevicesForViewCollection.Add(active);
+                        }
+                    });
+                    
                     // var d = devices.Where(x => allDevices.Any(z => z.IPAddress == x.IPAddress) && x.IsAdded);
                     //   DevicesForViewCollection = new ObservableCollection<ActiveDevice>(d);
 

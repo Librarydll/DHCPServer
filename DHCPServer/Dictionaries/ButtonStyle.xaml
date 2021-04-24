@@ -3,6 +3,8 @@
                     xmlns:local="clr-namespace:DHCPServer.Dictionaries">
 
 
+    <Color x:Key="defaultBlue">#4169E1</Color>
+    <SolidColorBrush x:Key="defaultBlue2">#4169E1</SolidColorBrush>
     <Style x:Key="DefaultButton" TargetType="Button">
         <Setter Property="Background" Value="{x:Null}"/>
         <Setter Property="Padding" Value="3"/>
@@ -74,9 +76,8 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Cursor" TargetName="border" Value="Hand"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="Blue"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="White"/>
-                            <Setter Property="BorderThickness" TargetName="border" Value="5"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource defaultBlue2}"/>
+                            <Setter Property="BorderThickness" TargetName="border" Value="2"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>

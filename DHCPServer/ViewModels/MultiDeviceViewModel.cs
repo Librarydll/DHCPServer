@@ -113,7 +113,7 @@ namespace DHCPServer.ViewModels
 			};
 
 
-			_dialogService.Show("GraphView", dialogParametr, x =>
+			_dialogService.Show("RealTimeGraphView", dialogParametr, x =>
 			{
 			});
 		}

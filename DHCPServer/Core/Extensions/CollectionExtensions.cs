@@ -7,18 +7,18 @@ using System.Linq;
 
 namespace DHCPServer.Core.Extensions
 {
-	public static class CollectionextEnsioncs
-	{
+    public static class CollectionextEnsioncs
+    {
 
-		
-		public static void DisposeRange<T>(this IEnumerable<T> collection)where T:IDisposable
+
+        public static void DisposeRange<T>(this IEnumerable<T> collection) where T : IDisposable
         {
             foreach (var item in collection)
             {
-				item?.Dispose();
+                item?.Dispose();
             }
         }
-        public static IEnumerable<T> DisposeRange<T>(this IEnumerable<T> collection,Func<T,bool> action) where T : IDisposable
+        public static IEnumerable<T> DisposeRange<T>(this IEnumerable<T> collection, Func<T, bool> action) where T : IDisposable
         {
             foreach (var item in collection)
             {
@@ -30,31 +30,33 @@ namespace DHCPServer.Core.Extensions
             }
         }
 
-        public static IEnumerable<ActiveDevice> CreateActiveDevices(this IEnumerable<Device> devices,IEnumerable<ActiveDevice> activeDevices)
+        public static IEnumerable<ActiveDevice> CreateActiveDevices(this IEnumerable<Device> devices, IEnumerable<ActiveDevice> activeDevices)
         {
 
             foreach (var device in devices)
             {
-				var ad = activeDevices.FirstOrDefault(x => x.IPAddress == device.IPAddress);
+                var ad = activeDevices.FirstOrDefault(x => x.IPAddress == device.IPAddress);
                 if (ad != null)
                 {
-					yield return ad;
+                    yield return ad;
                 }
                 else
                 {
-					yield return new ActiveDevice(device);        
+                    yield return new ActiveDevice(device);
                 }
             }
         }
 
-		public static Report DistinctActiveDevice(this Report report
-			,IEnumerable<Report> reports,IEnumerable<Device> devices)
+        public static Report DistinctActiveDevice(this Report report
+            , IEnumerable<Report> reports, IEnumerable<Device> devices)
         {
             foreach (var d in devices)
             {
                 var ad = report.ActiveDevices.FirstOrDefault(x => x.IPAddress == d.IPAddress);
-                if(ad==null)
+                if (ad == null)
+                {
                     report.ActiveDevices.Add(new ActiveDevice(d));
+                }
             }
             foreach (var r in reports)
             {
@@ -62,19 +64,14 @@ namespace DHCPServer.Core.Extensions
 
                 foreach (var activeDevice in r.ActiveDevices)
                 {
-                    var dev = r.ActiveDevices.FirstOrDefault(x => x.IPAddress == activeDevice.IPAddress);
-                    if (dev != null)
+                    if (activeDevice.IsAdded)
                     {
-                        if (dev.IsAdded)
-                        {
-                            var reps = report.ActiveDevices.FirstOrDefault(x => x.IPAddress == activeDevice.IPAddress);
-                            report.ActiveDevices.Remove(reps);
-                        }
-                    }                  
+                        var reps = report.ActiveDevices.FirstOrDefault(x => x.IPAddress == activeDevice.IPAddress);
+                        report.ActiveDevices.Remove(reps);
+                    }
                 }
             }
-       
             return report;
         }
-	}
+    }
 }

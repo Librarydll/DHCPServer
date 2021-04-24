@@ -76,10 +76,10 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsInvalid,UpdateSourceTrigger=PropertyChanged}" Value="true">
+                        <!--<DataTrigger Binding="{Binding IsInvalid,UpdateSourceTrigger=PropertyChanged}" Value="true">
                             <Setter TargetName="b" Property="BorderBrush" Value="#FFAB0000" />
                             <Setter TargetName="b" Property="BorderThickness" Value="5" />
-                        </DataTrigger>
+                        </DataTrigger>-->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>

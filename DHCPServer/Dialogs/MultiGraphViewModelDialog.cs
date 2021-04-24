@@ -83,10 +83,7 @@ namespace DHCPServer.Dialogs
                         _multiGraphMouseWheelHandler.Add(new MultiGraphMouseWheelHandler { Model = GraphInfo.GraphLineModelForProcessForNord, Code = 3 });
                         _multiGraphMouseWheelHandler.Add(new MultiGraphMouseWheelHandler { Model = GraphInfo.GraphLineModelForProcess, Code = 4 });
 
-                    }).ContinueWith(t =>
-                    {
-                        var x = t.Exception;
-                    }, TaskContinuationOptions.OnlyOnFaulted);
+                    });
                 }
 
                 if (setSetting)

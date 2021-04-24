@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="Dictionaries/ButtonStyle.xaml"/>
                 <ResourceDictionary Source="Dictionaries/TextBlockStyle.xaml"/>
                 <ResourceDictionary Source="Dictionaries/ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="Dictionaries/CheckBoxStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </prism:PrismApplication.Resources>

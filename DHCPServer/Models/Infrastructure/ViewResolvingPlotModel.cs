@@ -92,6 +92,7 @@ namespace DHCPServer.Models.Infrastructure
 		}
 		private static void SetUpModel(ViewResolvingPlotModel model)
 		{
+			model.IsLegendVisible = false;
 			model.LegendTitle = "Данные";
 			model.LegendOrientation = LegendOrientation.Horizontal;
 			model.LegendPlacement = LegendPlacement.Outside;
@@ -137,6 +138,10 @@ namespace DHCPServer.Models.Infrastructure
 		{
 			var dateTimeAxis = Axes.First() as DateTimeAxis;
 			var lineSeries = GetFirst();
+            if (lineSeries.Points.Count == 0)
+            {
+				lineSeries = GetLast();
+            }
 			var dates = lineSeries.Points.Select(x =>DateTimeAxis.ToDateTime(x.X));
 			var beginingDate = dates.FirstOrDefault();
 			var lastDate = dates.LastOrDefault();
@@ -154,6 +159,11 @@ namespace DHCPServer.Models.Infrastructure
 
 			return true;
 		}
+
+		public void AddDataPoint(LineSeries line, DataPoint dataPoints)
+        {
+			FillCollection(line, new List<DataPoint> { dataPoints });
+        }
 
 		public void FillCollection(LineSeries line,IEnumerable<DataPoint> dataPoints)
 		{
@@ -239,7 +249,12 @@ namespace DHCPServer.Models.Infrastructure
 		public void AddAnnotationEveryDay()
 		{
 			var points = GetFirst().Points;
-			if (points.Count == 0) return;
+			if (points.Count == 0) 
+			{
+				points = GetLast().Points;
+				if (points.Count == 0)
+					return;
+			}
 			var lastPoint = points.Where(x=>!x.Equals(DataPoint.Undefined)).Max(x => x.X );
 			var firstPoint = points.Where(x => !x.Equals(DataPoint.Undefined)).Min(x => x.X );
 

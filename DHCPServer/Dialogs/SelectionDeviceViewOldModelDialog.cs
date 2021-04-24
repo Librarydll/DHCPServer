@@ -36,7 +36,7 @@ namespace DHCPServer.Dialogs
 
 			Task.Run(async () =>
 			{
-				ServerAddressCollection = new ObservableCollection<Device>(await _deviceRepository.GetAllAsync());
+				ServerAddressCollection = new ObservableCollection<Device>(await _deviceRepository.GetDistincDevices());
 			});
 			Title = "Добавить";
 		}

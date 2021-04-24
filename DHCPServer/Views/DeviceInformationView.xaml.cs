@@ -11,5 +11,11 @@ namespace DHCPServer.Views
 		{
 			InitializeComponent();
 		}
-	}
+
+    
+        private void Grid_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+        }
+    }
 }

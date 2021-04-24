@@ -31,6 +31,7 @@ namespace DHCPServer.Dialogs
 
 		public DialogViewModelBase()
 		{
+			
 		}
 		
 		protected virtual void CloseDialogOnCancel(IDialogParameters parameters)
@@ -55,6 +56,7 @@ namespace DHCPServer.Dialogs
 
 		public virtual void OnDialogClosed()
 		{
+			
 		}
 
 		public void CloseDialog(IDialogParameters parameters)

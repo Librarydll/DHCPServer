@@ -26,6 +26,7 @@ namespace DHCPServer.Dialogs
 		}
 		public NewDeviceViewModelDialog()
 		{
+			Title = "Создание устройства";
 		}
 		protected override void CloseDialogOnOk(IDialogParameters parameters)
 		{

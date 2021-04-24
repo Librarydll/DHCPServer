@@ -21,11 +21,13 @@ namespace DHCPServer.Domain.Interfaces
 		/// <returns></returns>
 		Task<IEnumerable<Report>> GetReportsByString(string searchingString,Specification specification);
 
-		Task<bool> TryCloseReport(ActiveDevice device);
+		Task<bool> TryCloseReport(int ReportId);
+
 		Task<IEnumerable<Report>> TryCloseExpiredReports();
 
-		Task<Report> CreateReport(Report report,IEnumerable<ActiveDevice> activeDevices);
+		Task<Report> CreateReport(Report report);
 
+		Task<Report> UpdateReport(Report report, IEnumerable<ActiveDevice> changedDevices);
 		Task<IEnumerable<Report>> GetActiveReports();
 		Task<IEnumerable<Report>> GetActiveReportsWithDevices();
 	}

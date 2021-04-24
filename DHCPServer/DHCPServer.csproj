@@ -59,6 +59,12 @@
     <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="MaterialDesignColors, Version=2.0.0.2422, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.2.0.0\lib\net452\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=4.0.0.2422, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.4.0.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -148,9 +154,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\ArchiveGraphViewModel.cs" />
     <Compile Include="Dialogs\CalibrationViewModelDialog.cs" />
-    <Compile Include="Dialogs\FilterViewModelDialog.cs" />
+    <Compile Include="Dialogs\CloseReportViewModel.cs" />
+    <Compile Include="Dialogs\CreateReportViewModel.cs" />
+    <Compile Include="Dialogs\DeviceSwapViewModel.cs" />
+    <Compile Include="Dialogs\GraphDeviceViewModelBase.cs" />
     <Compile Include="Dialogs\MultiGraphViewModelDialog.cs" />
+    <Compile Include="Dialogs\RealTimeGraphViewModel.cs" />
+    <Compile Include="Models\DTO\ActiveDeviceIteration.cs" />
     <Compile Include="Models\DTO\ReportDTO.cs" />
     <Compile Include="Models\Infrastructure\Common\RoomLineBase.cs" />
     <Compile Include="Models\Infrastructure\MultiRoomLineGraphInfo.cs" />
@@ -164,9 +176,7 @@
     <Compile Include="Core\Extensions\CollectionExtensions.cs" />
     <Compile Include="Dialogs\DialogViewModelBase.cs" />
     <Compile Include="Dialogs\Extenstions\DialogExtension.cs" />
-    <Compile Include="Dialogs\GraphViewModelDialog.cs" />
     <Compile Include="Dialogs\NewDeviceViewModelDialog.cs" />
-    <Compile Include="Dialogs\SelectionDeviceViewModelDialog.cs" />
     <Compile Include="Models\DeviceClient.cs" />
     <Compile Include="Models\Infrastructure\DateTimeSpanFilter.cs" />
     <Compile Include="Models\Infrastructure\RoomLineGraphInfo.cs" />
@@ -178,8 +188,9 @@
       <DependentUpon>TimeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UICore\Converters\NumberConverter.cs" />
+    <Compile Include="UICore\Converters\ReportValueToButtonEnableConverter.cs" />
+    <Compile Include="UICore\Converters\StatusToColorConverter.cs" />
     <Compile Include="ViewModels\Common\DeviceViewModelBase.cs" />
-    <Compile Include="ViewModels\DeviceArchiveViewModel.cs" />
     <Compile Include="ViewModels\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\ListDevicesViewModel.cs" />
     <Compile Include="ViewModels\GraphDataViewModel.cs" />
@@ -187,26 +198,29 @@
     <Compile Include="ViewModels\MultiDeviceViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="Dialogs\SelectionDeviceViewOldModelDialog.cs" />
+    <Compile Include="Views\ArchiveGraphView.xaml.cs">
+      <DependentUpon>ArchiveGraphView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CalibrationView.xaml.cs">
       <DependentUpon>CalibrationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DeviceArchiveView.xaml.cs">
-      <DependentUpon>DeviceArchiveView.xaml</DependentUpon>
+    <Compile Include="Views\CloseReportView.xaml.cs">
+      <DependentUpon>CloseReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateReportView.xaml.cs">
+      <DependentUpon>CreateReportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DeviceInformationView.xaml.cs">
       <DependentUpon>DeviceInformationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FilterView.xaml.cs">
-      <DependentUpon>FilterView.xaml</DependentUpon>
+    <Compile Include="Views\DeviceSwapView.xaml.cs">
+      <DependentUpon>DeviceSwapView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ListDevicesView.xaml.cs">
       <DependentUpon>ListDevicesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GraphDataView.xaml.cs">
       <DependentUpon>GraphDataView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GraphView.xaml.cs">
-      <DependentUpon>GraphView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -224,16 +238,20 @@
     <Compile Include="Views\NewDeviceView.xaml.cs">
       <DependentUpon>NewDeviceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RealTimeGraphView.xaml.cs">
+      <DependentUpon>RealTimeGraphView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ReportView.xaml.cs">
       <DependentUpon>ReportView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SelectionDeviceView.xaml.cs">
-      <DependentUpon>SelectionDeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectionDeviceViewOld.xaml.cs">
       <DependentUpon>SelectionDeviceViewOld.xaml</DependentUpon>
     </Compile>
     <Page Include="Dictionaries\ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dictionaries\CheckBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -253,11 +271,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ArchiveGraphView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CalibrationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DeviceArchiveView.xaml">
+    <Page Include="Views\CloseReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -265,7 +291,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FilterView.xaml">
+    <Page Include="Views\DeviceSwapView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -274,10 +300,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GraphDataView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\GraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -296,11 +318,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ReportView.xaml">
+    <Page Include="Views\RealTimeGraphView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SelectionDeviceView.xaml">
+    <Page Include="Views\ReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -358,6 +380,9 @@
   <ItemGroup>
     <Resource Include="Resources\chart-1_111423.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\swap.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -366,7 +391,9 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.0.0\build\MaterialDesignThemes.targets')" />
 </Project>

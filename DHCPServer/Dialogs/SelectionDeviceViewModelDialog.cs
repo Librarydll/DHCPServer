@@ -96,7 +96,6 @@ namespace DHCPServer.Dialogs
 				Days = 1
 			};
 			FillCollection();
-			//	Task.Run(async () => await FillCollection(0));
 		}
 
 		public override void OnDialogOpened(IDialogParameters parameters)
@@ -107,19 +106,7 @@ namespace DHCPServer.Dialogs
 				ReportsCollection = new ObservableCollection<Report>(reports);
 				_devices = await _deviceRepository.GetAllAsync(); 
 				Report = ReportsCollection.FirstOrDefault();
-				//if (Report != null)
-				//{
-				//	//await FillCollection(Report.Id);
-				//	FillCollection();
-				//}
-				//else
-				//{
-				//	Report = new Report
-				//	{
-				//		FromTime = DateTime.Now,
-				//		Days = 1
-				//	};
-				//}
+
 
 				if (Report == null) CreateNewReportHandler();
 
@@ -150,18 +137,19 @@ namespace DHCPServer.Dialogs
 			Report = report;
 			FillCollection();
 		//	Task.Run( async()=> await FillCollection(report.Id));
+
 		}
 
 		private void HandleReport()
 		{
+			Report.LastUpdated = DateTime.Now;
 			if (Report.Id == 0)
 			{
-				Report.LastUpdated = DateTime.Now;
-				_reportRepository.CreateReport(Report, DevicesColleciton.Where(x=>x.IsAdded)).Wait();
+				Report.ActiveDevices = DevicesColleciton.Where(x => x.IsAdded).ToList();
+				_reportRepository.CreateReport(Report).Wait();
 			}
 			else if(_unChangedReport.IsEdited(Report))
 			{
-				Report.LastUpdated = DateTime.Now;
 				_reportRepository.UpdateAsync(Report).Wait();
 			}
 			foreach (var device in DevicesColleciton)
@@ -171,12 +159,7 @@ namespace DHCPServer.Dialogs
 			}
 		}
 
-		private async Task FillCollection(int id)
-		{
-			var devices = await _deviceRepository.GetAllAsync();
-			var activeDevices = await _activeDeviceRepository.GetActiveDevicesByReportId(id);
-			DevicesColleciton = new ObservableCollection<ActiveDevice>(devices.CreateActiveDevices(activeDevices));
-		}
+		
 
 		private void FillCollection()
         {

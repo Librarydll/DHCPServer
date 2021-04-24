@@ -45,14 +45,14 @@ namespace DHCPServer.ViewModels
 
 		private void OpenGraph(ReportDTO reportDTO)
 		{
-			var room = new RoomLineGraphInfo(reportDTO.ActiveDevice);
+			var room = new RoomLineGraphInfo(reportDTO.ActiveDevice,false);
 			var dialogParametr = new DialogParameters
 			{
 				{ "model", room },
 				{"id",reportDTO.Report.Id }
 			};
 
-			_dialogService.Show("GraphView", dialogParametr, x =>
+			_dialogService.Show("ArchiveGraphView", dialogParametr, x =>
 			{
 			});
 		}

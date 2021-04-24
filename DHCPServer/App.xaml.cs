@@ -46,12 +46,15 @@ namespace DHCPServer
 			containerRegistry.RegisterSingleton<Transfer>();
 
 			containerRegistry.RegisterDialog<NewDeviceView, NewDeviceViewModelDialog>();
-			containerRegistry.RegisterDialog<GraphView, GraphViewModelDialog>();
-			containerRegistry.RegisterDialog<SelectionDeviceView, SelectionDeviceViewModelDialog>();
 			containerRegistry.RegisterDialog<CalibrationView, CalibrationViewModelDialog>();
 			containerRegistry.RegisterDialog<SelectionDeviceViewOld, SelectionDeviceViewOldModelDialog>();
-			containerRegistry.RegisterDialog<FilterView, FilterViewModelDialog>();
+		//	containerRegistry.RegisterDialog<FilterView, FilterViewModelDialog>();
 			containerRegistry.RegisterDialog<MultiGraphView, MultiGraphViewModelDialog>();
+			containerRegistry.RegisterDialog<DeviceSwapView, DeviceSwapViewModel>();
+			containerRegistry.RegisterDialog<CreateReportView, CreateReportViewModel>();
+			containerRegistry.RegisterDialog<RealTimeGraphView, RealTimeGraphViewModel>();
+			containerRegistry.RegisterDialog<ArchiveGraphView, ArchiveGraphViewModel>();
+			containerRegistry.RegisterDialog<CloseReportView, CloseReportViewModel>();
 		}
 	}
 }

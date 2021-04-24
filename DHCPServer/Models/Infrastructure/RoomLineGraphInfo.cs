@@ -41,6 +41,8 @@ namespace DHCPServer.Models.Infrastructure
 			set { _humidityLineVisibility = value; RaisePropertyChangedEvent(); LineSeriesVisibilityChange(nameof(HumidityLineVisibility), value); }
 		}
 
+		public static RoomLineGraphInfo CreateDefault() => new RoomLineGraphInfo(new ActiveDevice(new Device("1", "1")));
+
 		public RoomLineGraphInfo(ActiveDevice device,bool startTimer=true) : base(device)
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
@@ -48,6 +50,7 @@ namespace DHCPServer.Models.Infrastructure
 			if(startTimer)
 				_timer = new Timer(_timer_Tick,null,new TimeSpan(0,10,0),new TimeSpan(0,10,0));
 		}
+
 
 
 		private void _timer_Tick(object state)
@@ -135,12 +138,12 @@ namespace DHCPServer.Models.Infrastructure
 		public void AddToHumidity()
 		{		
 			Log.Logger.Information("ADDED To Graph DEVICE : {0} HUMIDITY {1}", ActiveDevice?.IPAddress, RoomInfo.Humidity);
-			GraphLineModel.GetLast().Points.Add(new DataPoint(DateTimeAxis.ToDouble(RoomInfo.Date), RoomInfo.Humidity));
+			GraphLineModel.AddDataPoint(GraphLineModel.GetLast(), new DataPoint(DateTimeAxis.ToDouble(RoomInfo.Date), RoomInfo.Humidity));
 		}
 		public void AddToTemperature()
 		{
 			Log.Logger.Information("ADDED To Graph DEVICE : {0} TEMPERATURE {1}", ActiveDevice?.IPAddress, RoomInfo.Temperature);
-			GraphLineModel.GetFirst().Points.Add(new DataPoint(DateTimeAxis.ToDouble(RoomInfo.Date), RoomInfo.Temperature));
+			GraphLineModel.AddDataPoint(GraphLineModel.GetFirst(), new DataPoint(DateTimeAxis.ToDouble(RoomInfo.Date), RoomInfo.Temperature));
 		}
 
 

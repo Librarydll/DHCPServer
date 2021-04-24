@@ -27,8 +27,8 @@ namespace DHCPServer.Dapper.Repositories
 							where ad.isAdded = 1 and ad.isActive=1 and r.isclosed=0";
             using (var connection = _factory.CreateConnection())
             {
-                var entities = await connection.QueryAsync<ActiveDevice,Report,ActiveDevice>(query,
-                    (ad,r)=>
+                var entities = await connection.QueryAsync<ActiveDevice, Report, ActiveDevice>(query,
+                    (ad, r) =>
                     {
                         ad.Report = r;
                         ad.ReportId = r.Id;
@@ -123,7 +123,7 @@ namespace DHCPServer.Dapper.Repositories
 							where reportid=@reportId and isactive=1";
             using (var connection = _factory.CreateConnection())
             {
-                var entities = await connection.QueryAsync<ActiveDevice>(query,new { reportId });
+                var entities = await connection.QueryAsync<ActiveDevice>(query, new { reportId });
 
                 return entities;
             }
@@ -138,20 +138,28 @@ namespace DHCPServer.Dapper.Repositories
             }
         }
 
-		public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists(DeviceType deviceType = DeviceType.Default)
-		{
+        public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesLists(DeviceType deviceType = DeviceType.Default)
+        {
             string query = @"SELECT *FROM ActiveDevices as ad
+                            left join Reports as r
+                            on r.id = ad.ReportId
 							where ad.isAdded = 1 and ad.isActive=1 and DeviceType =@deviceType";
             using (var connection = _factory.CreateConnection())
             {
-                var entities = await connection.QueryAsync<ActiveDevice>(query,new {   deviceType });
-  
+                var entities = await connection.QueryAsync<ActiveDevice,Report,ActiveDevice>(query,
+                    (activeDevice, report) =>
+                    {
+                        activeDevice.Report = report;
+                        return activeDevice;
+                    },
+                    new { deviceType });
+
                 return entities;
             }
         }
- 
+
         public async Task<IEnumerable<ActiveDevice>> GetActiveDevicesByDate(DateTime from, DateTime to)
-		{
+        {
             string query = @"SELECT *FROM ActiveDevices as ad 
 							Left join RoomInfos as r  on
                             r.deviceid=ad.id 
@@ -163,8 +171,8 @@ namespace DHCPServer.Dapper.Repositories
 
             using (var connection = _factory.CreateConnection())
             {
-                var result = await connection.QueryAsync<ActiveDevice, RoomInfo ,ActiveDevice>(query,
-                    (activeDevice,r)
+                var result = await connection.QueryAsync<ActiveDevice, RoomInfo, ActiveDevice>(query,
+                    (activeDevice, r)
                     =>
                     {
                         if (!lookup.TryGetValue(activeDevice.Id, out ActiveDevice ad))
@@ -179,5 +187,31 @@ namespace DHCPServer.Dapper.Repositories
                 return lookup.Values;
             }
         }
-	}
+
+        public async Task<IEnumerable<ActiveDevice>> GetActiveDeviceWithoutReports()
+        {
+
+            string query = @"SELECT *FROM ActiveDevices as ad
+							where ad.isAdded = 1 and ad.isActive=1 and ad.DeviceType =0 and ad.ReportId=0";
+            using (var connection = _factory.CreateConnection())
+            {
+                var entities = await connection.QueryAsync<ActiveDevice>(query);
+
+                return entities;
+            }
+        }
+
+        public async Task SwapReportId(ActiveDevice from, ActiveDevice to)
+        {
+
+            using (var connection = _factory.CreateConnection())
+            {
+                string query = @"UPDATE ActiveDevices SET reportid = 0  Where id=@a1;
+                                 UPDATE ActiveDevices SET reportid = @r1  Where id=@a2;";
+
+                var entities = await connection.ExecuteAsync(query, new { a1 = from.Id, a2 = to.Id, r1 = from.ReportId });
+
+            }
+        }
+    }
 }

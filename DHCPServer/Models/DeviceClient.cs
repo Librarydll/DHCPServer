@@ -38,7 +38,7 @@ namespace DHCPServer.Models
 			{
 				Timeout = new TimeSpan(0, 0, 5)
 			};
-			_url = "http://" + device.IPAddress;
+			_url = "https://" + device.IPAddress;
 		}
 
 
