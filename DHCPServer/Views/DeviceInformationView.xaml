@@ -45,27 +45,25 @@
         <ItemsControl Grid.Row="1" ItemsSource="{Binding RoomsCollection}">
             <ItemsControl.Template>
                 <ControlTemplate TargetType="ItemsControl">
-                    <Border >
-                        <ItemsPresenter/>
-                    </Border>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
                 </ControlTemplate>
+                
             </ItemsControl.Template>
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel  Orientation="Horizontal" Margin="0 0 10 0" />
+                    <WrapPanel  Orientation="Horizontal" >
+
+                    </WrapPanel>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <DataTemplate.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontSize" Value="18"/>
-                        </Style>
-                    </DataTemplate.Resources>
-                    <Border Margin="10" BorderBrush="{StaticResource defaultBlue2}" BorderThickness="4" CornerRadius="4">
-                        <Grid Background="White" MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="{Binding Id}">
+                    <Border Margin="10" BorderBrush="{StaticResource defaultBlue2}" BorderThickness="4" CornerRadius="4" >
+                        <Grid Background="White">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="auto"/>
@@ -74,7 +72,8 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
-                                <RowDefinition Height="100"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
@@ -87,14 +86,18 @@
                             </Grid.Resources>
 
                             <TextBlock  Margin="5" Width="200" Text="{Binding Path=ActiveDevice.Nick}"/>
-                            <TextBlock  Margin="5" Grid.Row="1" Text="{Binding Path=ActiveDevice.IPAddress}"/>
+                            <TextBlock  Margin="5" Grid.Row="1" Text="{Binding Path=ActiveDevice.IPAddress}" x:Name="ipAddress" Visibility="Collapsed"/>
+                            <CheckBox Margin="5" HorizontalAlignment="Right"   Grid.Column="2" VerticalAlignment="Center"
+                                          Style="{StaticResource ForReportSelectionCheckBox}"
+                                          IsChecked="{Binding Path=ActiveDevice.IsSelected}"
+                                          Visibility="{Binding Path=ActiveDevice.Report,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ReportValueToButtonEnableConverter},ConverterParameter='check'}"/>
 
-                            <StackPanel Grid.Row="2" Orientation="Vertical">
+                            <StackPanel Grid.Row="2" Orientation="Vertical" x:Name="reportPanel" Visibility="Collapsed">
                                 <TextBlock Margin="5" Text="{Binding Path=ActiveDevice.Report.Title}"/>
                                 <TextBlock Margin="5" Text="{Binding Path=ActiveDevice.Report.ToTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
                             </StackPanel>
 
-                            <Border Grid.Row="3" Margin="5">
+                            <Border Grid.Row="3" Margin="5" >
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Foreground="Red" FontWeight="Medium">
                                     <Run Text="Температура"/>
@@ -115,16 +118,14 @@
                                 </StackPanel>
                             </Border>
 
-                            <StackPanel Grid.RowSpan="5" Grid.Column="1" Margin="0 0 10 0">
-                                <CheckBox Margin="5" HorizontalAlignment="Center"  
-                                          Style="{StaticResource ForReportSelectionCheckBox}"
-                                          IsChecked="{Binding Path=ActiveDevice.IsSelected}"
-                                          Visibility="{Binding Path=ActiveDevice.Report,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ReportValueToButtonEnableConverter},ConverterParameter='check'}"/>
-                                
-                                <Button   Margin="0 5 0 5" CommandParameter="{Binding}" 
+                            <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0" Margin="5 0 0 10" Orientation="Horizontal" x:Name="commandPanel" Visibility="Collapsed">
+
+
+                                <Button         Margin="0" CommandParameter="{Binding}" 
                                                 Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenGraphCommand}"
                                                 Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" 
+                                                HorizontalAlignment="Center" 
+                                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                                 VerticalAlignment="Center">
                                     <StackPanel>
                                         <mi:PackIcon Kind="ChartAreaspline" Width="30" Height="30" Foreground="#4169E1"/>
@@ -138,10 +139,11 @@
                                     </Button.ToolTip>
                                 </Button>
 
-                                <Button Margin="0 0 0 5" CommandParameter="{Binding}" 
+                                <Button Margin="0" CommandParameter="{Binding}" 
                                                 Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenCalibrationCommand}"
                                                 Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right"
+                                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                                HorizontalAlignment="Center"
                                                 VerticalAlignment="Center" >
                                     <StackPanel>
                                         <mi:PackIcon Kind="Edit" Width="30" Height="30" Foreground="#4169E1"/>
@@ -158,7 +160,8 @@
                                 <Button CommandParameter="{Binding}" 
                                         Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.DeviceSwapCommand}"
                                         Style="{DynamicResource LightBlueBtnStyle}" 
-                                        HorizontalAlignment="Right"  
+                                        HorizontalAlignment="Center"  
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                         Visibility="{Binding Path=ActiveDevice.Report,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ReportValueToButtonEnableConverter}}"
                                         VerticalAlignment="Center" >
                                     <StackPanel>
@@ -173,11 +176,12 @@
                                     </Button.ToolTip>
 
                                 </Button>
-                                <Button  Margin="0 0 0 5"       CommandParameter="{Binding}" 
+                                <Button  Margin="0"       CommandParameter="{Binding}" 
                                          Visibility="{Binding Path=ActiveDevice.Report,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource ReportValueToButtonEnableConverter},ConverterParameter='check'}"
                                                 Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.DeleteRoomCommand}"
                                                 Style="{DynamicResource LightBlueBtnStyle}" 
-                                                HorizontalAlignment="Right" 
+                                                HorizontalAlignment="Center" 
+                                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                                 VerticalAlignment="Center">
                                     <StackPanel>
                                         <mi:PackIcon Kind="RemoveBold" Width="30" Height="30" Foreground="#4169E1"/>
@@ -192,11 +196,15 @@
                                 </Button>
                             </StackPanel>
 
-                            <!--<Ellipse x:Name="isConnected" Margin="5" Grid.RowSpan="5" Grid.Column="1" VerticalAlignment="Bottom" 
-                                     Height="20" Width="20" 
-                                     Fill="{Binding Path=IsInvalid,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource StatusConverter}}">
-                            </Ellipse>-->
                             <mi:PackIcon Kind="Signal" 
+                                         x:Name="topSignal"
+                                         Margin="0 0 10 10"
+                                         HorizontalAlignment="Right"
+                                         Foreground="{Binding Path=IsInvalid,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource StatusConverter}}" 
+                                         VerticalAlignment="Bottom" Grid.Row="4" Grid.Column="1" Height="40" Width="40" />
+                            <mi:PackIcon Kind="Signal" 
+                                         x:Name="bottomSignal"
+                                         Visibility="Collapsed"
                                          Margin="0 0 10 10"
                                          HorizontalAlignment="Right"
                                          Foreground="{Binding Path=IsInvalid,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource StatusConverter}}" 
@@ -204,7 +212,23 @@
                         </Grid>
                     </Border>
 
+                    
+                    <DataTemplate.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="18"/>
+                        </Style>
+                    </DataTemplate.Resources>
+                    <DataTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="reportPanel" Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="topSignal" />
+                            <Setter Property="Visibility" Value="Visible" TargetName="bottomSignal" />
+                            <Setter Property="Visibility" Value="Visible" TargetName="commandPanel" />
+                            <Setter Property="Visibility" Value="Visible" TargetName="ipAddress" />
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
+
             </ItemsControl.ItemTemplate>
 
         </ItemsControl>

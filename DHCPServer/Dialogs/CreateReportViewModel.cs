@@ -38,7 +38,7 @@ namespace DHCPServer.Dialogs
             Report = new Report()
             {
                 FromTime = DateTime.Now,
-                Days = 1
+                Days = 16
             };
             Title = "Создание архива";
             CreateReportCommand = new DelegateCommand(async () => await ExecuteCreateReportCommand());
@@ -47,11 +47,11 @@ namespace DHCPServer.Dialogs
 
         private async Task ExecuteCreateReportCommand()
         {
+            if (string.IsNullOrWhiteSpace(Report.Title)) return;
+            if (DevicesCollection?.Count <= 0) return;
             Result = ButtonResult.OK;
             Report.ActiveDevices = _activeDevices.ToList();
             await _reportRepository.CreateReport(Report);
-            //  var args = new DialogParameters();
-            // args.Add("model",) 
             CloseDialog(null);
         }
 

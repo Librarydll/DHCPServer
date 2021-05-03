@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Domain.Enumerations
 {
-	public enum Specification
-	{
-		IpAddress,
-		Report
-	}
 
 	public enum DeviceType
     {

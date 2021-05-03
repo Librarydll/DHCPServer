@@ -96,7 +96,7 @@ namespace DHCPServer.Dapper.Repositories
             }
         }
 
-        public async Task<IEnumerable<Report>> GetReportsByString(string searchingString, Specification specification)
+        public async Task<IEnumerable<Report>> GetReportsByString(string searchingString)
         {
             string query = @"SELECT *FROM Reports as r
 						   Left join ActiveDevices as ad on r.id=ad.reportid
@@ -105,29 +105,19 @@ namespace DHCPServer.Dapper.Repositories
 
             using (var connection = _factory.CreateConnection())
             {
-                switch (specification)
-                {
-                    case Specification.IpAddress:
-                        throw new NotImplementedException();
-                        break;
-                    case Specification.Report:
-                        var entity = await connection.QueryAsync<Report, ActiveDevice, Report>(query,
-                            (report, activeDevice) =>
-                            {
+                var entity = await connection.QueryAsync<Report, ActiveDevice, Report>(query,
+                           (report, activeDevice) =>
+                           {
 
-                                if (!lookup.TryGetValue(report.Id, out Report r))
-                                {
-                                    lookup.Add(report.Id, r = report);
-                                }
+                               if (!lookup.TryGetValue(report.Id, out Report r))
+                               {
+                                   lookup.Add(report.Id, r = report);
+                               }
 
-                                r.ActiveDevices.Add(activeDevice);
-                                return r;
+                               r.ActiveDevices.Add(activeDevice);
+                               return r;
 
-                            }, new { title = "%" + searchingString + "%" });
-                        break;
-                    default:
-                        break;
-                }
+                           }, new { title = "%" + searchingString + "%" });
             }
             return lookup.Values;
         }
@@ -189,7 +179,7 @@ namespace DHCPServer.Dapper.Repositories
                 var report = await connection.QueryFirstOrDefaultAsync<Report>(query, new { id = reportId });
                 if (report == null) return false;
 
-            //    if (report.FromTime > DateTime.Now) return false;
+                //    if (report.FromTime > DateTime.Now) return false;
 
                 var rowCount = await connection.ExecuteAsync(updateQuery, new { reportid = report.Id });
                 report.IsClosed = true;

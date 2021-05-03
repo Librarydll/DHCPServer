@@ -19,7 +19,7 @@ namespace DHCPServer.Domain.Interfaces
 		/// </summary>
 		/// <param name="searchingString"></param>
 		/// <returns></returns>
-		Task<IEnumerable<Report>> GetReportsByString(string searchingString,Specification specification);
+		Task<IEnumerable<Report>> GetReportsByString(string searchingString);
 
 		Task<bool> TryCloseReport(int ReportId);
 

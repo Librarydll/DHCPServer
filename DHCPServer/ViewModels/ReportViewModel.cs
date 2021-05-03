@@ -62,7 +62,7 @@ namespace DHCPServer.ViewModels
 			if (SearchingString == null) return;
 
 
-			var collection = await _reportRepository.GetReportsByString(SearchingString, Domain.Enumerations.Specification.Report);
+			var collection = await _reportRepository.GetReportsByString(SearchingString);
 			var result = ReportDTO.Map(collection);
 			ReportsCollection = new ObservableCollection<ReportDTO>(result);
 

@@ -22,7 +22,7 @@
 
             <ToolBar >
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="5"  Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">График
+                    <Button Margin="5"  Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">Инкубационный зал
 
                     </Button>
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица
