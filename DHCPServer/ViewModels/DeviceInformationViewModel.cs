@@ -150,6 +150,7 @@ namespace DHCPServer.ViewModels
                 _logger.Error("Ошибка {0}", t.Exception?.InnerException);
 
             }, TaskContinuationOptions.OnlyOnFaulted);
+            UpdateReportTimeInUI();
         }
 
         private void OpenReportView()

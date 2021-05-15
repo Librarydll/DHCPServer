@@ -58,13 +58,16 @@ namespace DHCPServer.Domain.Models
         [Computed]
         public DateTime ToTime => FromTime.AddDays(Days);
         [Computed]
-        public DateTime DateTimePassed
+        public string DateTimePassed
         {
             get
             {
                 var nowDate = DateTime.Now;
                 var passedDate = nowDate.Subtract(FromTime);
-                return new DateTime(passedDate.Ticks);
+                if(passedDate.Days!=0)
+                    return passedDate.ToString(@"dd\ \ hh\:mm");
+                return passedDate.ToString(@"hh\:mm");
+                // return new DateTime(nowDate.Year, nowDate.Month, passedDate.Days,passedDate.Hours,passedDate.Minutes,0);
             }
         }
         public bool IsEdited(Report newReport)
