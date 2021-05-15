@@ -8,71 +8,87 @@ using System.Threading.Tasks;
 
 namespace DHCPServer.Domain.Models
 {
-	public class Report : BaseEntity
-	{
-		public Report()
-		{
-			ActiveDevices = new List<ActiveDevice>();
-		}
-		public Report(Report report) : this()
-		{
-			Days = report.Days;
-			Id = report.Id;
-			FromTime = report.FromTime;
-			LastUpdated = report.LastUpdated;
-			IsClosed = report.IsClosed;
-			Title = report.Title;
-		}
-		private string _title;
-		public string Title
-		{
-			get { return _title; }
-			set { SetProperty(ref _title, value); }
-		}
-		public DateTime LastUpdated { get; set; }
+    public class Report : BaseEntity
+    {
+        public Report()
+        {
+            ActiveDevices = new List<ActiveDevice>();
+        }
+        public Report(Report report) : this()
+        {
+            Days = report.Days;
+            Id = report.Id;
+            FromTime = report.FromTime;
+            LastUpdated = report.LastUpdated;
+            IsClosed = report.IsClosed;
+            Title = report.Title;
+        }
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
+        public DateTime LastUpdated { get; set; }
 
-		private DateTime _fromTime;
-		public DateTime FromTime
-		{
-			get { return _fromTime; }
-			set { SetProperty(ref _fromTime, value); }
-		}
-		private int _days;
-		public int Days
-		{
-			get { return _days; }
-			set { SetProperty(ref _days, value); RaisePropertyChangedEvent("ToTime"); }
-		}
+        private DateTime _fromTime;
+        public DateTime FromTime
+        {
+            get { return _fromTime; }
+            set { SetProperty(ref _fromTime, value); }
+        }
+        private int _days;
+        public int Days
+        {
+            get { return _days; }
+            set { SetProperty(ref _days, value); RaisePropertyChangedEvent("ToTime"); }
+        }
 
-		private bool _isClosed;
-		public bool IsClosed
-		{
-			get { return _isClosed; }
-			set { SetProperty(ref _isClosed, value); }
-		}
-		[Computed]
-		public ICollection<ActiveDevice> ActiveDevices { get; set; }
+        private bool _isClosed;
+        private DateTime dateTimePassed;
 
-		[Computed]
-		public DateTime ToTime => FromTime.AddDays(Days);
-		public bool IsEdited(Report newReport)
-		{
-			if (newReport == null) throw new ArgumentNullException("newReport is null");
-			if (Title != newReport.Title)
-			{
-				return true;
-			}
-			if (Days != newReport.Days)
-			{
-				return true;
-			}
+        public bool IsClosed
+        {
+            get { return _isClosed; }
+            set { SetProperty(ref _isClosed, value); }
+        }
+        [Computed]
+        public ICollection<ActiveDevice> ActiveDevices { get; set; }
 
-			if (FromTime != newReport.FromTime)
-			{
-				return true;
-			}
-			return false;
-		}
+        [Computed]
+        public DateTime ToTime => FromTime.AddDays(Days);
+        [Computed]
+        public DateTime DateTimePassed
+        {
+            get
+            {
+                var nowDate = DateTime.Now;
+                var passedDate = nowDate.Subtract(FromTime);
+                return new DateTime(passedDate.Ticks);
+            }
+        }
+        public bool IsEdited(Report newReport)
+        {
+            if (newReport == null) throw new ArgumentNullException("newReport is null");
+            if (Title != newReport.Title)
+            {
+                return true;
+            }
+            if (Days != newReport.Days)
+            {
+                return true;
+            }
 
-	}
+            if (FromTime != newReport.FromTime)
+            {
+                return true;
+            }
+            return false;
+        }
+        public void RaisePropertyChnagedDateTimePassed()
+        {
+            RaisePropertyChangedEvent("DateTimePassed");
+        }
+
+    }
 }

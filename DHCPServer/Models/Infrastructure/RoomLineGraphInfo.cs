@@ -125,7 +125,7 @@ namespace DHCPServer.Models.Infrastructure
 
 		public bool AddToCollection()
 		{
-			if (!IsInvalid)
+			if (Validate())
 			{
 				RoomInfo.Date = DateTime.Now;
 				AddToHumidity();
@@ -155,6 +155,14 @@ namespace DHCPServer.Models.Infrastructure
 			RoomInfo.Humidity = hum;
 		}
 	
+		private bool Validate()
+        {
+			if (IsInvalid) return false;
+
+			if (RoomInfo.Temperature == Setting.TemperatureRange || RoomInfo.Humidity == Setting.HumidityRange) return false;
+
+			return true;
+        }
 	}
 
 }

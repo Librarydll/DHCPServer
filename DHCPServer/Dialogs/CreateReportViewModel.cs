@@ -38,7 +38,7 @@ namespace DHCPServer.Dialogs
             Report = new Report()
             {
                 FromTime = DateTime.Now,
-                Days = 16
+                Days = 18
             };
             Title = "Создание архива";
             CreateReportCommand = new DelegateCommand(async () => await ExecuteCreateReportCommand());

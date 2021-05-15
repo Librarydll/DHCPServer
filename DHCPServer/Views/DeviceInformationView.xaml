@@ -94,7 +94,7 @@
 
                             <StackPanel Grid.Row="2" Orientation="Vertical" x:Name="reportPanel" Visibility="Collapsed">
                                 <TextBlock Margin="5" Text="{Binding Path=ActiveDevice.Report.Title}"/>
-                                <TextBlock Margin="5" Text="{Binding Path=ActiveDevice.Report.ToTime,StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                                <TextBlock Margin="5" Text="{Binding Path=ActiveDevice.Report.DateTimePassed,StringFormat={}{0:dd / HH:mm}}"/>
                             </StackPanel>
 
                             <Border Grid.Row="3" Margin="5" >

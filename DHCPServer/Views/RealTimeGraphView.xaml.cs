@@ -37,5 +37,7 @@ namespace DHCPServer.Views
             var vm = this.DataContext as RealTimeGraphViewModel;
             vm.HumidityLineMouseWheelEventHandler(e);
         }
+
+      
     }
 }

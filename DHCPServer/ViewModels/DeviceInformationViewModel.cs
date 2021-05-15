@@ -72,7 +72,6 @@ namespace DHCPServer.ViewModels
                  {
                      foreach (var room in RoomsCollection)
                      {
-                       //  if (deletedReports.Count == 0) break;
 
                          var id = deletedReports.FirstOrDefault(x => x == room.ActiveDevice.ReportId);
 
@@ -204,6 +203,17 @@ namespace DHCPServer.ViewModels
             }
         }
 
+
+        private void UpdateReportTimeInUI()
+        {
+            foreach (var room in RoomsCollection)
+            {
+                if (room.RoomInfo.ActiveDevice.Report != null)
+                {
+                    room.RoomInfo.ActiveDevice.Report.RaisePropertyChnagedDateTimePassed();
+                }
+            }
+        }
     }
 
 }
