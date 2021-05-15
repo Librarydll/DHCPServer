@@ -61,8 +61,8 @@
             </ItemsControl.ItemsPanel>
 
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Margin="10" BorderBrush="{StaticResource defaultBlue2}" BorderThickness="4" CornerRadius="4" >
+                <DataTemplate x:Name="dt">
+                    <Border Margin="10" BorderBrush="{StaticResource defaultBlue2}" BorderThickness="4" CornerRadius="4" x:Name="border">
                         <Grid Background="White">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -220,12 +220,29 @@
                     </DataTemplate.Resources>
                     <DataTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="reportPanel" Property="Visibility" Value="Visible"/>
+                            <!--<Setter TargetName="reportPanel" Property="Visibility" Value="Visible"/>-->
                             <Setter Property="Visibility" Value="Collapsed" TargetName="topSignal" />
                             <Setter Property="Visibility" Value="Visible" TargetName="bottomSignal" />
                             <Setter Property="Visibility" Value="Visible" TargetName="commandPanel" />
                             <Setter Property="Visibility" Value="Visible" TargetName="ipAddress" />
                         </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=border,Path=IsMouseOver}" Value="true"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" TargetName="reportPanel" Value="Visible"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=border,Path=IsMouseOver}" Value="true"/>
+                                <Condition Binding="{Binding Path=ActiveDevice.Report}" Value="{x:Null}"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" TargetName="reportPanel" Value="Collapsed"/>
+
+                        </MultiDataTrigger>
+                        <!--<DataTrigger Binding="{Binding Path=AtiveDevice.Report.Title}" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="reportPanel" Value="Collapsed"/>
+                        </DataTrigger>-->
                     </DataTemplate.Triggers>
                 </DataTemplate>
 
