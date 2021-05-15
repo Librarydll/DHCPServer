@@ -207,13 +207,17 @@ namespace DHCPServer.ViewModels
 
         private void UpdateReportTimeInUI()
         {
-            foreach (var room in RoomsCollection)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                if (room.RoomInfo.ActiveDevice.Report != null)
+                foreach (var room in RoomsCollection)
                 {
-                    room.RoomInfo.ActiveDevice.Report.RaisePropertyChnagedDateTimePassed();
+                    if (room.ActiveDevice.Report != null)
+                    {
+                        room.ActiveDevice.Report.RaisePropertyChnagedDateTimePassed();
+                    }
                 }
-            }
+            });
+     
         }
     }
 
