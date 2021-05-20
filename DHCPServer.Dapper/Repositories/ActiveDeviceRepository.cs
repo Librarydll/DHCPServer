@@ -143,13 +143,16 @@ namespace DHCPServer.Dapper.Repositories
             string query = @"SELECT *FROM ActiveDevices as ad
                             left join Reports as r
                             on r.id = ad.ReportId
+                            left join DeviceSettings as ds
+                            on ds.ActiveDeviceId = ad.Id
 							where ad.isAdded = 1 and ad.isActive=1 and DeviceType =@deviceType";
             using (var connection = _factory.CreateConnection())
             {
-                var entities = await connection.QueryAsync<ActiveDevice,Report,ActiveDevice>(query,
-                    (activeDevice, report) =>
+                var entities = await connection.QueryAsync<ActiveDevice,Report,DeviceSetting,ActiveDevice>(query,
+                    (activeDevice,report, deviceSetting) =>
                     {
                         activeDevice.Report = report;
+                        activeDevice.DeviceSetting = deviceSetting ?? new DeviceSetting();
                         return activeDevice;
                     },
                     new { deviceType });

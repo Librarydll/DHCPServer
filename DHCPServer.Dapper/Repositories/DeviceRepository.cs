@@ -101,5 +101,23 @@ namespace DHCPServer.Dapper.Repositories
 				return result;
 			}
         }
+
+        public async Task UpdateOrCreateSetting(DeviceSetting deviceSetting)
+        {
+			using (var connection = _factory.CreateConnection())
+			{
+				string update = @"update DeviceSettings SET TemperatureRange=@t,HumidityRange=@h where id=@id";
+
+                if (deviceSetting.Id > 0)
+                {
+					await connection.ExecuteAsync(update, new { h = deviceSetting.HumidityRange, t = deviceSetting.TemperatureRange, id = deviceSetting.Id });
+                }
+                else
+                {
+					deviceSetting.Id =await connection.InsertAsync(deviceSetting);
+
+				}
+			}
+		}
     }
 }

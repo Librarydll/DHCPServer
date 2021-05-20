@@ -52,6 +52,7 @@ namespace DHCPServer.ViewModels.Common
 				{
 					return Activator.CreateInstance(typeof(TRoomLine), x,true) as TRoomLine;
 				});
+
 				RoomsCollection = new ObservableCollection<TRoomLine>(rooms);
 				var tasks = new Task[RoomsCollection.Count];
 				for (int i = 0; i < RoomsCollection.Count; i++)

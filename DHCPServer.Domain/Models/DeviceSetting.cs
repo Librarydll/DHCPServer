@@ -1,8 +1,8 @@
 ﻿using DHCPServer.Domain.Models.Common;
 
-namespace DHCPServer.Models.Infrastructure
+namespace DHCPServer.Domain.Models
 {
-	public class RoomLineGraphInfoSetting: BaseEntity
+    public class DeviceSetting : BaseEntity
 	{
 		private double _temperatureRange;
 		public double TemperatureRange
@@ -17,8 +17,8 @@ namespace DHCPServer.Models.Infrastructure
 			get { return _humidityRange; }
 			set { SetProperty(ref _humidityRange, value); }
 		}
-
-		public void SetSetting(double temp,double hum)
+        public int ActiveDeviceId { get; set; }
+        public void SetSetting(double temp, double hum)
 		{
 			TemperatureRange = temp;
 			HumidityRange = hum;

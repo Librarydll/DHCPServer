@@ -65,6 +65,7 @@
     <Compile Include="Models\Common\BaseEntity.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\ActiveDevice.cs" />
+    <Compile Include="Models\DeviceSetting.cs" />
     <Compile Include="Models\MultiRoomInfo.cs" />
     <Compile Include="Models\Report.cs" />
     <Compile Include="Models\RoomInfo.cs" />

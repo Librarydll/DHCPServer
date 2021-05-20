@@ -181,7 +181,6 @@
     <Compile Include="Models\DTO\ReportDTO.cs" />
     <Compile Include="Models\Infrastructure\Common\RoomLineBase.cs" />
     <Compile Include="Models\Infrastructure\MultiRoomLineGraphInfo.cs" />
-    <Compile Include="Models\Infrastructure\RoomLineGraphInfoSetting.cs" />
     <Compile Include="Services\IParser.cs" />
     <Compile Include="Services\JsonHelper.cs" />
     <Compile Include="Services\Parser.cs" />

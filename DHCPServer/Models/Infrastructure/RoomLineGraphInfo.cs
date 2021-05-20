@@ -12,8 +12,8 @@ namespace DHCPServer.Models.Infrastructure
 {
 	public class RoomLineGraphInfo : RoomLineBase<ActiveDevice,RoomInfo>
 	{
-		private RoomLineGraphInfoSetting _setting;
-		public RoomLineGraphInfoSetting Setting
+		private DeviceSetting _setting;
+		public DeviceSetting Setting
 		{
 			get { return _setting; }
 			set { SetProperty(ref _setting, value); }
@@ -46,7 +46,7 @@ namespace DHCPServer.Models.Infrastructure
 		public RoomLineGraphInfo(ActiveDevice device,bool startTimer=true) : base(device)
 		{
 			GraphLineModel = ViewResolvingPlotModel.CreateDefault();
-			Setting = new RoomLineGraphInfoSetting();
+			Setting = device.DeviceSetting;
 			if(startTimer)
 				_timer = new Timer(_timer_Tick,null,new TimeSpan(0,10,0),new TimeSpan(0,10,0));
 		}

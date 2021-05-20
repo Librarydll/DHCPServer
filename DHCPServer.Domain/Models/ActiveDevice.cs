@@ -35,6 +35,9 @@ namespace DHCPServer.Domain.Models
             set { SetProperty(ref isAdded, value); }
         }
         public DeviceType DeviceType { get; set; }
+        [Computed]
+
+        public DeviceSetting DeviceSetting { get; set; }
 
         public int ReportId { get; set; }
         [Computed]

@@ -19,6 +19,6 @@ namespace DHCPServer.Domain.Interfaces
 
 		Task<bool> UpdateDevices(Device newDivece, Device oldDevice);
 
-
+		Task UpdateOrCreateSetting(DeviceSetting deviceSetting);
 	}
 }

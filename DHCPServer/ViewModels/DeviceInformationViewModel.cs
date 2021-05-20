@@ -29,6 +29,7 @@ namespace DHCPServer.ViewModels
         #region Fields
         private readonly IRoomRepository _roomRepository;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IDeviceRepository _deviceRepository;
         #endregion
 
         #region Commands
@@ -43,9 +44,9 @@ namespace DHCPServer.ViewModels
         public DeviceInformationViewModel(IDialogService dialogService,
             IRoomRepository roomRepository,
             IActiveDeviceRepository activeDeviceRepository,
-            IReportRepository reportRepository,
             ILogger logger,
-            IEventAggregator eventAggregator) : base(dialogService, activeDeviceRepository, logger, Domain.Enumerations.DeviceType.Default)
+            IEventAggregator eventAggregator,
+            IDeviceRepository deviceRepository) : base(dialogService, activeDeviceRepository, logger, Domain.Enumerations.DeviceType.Default)
         {
             OpenNewDevcieViewCommand = new DelegateCommand(OpenNewDevcieView);
             DeleteRoomCommand = new DelegateCommand<RoomLineGraphInfo>(DeleteRoom);
@@ -56,8 +57,7 @@ namespace DHCPServer.ViewModels
             CloseReportViewCommand = new DelegateCommand(OpenCloseReportView);
             _roomRepository = roomRepository;
             _eventAggregator = eventAggregator;
-
-
+            _deviceRepository = deviceRepository;
             _eventAggregator.GetEvent<DeviceUpdateEvent>().Subscribe(DeviceUpdateEventHandler);
         }
 
@@ -90,7 +90,6 @@ namespace DHCPServer.ViewModels
                              room.ActiveDevice.Report = null;
                              room.ActiveDevice.ReportId = 0;
                              room.ActiveDevice.IsSelected = false;
-                            // deletedReports.Remove(id);
                          }
                      }
                    
@@ -189,15 +188,22 @@ namespace DHCPServer.ViewModels
             {
                 { "model", roomLineGraphInfo }
             };
-            RoomLineGraphInfoSetting setting = null;
+            DeviceSetting setting = null;
 
             _dialogService.ShowModal("CalibrationView", dialogParametr, x =>
             {
                 if (x.Result == ButtonResult.OK)
                 {
-                    setting = x.Parameters.GetValue<RoomLineGraphInfoSetting>("model");
+                    setting = x.Parameters.GetValue<DeviceSetting>("model");
+                    setting.Id = roomLineGraphInfo.Setting.Id;
+                    setting.ActiveDeviceId = roomLineGraphInfo.DeviceClient.ActiveDevice.Id;
+                    Task.Run(async () =>
+                    {
+                        await _deviceRepository.UpdateOrCreateSetting(setting);
+                    });
                 }
             });
+
             if (setting != null)
             {
                 roomLineGraphInfo.SetSetting(setting.TemperatureRange, setting.HumidityRange);
