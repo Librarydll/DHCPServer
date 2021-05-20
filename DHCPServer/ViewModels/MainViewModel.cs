@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DHCPServer.ViewModels
 {
@@ -25,21 +26,29 @@ namespace DHCPServer.ViewModels
 		public DelegateCommand OpenDeviceViewCommand { get; set; }
 		public DelegateCommand OpenReportViewCommand { get; set; }
 		public DelegateCommand OpenMultiDeviceViewCommand { get; set; }
-		#endregion
-		#region BindingProperties
+        public DelegateCommand<Window> TryIconDoubleClickCommand { get; set; }
+        #endregion
+        #region BindingProperties
 
-		#endregion
-		public MainViewModel(IRegionManager regionManager)
+        #endregion
+        public MainViewModel(IRegionManager regionManager)
 		{
 			OpenGraphDataViewCommand = new DelegateCommand(OpenGraphDataView);
 			OpenDeviceInformationViewCommand = new DelegateCommand(OpenDeviceInformationView);
 			OpenDeviceViewCommand = new DelegateCommand(OpenDeviceView);
 			OpenReportViewCommand = new DelegateCommand(OpenReportView);
 			OpenMultiDeviceViewCommand = new DelegateCommand(OpenMultiDeviceView);
+			TryIconDoubleClickCommand = new DelegateCommand<Window>(ExecuteTryIconDoubleClickCommand);
 			_regionManager = regionManager;
 		}
 
-		private void OpenMultiDeviceView()
+        private void ExecuteTryIconDoubleClickCommand(Window window)
+        {
+			window.ShowInTaskbar = true;
+			window.WindowState = WindowState.Maximized;
+		}
+
+        private void OpenMultiDeviceView()
 		{
 			OpenViewBase(_multiDeviceView, nameof(MultiDeviceView));
 		}

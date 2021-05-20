@@ -8,18 +8,37 @@
         xmlns:local="clr-namespace:DHCPServer.Views"
         WindowState="Maximized"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
+        Closing="Window_Closing"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        x:Name="wind"
         Icon="pack://application:,,,/Resources/chart-1_111423.ico"
-        Title="MainView" Height="450" Width="800">
+        Title="Главное меню" Height="450" Width="800">
 
     <Grid>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid >
-
+            <tb:TaskbarIcon x:Name="myNotifyIcon"
+                    Visibility="Visible"
+                    ToolTipText="Инкубатор"
+                    IconSource="/Resources/chart-1_111423.ico"
+                    MenuActivation="LeftOrRightClick"
+                    PopupActivation="DoubleClick"
+                    DoubleClickCommandParameter="{Binding ElementName=wind}"
+                    DoubleClickCommand="{Binding TryIconDoubleClickCommand}"
+                            >
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Закрыть" Click="MenuItem_Click">
+                            
+                        </MenuItem>
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
             <ToolBar >
                 <StackPanel Orientation="Horizontal">
                     <Button Margin="5"  Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">Инкубационный зал
