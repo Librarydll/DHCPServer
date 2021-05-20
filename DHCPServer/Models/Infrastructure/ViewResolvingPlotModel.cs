@@ -38,10 +38,10 @@ namespace DHCPServer.Models.Infrastructure
             }
         }
 
-		public static ViewResolvingPlotModel CreateDefault()
+		public static ViewResolvingPlotModel CreateDefault(double min=0,double max=70)
 		{
 			var model = new ViewResolvingPlotModel();
-			SetUpModel(model);
+			SetUpModel(model,min,max);
 			var lineSeries = CreateLineSeries();
 			model.Series.Add(lineSeries.First());
 			model.Series.Add(lineSeries.Last());
@@ -90,7 +90,7 @@ namespace DHCPServer.Models.Infrastructure
 				temperatureLineSeries,humidityLineSeries
 			};
 		}
-		private static void SetUpModel(ViewResolvingPlotModel model)
+		private static void SetUpModel(ViewResolvingPlotModel model,double min,double max)
 		{
 			model.IsLegendVisible = false;
 			model.LegendTitle = "Данные";
@@ -125,8 +125,8 @@ namespace DHCPServer.Models.Infrastructure
 				MinimumMinorStep = 0.5,
 				MinimumMajorStep = 3,
 				IntervalLength = 100,
-				AbsoluteMaximum = 70,
-				AbsoluteMinimum = 0,
+				AbsoluteMaximum = max,
+				AbsoluteMinimum = min,
 			};
 			model.Axes.Add(valueAxis);
 		}

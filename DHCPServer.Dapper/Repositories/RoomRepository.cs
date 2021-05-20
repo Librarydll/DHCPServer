@@ -158,5 +158,16 @@ namespace DHCPServer.Dapper.Repositories
 				return result;
 			}
 		}
+		public async Task<IEnumerable<RoomInfo>> FilterRooms(int deviceId)
+		{
+			string query = @"SELECT *FROM RoomInfos as r 
+							 where r.DeviceId =@deviceId";
+
+			using (var connection = _factory.CreateConnection())
+			{
+				var result = await connection.QueryAsync<RoomInfo>(query,new { deviceId });
+				return result;
+			}
+		}
 	}
 }

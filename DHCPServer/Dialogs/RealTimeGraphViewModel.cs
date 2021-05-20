@@ -1,4 +1,5 @@
 ﻿using DHCPServer.Domain.Interfaces;
+using DHCPServer.Domain.Models;
 using DHCPServer.Models.Infrastructure;
 using OxyPlot;
 using OxyPlot.Annotations;
@@ -14,6 +15,7 @@ namespace DHCPServer.Dialogs
 {
     public class RealTimeGraphViewModel : GraphDeviceViewModelBase
     {
+        private readonly IRoomRepository _roomRepository;
 
         private string _temperatureText ="Температура";
         public string TemperatureText
@@ -22,10 +24,16 @@ namespace DHCPServer.Dialogs
             set { SetProperty(ref _temperatureText, value); }
         }
         private string _humidityText = "Влажность";
+
         public string HumidityText
         {
             get { return _humidityText; }
             set { SetProperty(ref _humidityText, value); }
+        }
+
+        public RealTimeGraphViewModel(IRoomRepository roomRepository)
+        {
+            _roomRepository = roomRepository;
         }
         public override void OnDialogOpened(IDialogParameters parameters)
         {
@@ -33,15 +41,18 @@ namespace DHCPServer.Dialogs
             {
                 GraphInfo = parameters.GetValue<RoomLineGraphInfo>("model");
                 TemperatureGraphInfo = RoomLineGraphInfo.CreateDefault();
+                TemperatureGraphInfo.GraphLineModel = ViewResolvingPlotModel.CreateDefault(18, 60);
                 HumidityGraphInfo = RoomLineGraphInfo.CreateDefault();
+                HumidityGraphInfo.GraphLineModel = ViewResolvingPlotModel.CreateDefault(45, 75);
 
                 TemperatureGraphInfo.GraphLineModel.GetLast().IsVisible = false;
                 HumidityGraphInfo.GraphLineModel.GetFirst().IsVisible = false;
 
                 GraphInfo.AddToCollectionEvent += Current_AddToCollectionEvent;
                 Title = $"{GraphInfo?.ActiveDevice?.Nick} {GraphInfo?.ActiveDevice?.IPAddress}";
-                FillTemperatureGraph();
-                FillHumidityGraph();
+                var points = _roomRepository.FilterRooms(GraphInfo.ActiveDevice.Id).GetAwaiter().GetResult();
+                FillTemperatureGraph(points);
+                FillHumidityGraph(points);
                 InitializeAnnotations();
                 SetSettings();
 
@@ -54,26 +65,26 @@ namespace DHCPServer.Dialogs
             }
         }
 
-        private void FillTemperatureGraph()
+        private void FillTemperatureGraph(IEnumerable<RoomInfo> roomInfos)
         {
-            var points = GraphInfo.GraphLineModel.GetFirst().Points;
-            var lineAxis = TemperatureGraphInfo.GraphLineModel.Axes.FirstOrDefault() as LinearAxis;
-            lineAxis.AbsoluteMinimum = 27;
-            lineAxis.AbsoluteMaximum = 60;
-            TemperatureGraphInfo.GraphLineModel.GetFirst().Points.AddRange(points);
+            var temperaturePoints = roomInfos.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Temperature)).ToList();
+
+            TemperatureGraphInfo.GraphLineModel.FillCollection(TemperatureGraphInfo.GraphLineModel.GetFirst(),temperaturePoints);
+
+            TemperatureGraphInfo.GraphLineModel.InvalidatePlot(true);
+
         }
 
-        private void FillHumidityGraph()
+        private void FillHumidityGraph(IEnumerable<RoomInfo> roomInfos)
         {
-            var points = GraphInfo.GraphLineModel.GetLast().Points;
-            var lineAxis = HumidityGraphInfo.GraphLineModel.Axes.FirstOrDefault() as LinearAxis;
-            lineAxis.AbsoluteMinimum = 45;
-            lineAxis.AbsoluteMaximum = 75;
+            var humidityPoints = roomInfos.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Humidity)).ToList();
 
-            HumidityGraphInfo.GraphLineModel.GetLast().Points.AddRange(points);
+            HumidityGraphInfo.GraphLineModel.FillCollection(HumidityGraphInfo.GraphLineModel.GetLast(), humidityPoints);
+
+            HumidityGraphInfo.GraphLineModel.InvalidatePlot(true);
         }
 
-        private void Current_AddToCollectionEvent(Domain.Models.ActiveDevice arg1, Domain.Models.RoomInfo arg2)
+        private void Current_AddToCollectionEvent(ActiveDevice arg1, RoomInfo arg2)
         {
             TemperatureGraphInfo.GraphLineModel.AddDataPoint(TemperatureGraphInfo.GraphLineModel.GetFirst(), new DataPoint(DateTimeAxis.ToDouble(arg2.Date.AddMinutes(10)), arg2.Temperature));
             HumidityGraphInfo.GraphLineModel.AddDataPoint(HumidityGraphInfo.GraphLineModel.GetLast(), new DataPoint(DateTimeAxis.ToDouble(arg2.Date.AddMinutes(10)), arg2.Humidity));

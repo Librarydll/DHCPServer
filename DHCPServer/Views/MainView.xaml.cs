@@ -1,11 +1,4 @@
-﻿using DHCPServer.Models.Infrastructure;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 
 namespace DHCPServer.Views
 {
