@@ -65,9 +65,7 @@
             <ComboBoxItem>
                 12
             </ComboBoxItem>
-            <ComboBoxItem>
-                24
-            </ComboBoxItem>
+
         </ComboBox>
         <oxy:PlotView PreviewMouseWheel="Plot1_PreviewMouseWheel"  Grid.ColumnSpan="2" Grid.Row="4"  x:Name="Plot1" Model="{Binding TemperatureGraphInfo.GraphLineModel,UpdateSourceTrigger=PropertyChanged}"  Margin="10">
         </oxy:PlotView>
@@ -81,9 +79,7 @@
             <ComboBoxItem>
                 12
             </ComboBoxItem>
-            <ComboBoxItem>
-                24
-            </ComboBoxItem>
+
         </ComboBox>
     </Grid>
 </UserControl>

@@ -25,9 +25,9 @@
                     <Button Margin="5"  Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceInformationViewCommand}">Инкубационный зал
 
                     </Button>
-                    <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица
+                    <!--<Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenGraphDataViewCommand}">Таблица
 
-                    </Button>
+                    </Button>-->
                     <Button Margin="5" Background="{x:Null}" Padding="3" Command="{Binding OpenDeviceViewCommand}">Устройства
 
                     </Button>

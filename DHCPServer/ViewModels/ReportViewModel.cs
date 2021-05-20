@@ -59,7 +59,7 @@ namespace DHCPServer.ViewModels
 
 		private async Task Filter()
 		{
-			if (SearchingString == null) return;
+			if (string.IsNullOrWhiteSpace(SearchingString)) return;
 
 
 			var collection = await _reportRepository.GetReportsByString(SearchingString);

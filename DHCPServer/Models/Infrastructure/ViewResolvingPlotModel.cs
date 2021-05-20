@@ -111,9 +111,7 @@ namespace DHCPServer.Models.Infrastructure
 				StringFormat = "HH:mm",
 				Minimum = DateTimeAxis.ToDouble(dt),
 				Maximum = DateTimeAxis.ToDouble(dt.AddHours(6)),
-				IntervalType = DateTimeIntervalType.Hours,
-				
-				
+				IntervalType = DateTimeIntervalType.Hours,		
 			};
 			model.Axes.Add(dateAxis);
 			var valueAxis = new LinearAxis()

@@ -57,12 +57,19 @@ namespace DHCPServer.Dialogs
         private void FillTemperatureGraph()
         {
             var points = GraphInfo.GraphLineModel.GetFirst().Points;
+            var lineAxis = TemperatureGraphInfo.GraphLineModel.Axes.FirstOrDefault() as LinearAxis;
+            lineAxis.AbsoluteMinimum = 27;
+            lineAxis.AbsoluteMaximum = 60;
             TemperatureGraphInfo.GraphLineModel.GetFirst().Points.AddRange(points);
         }
 
         private void FillHumidityGraph()
         {
             var points = GraphInfo.GraphLineModel.GetLast().Points;
+            var lineAxis = HumidityGraphInfo.GraphLineModel.Axes.FirstOrDefault() as LinearAxis;
+            lineAxis.AbsoluteMinimum = 45;
+            lineAxis.AbsoluteMaximum = 75;
+
             HumidityGraphInfo.GraphLineModel.GetLast().Points.AddRange(points);
         }
 

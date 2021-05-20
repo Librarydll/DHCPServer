@@ -24,7 +24,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
             <Grid Grid.Column="0" x:Name="col1"/>
@@ -32,7 +31,6 @@
             <Grid Grid.Column="2" x:Name="col3"/>
             <Grid Grid.Column="3" x:Name="col4"/>
             <Grid Grid.Column="4" x:Name="col5"/>
-            <Grid Grid.Column="5" x:Name="col6"/>
         </Grid>
 
 
@@ -57,7 +55,7 @@
                 <GridView>
 
                     <GridViewColumn Width="{Binding ElementName=col1,Path=ActualWidth}"                              
-                                    Header="Псевдоним"
+                                    Header="Номер блока"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -71,7 +69,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
+                    <!--<GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
                                     Header="IPAddress"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -86,10 +84,10 @@
                                                VerticalAlignment="Center"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    </GridViewColumn>-->
 
 
-                    <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
+                    <GridViewColumn Width="{Binding ElementName=col2,Path=ActualWidth}"
                                     Header="Название архива"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -106,7 +104,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
+                    <GridViewColumn Width="{Binding ElementName=col3,Path=ActualWidth}"
                                     Header="Начало записи"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -123,7 +121,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Width="{Binding ElementName=col5,Path=ActualWidth}"
+                    <GridViewColumn Width="{Binding ElementName=col4,Path=ActualWidth}"
                                     Header="Конец записи"
                                     HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>
@@ -146,9 +144,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-
-
-                    <GridViewColumn  Width="{Binding ElementName=col6,Path=ActualWidth}"
+                    <GridViewColumn  Width="{Binding ElementName=col5,Path=ActualWidth}"
                                         Header="Действие"
                                         HeaderContainerStyle="{DynamicResource GridViewColumnHeaderStyle}">
                         <GridViewColumn.CellTemplate>

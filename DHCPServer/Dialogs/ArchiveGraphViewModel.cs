@@ -61,6 +61,9 @@ namespace DHCPServer.Dialogs
         public RoomLineGraphInfo FillHumidityModel(IEnumerable<RoomInfo> collection)
         {
             var result = RoomLineGraphInfo.CreateDefault();
+            var lineAxis = result.GraphLineModel.Axes.FirstOrDefault() as LinearAxis;
+            lineAxis.AbsoluteMinimum = 45;
+            lineAxis.AbsoluteMaximum = 75;
 
             var humidityLineSerie = result.GraphLineModel.GetLast();
             var humidityPoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Humidity)).ToList();
@@ -76,7 +79,9 @@ namespace DHCPServer.Dialogs
         {
 
             var result = RoomLineGraphInfo.CreateDefault();
-
+            var lineAxis =result.GraphLineModel.Axes.FirstOrDefault() as LinearAxis;
+            lineAxis.AbsoluteMinimum = 27;
+            lineAxis.AbsoluteMaximum = 60;
             var temperatureLineSerie = result.GraphLineModel.GetFirst();
             var temperaturePoints = collection.Select(x => new DataPoint(DateTimeAxis.ToDouble(x.Date), x.Temperature)).ToList();
             var min = collection.Min(x => x.Date);
